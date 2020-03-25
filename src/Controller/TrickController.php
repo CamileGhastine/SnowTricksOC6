@@ -19,4 +19,14 @@ class TrickController extends AbstractController
             'tricks' => $tricks,
         ]);
     }
+
+    /**
+     * @Route("/trick/{id}", name="trick_show")
+     */
+    public function show(Trick $trick)
+    {
+        return $this->render('trick/show.html.twig', [
+            'trick' => $trick,
+        ]);
+    }
 }
