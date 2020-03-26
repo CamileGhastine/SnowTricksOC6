@@ -14,7 +14,6 @@ class TrickType extends AbstractType
         $builder
             ->add('title')
             ->add('description')
-            ->add('image')
         ;
     }
 
@@ -22,6 +21,7 @@ class TrickType extends AbstractType
     {
         $resolver->setDefaults([
             'data_class' => Trick::class,
+            'translation_domain' => 'forms',
         ]);
     }
 }

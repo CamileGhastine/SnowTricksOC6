@@ -4,8 +4,14 @@
 
 {% block body %}
     <div class="container">
+        <div class="my-5">
+            {{ form_start(form) }}
+            {{ form_row(form.title) }}
+            {{ form_row(form.description) }}
+            <button class="btn btn-secondary">Ajouter</button>
+            {{ form_end(form) }}
+        </div>
 
-        {{ form(form) }}
 
 
 
