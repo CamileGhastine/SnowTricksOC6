@@ -14,6 +14,7 @@
 
     <div class="container">
         <div class="mt-4 text-center mt-5 mb-4">
+            <p><a href="{{ path('trick_form') }}" class="btn btn-secondary mb-4">Ajouter une figure</a></p>
             {% for i in 1..6 %}
                 <a href="#" class=""><span class="badge badge-pill badge-secondary mx-3">groupe {{ i }}</span></a>
             {% endfor %}
@@ -24,7 +25,7 @@
                     <a href="{{ path('trick_show', {id: trick.id}) }}"><img id="trick-img" src="{{ asset(trick.image) }}" alt="{{ trick.title }}"></a>
                     <div class="row mx-1">
                         <div class="col-8 text-center">
-                            <a href="{{ path('trick_show', {id: trick.id}) }}"><h3>{{ trick.title }}</h3></a>
+                            <a href="{{ path('trick_show', {id: trick.id}) }}"><h3 class="text-break">{{ trick.title }}</h3></a>
                         </div>
                         <div class="col-1 text-center">
                             <i class="fas fa-pencil-alt"></i>
