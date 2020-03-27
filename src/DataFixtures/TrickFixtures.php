@@ -12,12 +12,12 @@ class TrickFixtures extends Fixture
     {
         $faker = \Faker\Factory::create('fr_FR');
 
-        for($i=0; $i<50; $i++)
+        for($i=0; $i<15; $i++)
         {
             $trick = new Trick();
             $trick->setTitle($faker->sentence(3, true))
                 ->setDescription( implode('<br/>', $faker->sentences(4)))
-                ->setImage('images/noImage.jpg')
+                ->setImage('images/tricks/noImage.jpg')
                 ->setCreatedAt($faker->dateTimebetween('-7 days'));
             $manager->persist($trick);
             $manager->flush();
