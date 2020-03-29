@@ -78,4 +78,24 @@ class TrickController extends AbstractController
         ]);
     }
 
+    /**
+     * @Route("trick/{id}/delete", name="trick_delete")
+     */
+    public function delete(Trick $trick, EntityManagerInterface $em, Request $request)
+    {
+        if($request->request->get('_token') && $this->isCsrfTokenValid('delete'.$trick->getId(), $request->request->get('_token')))
+        {
+            $em->remove($trick);
+            $em->flush();
+
+            $this->addFlash('success', 'la figure a été supprimée avec succès !');
+
+            return $this->redirectToRoute('home');
+        }
+
+        return $this->render('trick/delete.html.twig', [
+                'trick' => $trick,
+            ]
+        );
+    }
 }
