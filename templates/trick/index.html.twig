@@ -8,13 +8,13 @@
         <div class="jumbotron text-center">
             <h1 class="display-3">SnowTricks</h1>
             <h2 class="lead">Le site communautaire de tous les snowboarders</h2>
+            <p class="mt-5"><a href="{{ path('trick_new') }}" class="btn btn-secondary mb-4">Ajouter une figure</a></p>
             <div class="text-right" id="caret"><a href="#tricks"><i class="fas fa-angle-double-down fa-2x"></i></a></div>
         </div>
     </header>
 
     <div class="container">
         <div class="mt-4 text-center mt-5 mb-4">
-            <p><a href="{{ path('trick_new') }}" class="btn btn-secondary mb-4">Ajouter une figure</a></p>
             {% for i in 1..6 %}
                 <a href="#" class=""><span class="badge badge-pill badge-secondary mx-3">groupe {{ i }}</span></a>
             {% endfor %}

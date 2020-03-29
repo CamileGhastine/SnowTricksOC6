@@ -50,6 +50,15 @@ class TrickController extends AbstractController
             $em->persist($trick);
             $em->flush();
 
+            if($request->getRequestUri() == '/trick/new')
+            {
+                $this->addFlash('success', 'La figure a été ajoutée avec succès !');
+            }
+            else
+            {
+                $this->addFlash('success', 'La figure a été modifiée avec succès !');
+            }
+
             return $this->redirectToRoute('trick_show', ['id' => $trick->getId()]);
         }
 

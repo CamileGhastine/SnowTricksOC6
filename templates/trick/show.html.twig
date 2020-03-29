@@ -42,6 +42,13 @@
                     </div>
 
                     <div class="card-body text-center">
+
+                        {% for message in app.flashes('success') %}
+                            <div class="alert alert-success">
+                                {{ message }}
+                            </div>
+                        {% endfor %}
+
                         <div class="row mt-3">
                             <div class="col-6 d-flex " id="tricks-img">
                                 <div class="row carousel-indicator">
