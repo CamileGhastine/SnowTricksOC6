@@ -24,11 +24,16 @@ class TrickController extends AbstractController
     }
 
     /**
-     * @Route("/trick/new", name="trick_form")
+     * @Route("/trick/new", name="trick_new")
+     * @Route("/trick/{id}/edit", name="trick_edit")
      */
-    public function form(Request $request, EntityManagerInterface $em)
+    public function form(Request $request, EntityManagerInterface $em, Trick $trick = null)
     {
-        $trick = new Trick();
+        if(!$trick)
+        {
+            $trick = new Trick();
+        }
+
 
         $form = $this->createForm(TrickType::class, $trick);
 
@@ -36,17 +41,30 @@ class TrickController extends AbstractController
 
         if($form->isSubmitted() && $form->isValid())
         {
-            $trick->setImage('images/tricks/image.jpg');
-            $trick->setCreatedAt(new \DateTime());
+            if(!$trick->getId())
+            {
+                $trick->setImage('images/tricks/image.jpg');
+                $trick->setCreatedAt(new \DateTime());
+            }
 
             $em->persist($trick);
             $em->flush();
+
+            if($request->getRequestUri() == '/trick/new')
+            {
+                $this->addFlash('success', 'La figure a été ajoutée avec succès !');
+            }
+            else
+            {
+                $this->addFlash('success', 'La figure a été modifiée avec succès !');
+            }
 
             return $this->redirectToRoute('trick_show', ['id' => $trick->getId()]);
         }
 
         return $this->render('trick/form.html.twig', [
             'form' => $form->createView(),
+            'trick' => $trick,
         ]);
     }
 
@@ -60,4 +78,24 @@ class TrickController extends AbstractController
         ]);
     }
 
+    /**
+     * @Route("trick/{id}/delete", name="trick_delete")
+     */
+    public function delete(Trick $trick, EntityManagerInterface $em, Request $request)
+    {
+        if($request->request->get('_token') && $this->isCsrfTokenValid('delete'.$trick->getId(), $request->request->get('_token')))
+        {
+            $em->remove($trick);
+            $em->flush();
+
+            $this->addFlash('success', 'la figure a été supprimée avec succès !');
+
+            return $this->redirectToRoute('home');
+        }
+
+        return $this->render('trick/delete.html.twig', [
+                'trick' => $trick,
+            ]
+        );
+    }
 }

@@ -8,13 +8,20 @@
         <div class="jumbotron text-center">
             <h1 class="display-3">SnowTricks</h1>
             <h2 class="lead">Le site communautaire de tous les snowboarders</h2>
+            <p class="mt-5"><a href="{{ path('trick_new') }}" class="btn btn-secondary mb-4">Ajouter une figure</a></p>
             <div class="text-right" id="caret"><a href="#tricks"><i class="fas fa-angle-double-down fa-2x"></i></a></div>
         </div>
     </header>
 
     <div class="container">
+
+        {% for message in app.flashes('success') %}
+            <div class="alert alert-success">
+                {{ message }}
+            </div>
+        {% endfor %}
+
         <div class="mt-4 text-center mt-5 mb-4">
-            <p><a href="{{ path('trick_form') }}" class="btn btn-secondary mb-4">Ajouter une figure</a></p>
             {% for i in 1..6 %}
                 <a href="#" class=""><span class="badge badge-pill badge-secondary mx-3">groupe {{ i }}</span></a>
             {% endfor %}
@@ -28,10 +35,10 @@
                             <a href="{{ path('trick_show', {id: trick.id}) }}"><h3 class="text-break">{{ trick.title }}</h3></a>
                         </div>
                         <div class="col-1 text-center">
-                            <i class="fas fa-pencil-alt"></i>
+                            <a href="{{ path('trick_edit', {id: trick.id}) }}"><i class="fas fa-pencil-alt"></i></a>
                         </div>
                         <div class="col-1 text-center">
-                            <i class="fas fa-trash-alt"></i>
+                            <a href="{{ path('trick_delete', {id: trick.id}) }}"><i class="fas fa-trash-alt"></i></a>
                         </div>
                     </div>
                 </article>
