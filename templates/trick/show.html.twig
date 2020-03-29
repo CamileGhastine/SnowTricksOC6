@@ -31,7 +31,7 @@
                             {#                        <img src="{{ asset(trick.image) }}" class="card-img col-6 offset-3 text-center mt-4" alt="{{ trick.title }}">#}
                             <div class="text-center">
                                 <div class="text-right">
-                                    <a href="#"><i class="fas fa-pencil-alt mr-3"></i></a>
+                                    <a href="{{ path('trick_edit', {id: trick.id}) }}"><i class="fas fa-pencil-alt mr-3"></i></a>
                                     <a href="#"><i class="fas fa-trash-alt"></i></a>
                                 </div>
                                 <div class="card-img-overlay col-6">

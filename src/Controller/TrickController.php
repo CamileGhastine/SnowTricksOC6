@@ -24,11 +24,16 @@ class TrickController extends AbstractController
     }
 
     /**
-     * @Route("/trick/new", name="trick_form")
+     * @Route("/trick/new", name="trick_new")
+     * @Route("/trick/{id}/edit", name="trick_edit")
      */
-    public function form(Request $request, EntityManagerInterface $em)
+    public function form(Request $request, EntityManagerInterface $em, Trick $trick = null)
     {
-        $trick = new Trick();
+        if(!$trick)
+        {
+            $trick = new Trick();
+        }
+
 
         $form = $this->createForm(TrickType::class, $trick);
 
@@ -36,8 +41,11 @@ class TrickController extends AbstractController
 
         if($form->isSubmitted() && $form->isValid())
         {
-            $trick->setImage('images/tricks/image.jpg');
-            $trick->setCreatedAt(new \DateTime());
+            if(!$trick->getId())
+            {
+                $trick->setImage('images/tricks/image.jpg');
+                $trick->setCreatedAt(new \DateTime());
+            }
 
             $em->persist($trick);
             $em->flush();
@@ -47,6 +55,7 @@ class TrickController extends AbstractController
 
         return $this->render('trick/form.html.twig', [
             'form' => $form->createView(),
+            'trick' => $trick,
         ]);
     }
 
