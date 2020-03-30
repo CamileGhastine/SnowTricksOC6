@@ -30,9 +30,11 @@ class User
     private $email;
 
     /**
-     * @ORM\Column(type="string", length=255)
-     */
+ * @ORM\Column(type="string", length=255)
+ */
     private $password;
+
+    private $confirm_password;
 
     /**
      * @ORM\Column(type="string", length=255)
@@ -83,6 +85,22 @@ class User
         $this->password = $password;
 
         return $this;
+    }
+
+    /**
+     * @return mixed
+     */
+    public function getConfirmPassword()
+    {
+        return $this->confirm_password;
+    }
+
+    /**
+     * @param mixed $confirm_password
+     */
+    public function setConfirmPassword($confirm_password): void
+    {
+        $this->confirm_password = $confirm_password;
     }
 
     public function getAvatar(): ?string

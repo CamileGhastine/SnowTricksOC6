@@ -15,8 +15,7 @@ class RegistrationType extends AbstractType
             ->add('username')
             ->add('email')
             ->add('password')
-            ->add('avatar')
-            ->add('createdAt')
+            ->add('confirm_password')
         ;
     }
 
@@ -24,6 +23,7 @@ class RegistrationType extends AbstractType
     {
         $resolver->setDefaults([
             'data_class' => User::class,
+            'translation_domain' => 'forms',
         ]);
     }
 }

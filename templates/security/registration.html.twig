@@ -1,1 +1,16 @@
-<p class="">test</p>
+{% extends 'base.html.twig' %}
+{% block title %}SnowTricks : Inscription{% endblock %}
+
+{% block body %}
+
+    <div class="container mt-5">
+        {{ form_start(form) }}
+        {{ form_row(form.username) }}
+        {{ form_row(form.email) }}
+        {{ form_row(form.password) }}
+        {{ form_row(form.confirm_password) }}
+        <button type="submit" class="btn btn-secondary">Inscription</button>
+        {{ form_end(form) }}
+    </div>
+
+{% endblock %}
