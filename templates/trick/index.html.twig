@@ -8,7 +8,9 @@
         <div class="jumbotron text-center">
             <h1 class="display-3">SnowTricks</h1>
             <h2 class="lead">Le site communautaire de tous les snowboarders</h2>
-            <p class="mt-5"><a href="{{ path('trick_new') }}" class="btn btn-secondary mb-4">Ajouter une figure</a></p>
+            {%  if app.user %}
+                <p class="mt-5"><a href="{{ path('trick_new') }}" class="btn btn-secondary mb-4">Ajouter une figure</a></p>
+            {% endif %}
             <div class="text-right" id="caret"><a href="#tricks"><i class="fas fa-angle-double-down fa-2x"></i></a></div>
         </div>
     </header>
@@ -34,12 +36,14 @@
                         <div class="col-8 text-center">
                             <a href="{{ path('trick_show', {id: trick.id}) }}"><h3 class="text-break">{{ trick.title }}</h3></a>
                         </div>
-                        <div class="col-1 text-center">
-                            <a href="{{ path('trick_edit', {id: trick.id}) }}"><i class="fas fa-pencil-alt"></i></a>
-                        </div>
-                        <div class="col-1 text-center">
-                            <a href="{{ path('trick_delete', {id: trick.id}) }}"><i class="fas fa-trash-alt"></i></a>
-                        </div>
+                        {%  if app.user %}
+                            <div class="col-1 text-center">
+                                <a href="{{ path('trick_edit', {id: trick.id}) }}"><i class="fas fa-pencil-alt"></i></a>
+                            </div>
+                            <div class="col-1 text-center">
+                                <a href="{{ path('trick_delete', {id: trick.id}) }}"><i class="fas fa-trash-alt"></i></a>
+                            </div>
+                        {% endif %}
                     </div>
                 </article>
             {% endfor %}

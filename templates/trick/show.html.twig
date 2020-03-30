@@ -30,10 +30,12 @@
                             </div>
                             {#                        <img src="{{ asset(trick.image) }}" class="card-img col-6 offset-3 text-center mt-4" alt="{{ trick.title }}">#}
                             <div class="text-center">
-                                <div class="text-right">
-                                    <a href="{{ path('trick_edit', {id: trick.id}) }}"><i class="fas fa-pencil-alt mr-3"></i></a>
-                                    <a href="{{ path('trick_delete', {id: trick.id}) }}"><i class="fas fa-trash-alt"></i></a>
-                                </div>
+                                {%  if app.user %}
+                                    <div class="text-right">
+                                        <a href="{{ path('trick_edit', {id: trick.id}) }}"><i class="fas fa-pencil-alt mr-3"></i></a>
+                                        <a href="{{ path('trick_delete', {id: trick.id}) }}"><i class="fas fa-trash-alt"></i></a>
+                                    </div>
+                                {% endif %}
                                 <div class="card-img-overlay col-6">
                                     <p class="card-title mt-5 text-break" id="title-img">{{ trick.title }}</p>
                                 </div>
@@ -100,18 +102,23 @@
             <section>
 
                 <h2 class="card-header bg-dark text-white text-center">Commentaires <span class="badge badge-pill badge-secondary mx-3">15</span></h2>
-
-                <form class="form-row my-5 ml-5">
-                    <div class="form-group mx-sm-3 mb-2 col-8">
-                        <input type="text" class="form-control" id="trickComment" placeholder="Laisser un commentaire ici ...">
+                {%  if app.user %}
+                    <form class="form-row mt-5 ml-5">
+                        <div class="form-group mx-sm-3 mb-2 col-8">
+                            <input type="text" class="form-control" id="trickComment" placeholder="Laisser un commentaire ici ...">
+                        </div>
+                        <div class="col">
+                            <button type="submit" class="btn btn-secondary mb-2">Commenter</button>
+                        </div>
+                    </form>
+                {% else %}
+                    <div class="text-center mt-5">
+                        <a href="{{ path('security_login') }}" class="btn btn-secondary">Connectez-vous pour commenter</a>
                     </div>
-                    <div class="col">
-                        <button type="submit" class="btn btn-secondary mb-2">Commenter</button>
-                    </div>
-                </form>
 
+                {% endif %}
 
-                <aside class="ml-5">
+                <aside class="ml-5 mt-5">
                     {% for i in 1..7 %}
                         <div class="row">
                             <img class="rounded-circle col-1 avatar mt-2" src="{{ asset(trick.image) }}" alt=" user.username "/>
