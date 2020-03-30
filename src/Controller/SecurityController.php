@@ -32,7 +32,7 @@ class SecurityController extends AbstractController
             $em->flush();
             $this->addFlash('success', 'Votre inscription a été réalisée avec succès. Connectez vous pour profiter de toutes les fonctionnalités de SnowTricks.');
 
-            return $this->redirectToRoute('security_connection');
+            return $this->redirectToRoute('security_login');
         }
 
         return $this->render('security/registration.html.twig', [
@@ -41,10 +41,12 @@ class SecurityController extends AbstractController
     }
 
     /**
-     * @Route("/connection", name="security_connection")
+     * @Route("/connection", name="security_login")
      */
-    public function connection(Request $request, EntityManagerInterface $em)
+    public function login()
     {
-        return $this->render('security/connection.html.twig');
+        return $this->render('security/login.html.twig');
     }
+
+
 }
