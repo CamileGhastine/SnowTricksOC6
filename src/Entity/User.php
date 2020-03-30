@@ -68,6 +68,11 @@ class User implements UserInterface
      */
     private $createdAt;
 
+    /**
+     * @ORM\Column(type="string", length=255)
+     */
+    private $status='user';
+
     public function getId(): ?int
     {
         return $this->id;
@@ -164,5 +169,17 @@ class User implements UserInterface
     public function eraseCredentials()
     {
 
+    }
+
+    public function getStatus(): ?string
+    {
+        return $this->status;
+    }
+
+    public function setStatus(string $status): self
+    {
+        $this->status = $status;
+
+        return $this;
     }
 }
