@@ -15,6 +15,7 @@
         <span class="navbar-toggler-icon"></span>
     </button>
 
+
     <div class="collapse navbar-collapse justify-content-md-end" id="navbarColor03">
         <div class="">
             <ul class="navbar-nav mr-auto">
@@ -24,15 +25,21 @@
                 <li class="nav-item">
                     <a class="nav-link" href="#tricks">Tricks</a>
                 </li>
+                {%  if not app.user %}
+                    <li class="nav-item">
+                        <a class="nav-link" href="{{ path('security_login') }}">Connexion</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="{{ path('security_registration') }}">Enregistrement</a>
+                    </li>
+                {% else %}
                 <li class="nav-item">
-                    <a class="nav-link" href="{{ path('security_login') }}">Connexion</a>
-                </li>
-                <li class="nav-item">
-                    <a class="nav-link" href="{{ path('security_registration') }}">Enregistrement</a>
+                    <a class="nav-link" href="#">Mon Compte</a>
                 </li>
                 <li class="nav-item">
                     <a class="nav-link" href="{{ path('security_logout') }}">Déconnection</a>
                 </li>
+                {% endif %}
             </ul>
         </div>
     </div>
