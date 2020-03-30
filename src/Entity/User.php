@@ -4,6 +4,7 @@ namespace App\Entity;
 
 use Doctrine\ORM\Mapping as ORM;
 use Symfony\Bridge\Doctrine\Validator\Constraints\UniqueEntity;
+use Symfony\Component\Validator\Constraints as Assert;
 
 /**
  * @ORM\Entity(repositoryClass="App\Repository\UserRepository")
@@ -21,23 +22,43 @@ class User
 
     /**
      * @ORM\Column(type="string", length=255)
+     * @Assert\Length(
+     *      min = 2,
+     *      max = 50,
+     *      minMessage = "Votre nom d'utilisateur doit être composé de {{ limit }} charactères minimum.",
+     *      maxMessage = "Votre nom d'utilisateur doit être composé de {{ limit }} charactères maximum.",
+     * )
      */
     private $username;
 
     /**
      * @ORM\Column(type="string", length=255)
+     * @Assert\Email(
+     *     message = "Ce courriel n'est pas valide."
+     * )
      */
     private $email;
 
     /**
- * @ORM\Column(type="string", length=255)
- */
+     * @ORM\Column(type="string", length=255)
+     * @Assert\Length(
+     *      min = 4,
+     *      max = 50,
+     *      minMessage = "Votre mot de passe doit être composé de {{ limit }} charactères minimum.",
+     *      maxMessage = "Votre mot de passe doit être composé de {{ limit }} charactères maximum.",
+     * )
+     */
     private $password;
 
+    /**
+     * @Assert\EqualTo(propertyPath= "password",
+     *     message= "Les deux mots de passe sont différents.")
+     */
     private $confirm_password;
 
     /**
      * @ORM\Column(type="string", length=255)
+     * @Assert\Url
      */
     private $avatar;
 
