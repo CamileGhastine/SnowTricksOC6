@@ -4,6 +4,7 @@ namespace App\Entity;
 
 use Doctrine\ORM\Mapping as ORM;
 use Symfony\Bridge\Doctrine\Validator\Constraints\UniqueEntity;
+use Symfony\Component\Security\Core\User\UserInterface;
 use Symfony\Component\Validator\Constraints as Assert;
 
 /**
@@ -11,7 +12,7 @@ use Symfony\Component\Validator\Constraints as Assert;
  * @UniqueEntity("username", message= "Ce nom d'utilisateur est déjà utilisé !")
  * @UniqueEntity("email", message= "Ce courriel est déjà utilisé !")
  */
-class User
+class User implements UserInterface
 {
     /**
      * @ORM\Id()
@@ -146,5 +147,22 @@ class User
         $this->createdAt = $createdAt;
 
         return $this;
+    }
+    /**
+     * @return string[] The user roles
+     */
+    public function getRoles()
+    {
+        return ['ROLE_USER'];
+    }
+
+    public function getSalt()
+    {
+
+    }
+
+    public function eraseCredentials()
+    {
+
     }
 }

@@ -8,13 +8,14 @@ use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\Routing\Annotation\Route;
+use Symfony\Component\Security\Core\Encoder\UserPasswordEncoderInterface;
 
 class SecurityController extends AbstractController
 {
     /**
      * @Route("/inscription", name="security_registration")
      */
-    public function registration(Request $request, EntityManagerInterface $em)
+    public function registration(Request $request, EntityManagerInterface $em, UserPasswordEncoderInterface $passwordEncoder)
     {
         $user = new User();
 
@@ -23,7 +24,8 @@ class SecurityController extends AbstractController
 
         if($form->isSubmitted() && $form->isValid())
         {
-            $user->setAvatar('images/users/nobody.jpg')
+            $user->setPassword($passwordEncoder ->encodePassword($user, $user->getPassword()))
+                ->setAvatar('images/users/nobody.jpg')
                 ->setCreatedAt(new \DateTime());
 
             $em->persist($user);
