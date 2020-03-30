@@ -12,12 +12,18 @@
             </div>
         {% endfor %}
 
+        {% if error %}
+            <Div class="alert alert-danger">
+                Lidentifiant ou le mot de passe est incorrect.
+            </Div>
+        {% endif %}
+
         <form action="{{ path(('security_login')) }}" method="post">
 
             <div class="form-group row">
                 <label for="username" class="col-sm-2 col-form-label">Nom d'utilisateur</label>
                 <div class="col-sm-10">
-                    <input type="text" class="form-control" id="username" name="_username">
+                    <input type="text" class="form-control" id="username" name="_username" value="{{ lastUsername }}">
                 </div>
             </div>
             <div class="form-group row">
