@@ -27,7 +27,7 @@ class SecurityController extends AbstractController
         {
             $user->setPassword($passwordEncoder ->encodePassword($user, $user->getPassword()))
                 ->setAvatar('images/users/nobody.jpg')
-                ->setCreatedAt(new \DateTime());
+                ->setRegisteredAt(new \DateTime());
 
             $em->persist($user);
             $em->flush();
