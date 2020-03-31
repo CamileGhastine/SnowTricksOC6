@@ -73,7 +73,6 @@ class TrickController extends AbstractController
 
     /**
      * @Route("/trick/{id}", name="trick_show")
-     * @Route("/trick/{id}/comment", name="trick_comment")
      */
     public function show(Trick $trick, Request $request, TrickRepository $repoTrick, UserRepository $repoUser, EntityManagerInterface $em)
     {
@@ -91,7 +90,7 @@ class TrickController extends AbstractController
             $em->persist($comment);
             $em->flush();
 
-            return $this->redirect('/trick/'.$trick->getId().'#comments');
+            return $this->redirect($this->generateUrl('trick_show', ['id' => $trick->getId()]).'#comments');
         }
 
         return $this->render('trick/show.html.twig', [

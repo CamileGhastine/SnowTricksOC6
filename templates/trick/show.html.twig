@@ -64,23 +64,23 @@
                             <div class="col-6" id="tricks-video">
                                 <div class="row">
                                     {% for i in 1..2 %}
-{#                                            <a type="button" class="btn btn-primary col-4" data-toggle="modal" data-target="#ba">#}
-{#                                                <iframe class="col-4" src="https://www.youtube.com/embed/V9xuy-rVj9w" frameborder="0" allow="accelerometer; autoplay; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>#}
-{#                                            </a>#}
-{#                                        <div class="modal fade" id="ba" tabindex="-1" role="dialog">#}
-{#                                            <div class="modal-dialog modal-lg" role="document">#}
-{#                                                <div class="modal-content">#}
-{#                                                    <div class="modal-header bg-dark text-white ">#}
-{#                                                        <h5 class="modal-title" id="ba">{{ trick.title }}</h5>#}
-{#                                                        <button type="button" class="close" data-dismiss="modal"><span style="color: white;">&times;</span></button>#}
-{#                                                    </div>#}
-{#                                                    <div class="modal-body">#}
-{#                                                        <iframe class="video" src="https://www.youtube.com/embed/V9xuy-rVj9w" frameborder="0" allow="accelerometer; autoplay; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>#}
-{#                                                    </div>#}
-{#                                                    <div class="modal-footer">{{ trick.title }}</div>#}
-{#                                                </div>#}
-{#                                            </div>#}
-{#                                        </div>#}
+                                        {#                                            <a type="button" class="btn btn-primary col-4" data-toggle="modal" data-target="#ba">#}
+                                        {#                                                <iframe class="col-4" src="https://www.youtube.com/embed/V9xuy-rVj9w" frameborder="0" allow="accelerometer; autoplay; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>#}
+                                        {#                                            </a>#}
+                                        {#                                        <div class="modal fade" id="ba" tabindex="-1" role="dialog">#}
+                                        {#                                            <div class="modal-dialog modal-lg" role="document">#}
+                                        {#                                                <div class="modal-content">#}
+                                        {#                                                    <div class="modal-header bg-dark text-white ">#}
+                                        {#                                                        <h5 class="modal-title" id="ba">{{ trick.title }}</h5>#}
+                                        {#                                                        <button type="button" class="close" data-dismiss="modal"><span style="color: white;">&times;</span></button>#}
+                                        {#                                                    </div>#}
+                                        {#                                                    <div class="modal-body">#}
+                                        {#                                                        <iframe class="video" src="https://www.youtube.com/embed/V9xuy-rVj9w" frameborder="0" allow="accelerometer; autoplay; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>#}
+                                        {#                                                    </div>#}
+                                        {#                                                    <div class="modal-footer">{{ trick.title }}</div>#}
+                                        {#                                                </div>#}
+                                        {#                                            </div>#}
+                                        {#                                        </div>#}
                                         <iframe class="col-4" src="https://www.youtube.com/embed/V9xuy-rVj9w" frameborder="0" allow="accelerometer; autoplay; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
                                     {% endfor %}
                                 </div>
@@ -103,17 +103,17 @@
 
                 <h2 class="card-header bg-dark text-white text-center" id="comments">Commentaires <span class="badge badge-pill badge-secondary mx-3">{{ trick.comments |length }}</span></h2>
                 {%  if app.user %}
-                    <form class="form-row mt-5 ml-5" action="{{ path('trick_comment', {id: trick.id}) }}" method="post">
-                        <div class="form-group text-center mx-sm-3 mb-2 col-8">
+                    <div class="row mt-5">
+                        <div class="col-8">
                             {{ form_start(form) }}
                             <input type="hidden" name="userId" value="{{ app.user.id }}">
                             {{ form_row(form.content, {label: false}) }}
+                        </div>
+                        <div class="col-3">
                             <button type="submit" class="btn btn-secondary mb-2">Commenter</button>
                             {{ form_end(form) }}
                         </div>
-                        <div class="col">
-                        </div>
-                    </form>
+                    </div>
                 {% else %}
                     <div class="text-center mt-5">
                         <a href="{{ path('security_login') }}" class="btn btn-secondary">Connectez-vous pour commenter</a>
