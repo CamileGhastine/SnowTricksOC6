@@ -101,14 +101,17 @@
         <div class="card mb-5">
             <section>
 
-                <h2 class="card-header bg-dark text-white text-center">Commentaires <span class="badge badge-pill badge-secondary mx-3">15</span></h2>
+                <h2 class="card-header bg-dark text-white text-center" id="comments">Commentaires <span class="badge badge-pill badge-secondary mx-3">{{ trick.comments |length }}</span></h2>
                 {%  if app.user %}
-                    <form class="form-row mt-5 ml-5">
-                        <div class="form-group mx-sm-3 mb-2 col-8">
-                            <input type="text" class="form-control" id="trickComment" placeholder="Laisser un commentaire ici ...">
+                    <form class="form-row mt-5 ml-5" action="{{ path('trick_comment', {id: trick.id}) }}" method="post">
+                        <div class="form-group text-center mx-sm-3 mb-2 col-8">
+                            {{ form_start(form) }}
+                            <input type="hidden" name="userId" value="{{ app.user.id }}">
+                            {{ form_row(form.content, {label: false}) }}
+                            <button type="submit" class="btn btn-secondary mb-2">Commenter</button>
+                            {{ form_end(form) }}
                         </div>
                         <div class="col">
-                            <button type="submit" class="btn btn-secondary mb-2">Commenter</button>
                         </div>
                     </form>
                 {% else %}
@@ -119,15 +122,15 @@
                 {% endif %}
 
                 <aside class="ml-5 mt-5">
-                    {% for i in 1..7 %}
+                    {% for comment in trick.comments | reverse %}
                         <div class="row">
-                            <img class="rounded-circle col-1 avatar mt-2" src="{{ asset(trick.image) }}" alt=" user.username "/>
+                            <img class="rounded-circle col-1 avatar" src="{{ asset(comment.user.avatar) }}" alt=" user.username "/>
                             <div class="col-3">
-                                <B>Camile Ghastine</B><br/>
-                                Le 25/03/2020 à 18h57
+                                <B>{{ comment.user.username }}</B><br/>
+                                Le {{ comment.createdAt | date('d/m/y') }} à {{ comment.createdAt | date('H:i') }}
                             </div>
                             <div class="col-7 text-justify">
-                                {{ trick.description }}
+                                {{ comment.content }}
                                 <hr/>
                             </div>
                         </div>
@@ -136,10 +139,6 @@
                 <p class="text-center mt-4">Page : <span class="badge badge-pill badge-secondary mx-2">1</span> <span class="badge badge-pill badge-secondary mx-2">2</span></p>
 
             </section>
-
-
         </div>
-
-
     </div>
 {% endblock %}
