@@ -55,15 +55,9 @@ class Trick
      */
     private $comments;
 
-    /**
-     * @ORM\ManyToMany(targetEntity="App\Entity\Group", mappedBy="trick")
-     */
-    private $groups;
-
     public function __construct()
     {
         $this->comments = new ArrayCollection();
-        $this->groups = new ArrayCollection();
     }
 
     public function getId(): ?int
@@ -145,34 +139,6 @@ class Trick
             if ($comment->getTrick() === $this) {
                 $comment->setTrick(null);
             }
-        }
-
-        return $this;
-    }
-
-    /**
-     * @return Collection|Group[]
-     */
-    public function getGroups(): Collection
-    {
-        return $this->groups;
-    }
-
-    public function addGroup(Group $group): self
-    {
-        if (!$this->groups->contains($group)) {
-            $this->groups[] = $group;
-            $group->addTrick($this);
-        }
-
-        return $this;
-    }
-
-    public function removeGroup(Group $group): self
-    {
-        if ($this->groups->contains($group)) {
-            $this->groups->removeElement($group);
-            $group->removeTrick($this);
         }
 
         return $this;

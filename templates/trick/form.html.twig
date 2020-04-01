@@ -59,6 +59,7 @@
                                         <iframe class="col-12" src="https://www.youtube.com/embed/V9xuy-rVj9w" frameborder="0" allow="accelerometer; autoplay; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
                                         <a href="#"><i class="fas fa-trash-alt"></i></a>
                                     </div>
+
                                 {% endfor %}
                             </div>
                         </div>
@@ -66,7 +67,6 @@
                 {% else %}
                     <p class="col-12">Une fois la nouvelle figure publiée, vous pourrez ajouter d'autres photos ou vidéos.</p>
                 {% endif %}
-
                 <p class="row">{{ form_row(form.title) }}</p>
                 <p class="row">{{ form_row(form.description) }}</p>
 
