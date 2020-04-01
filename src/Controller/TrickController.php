@@ -6,6 +6,7 @@ use App\Entity\Comment;
 use App\Entity\Trick;
 use App\Form\CommentType;
 use App\Form\TrickType;
+use App\Repository\CategoryRepository;
 use App\Repository\TrickRepository;
 use App\Repository\UserRepository;
 use Doctrine\ORM\EntityManagerInterface;
@@ -18,11 +19,13 @@ class TrickController extends AbstractController
     /**
      * @Route("/", name="home")
      */
-    public function index(TrickRepository $repo)
+    public function index(TrickRepository $repoTrick, CategoryRepository $repoCategory)
     {
-        $tricks = $repo->findAll();
+        $categories = $repoCategory->findAll();
+        $tricks = $repoTrick->findAll();
         return $this->render('trick/index.html.twig', [
             'tricks' => $tricks,
+            'categories' => $categories,
         ]);
     }
 
