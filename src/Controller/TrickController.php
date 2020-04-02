@@ -21,11 +21,16 @@ class TrickController extends AbstractController
      */
     public function index(TrickRepository $repoTrick, CategoryRepository $repoCategory)
     {
+        $nbrDisplayTricks = isset($_GET['nbrDisplayTricks']) ? $_GET['nbrDisplayTricks']+15 : 15;
+
         $categories = $repoCategory->findAll();
-        $tricks = $repoTrick->findAll();
+
+        $tricks = $repoTrick->findMore($nbrDisplayTricks);
+
         return $this->render('trick/index.html.twig', [
             'tricks' => $tricks,
             'categories' => $categories,
+            'nbrDisplayTricks' => $nbrDisplayTricks,
         ]);
     }
 
