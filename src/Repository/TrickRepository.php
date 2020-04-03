@@ -23,6 +23,7 @@ class TrickRepository extends ServiceEntityRepository
     public function findMore($nbrResult)
     {
         return $this->createQueryBuilder('t')
+            ->orderBy('t.modifiedAt', 'ASC')
             ->setMaxResults($nbrResult)
             ->getQuery()
             ->getResult()
@@ -39,7 +40,6 @@ class TrickRepository extends ServiceEntityRepository
         return $this->createQueryBuilder('t')
             ->andWhere('t.exampleField = :val')
             ->setParameter('val', $value)
-            ->orderBy('t.id', 'ASC')
             ->setMaxResults(10)
             ->getQuery()
             ->getResult()
