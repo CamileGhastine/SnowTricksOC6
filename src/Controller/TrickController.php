@@ -19,10 +19,10 @@ class TrickController extends AbstractController
     /**
      * @Route("/", name="home")
      */
-    public function index(TrickRepository $repoTrick, CategoryRepository $repoCategory)
+    public function index(TrickRepository $repoTrick, CategoryRepository $repoCategory, Request $request)
     {
         $nbrTricksByPage = 4;
-        $nbrDisplayTricks = isset($_GET['nbrDisplayTricks']) ? $_GET['nbrDisplayTricks']+$nbrTricksByPage : $nbrTricksByPage;
+        $nbrDisplayTricks = $request->query->get('nbrDisplayTricks') ? $request->query->get('nbrDisplayTricks')+$nbrTricksByPage : $nbrTricksByPage;
 
         $categories = $repoCategory->findAll();
 
