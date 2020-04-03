@@ -21,7 +21,7 @@ class TrickController extends AbstractController
      */
     public function index(TrickRepository $repoTrick, CategoryRepository $repoCategory)
     {
-        $nbrTricksByPage = 15;
+        $nbrTricksByPage = 4;
         $nbrDisplayTricks = isset($_GET['nbrDisplayTricks']) ? $_GET['nbrDisplayTricks']+$nbrTricksByPage : $nbrTricksByPage;
 
         $categories = $repoCategory->findAll();
@@ -39,7 +39,7 @@ class TrickController extends AbstractController
      * @Route("/trick/new", name="trick_new")
      * @Route("/trick/{id}/edit", name="trick_edit")
      */
-    public function form(Request $request, EntityManagerInterface $em, Trick $trick = null)
+    public function form(Request $request, EntityManagerInterface $em, Trick $trick = null, UserRepository $repoUser)
     {
         if(!$trick)
         {
@@ -55,8 +55,14 @@ class TrickController extends AbstractController
         {
             if(!$trick->getId())
             {
-                $trick->setImage('images/tricks/image.jpg');
-                $trick->setCreatedAt(new \DateTime());
+                $trick->setImage('images/tricks/image.jpg')
+                    ->setCreatedAt(new \DateTime())
+                    ->setModifiedAt(new \DateTime())
+                    ->setUser($repoUser->find($request->request->get('userId')));
+            }
+            else
+            {
+                $trick->setModifiedAt(new \DateTime());
             }
 
             $em->persist($trick);
