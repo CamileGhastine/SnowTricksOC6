@@ -89,8 +89,8 @@
                         <h1 class="card-title mt-5">{{ trick.title }}</h1>
                         <p class="card-text mt-4">{{ trick.description | raw }}</p>
                         <p class="card-text mt-4">
-                            {% for i in 1..2 %}
-                                <a href="#" class=""><span class="badge badge-pill badge-secondary mx-3">groupe {{ i }}</span></a>
+                            {% for category in trick.categories %}
+                                <a href="#" class=""><span class="badge badge-pill badge-secondary mx-3">{{ category.title }}</span></a>
                             {% endfor %}
                         </p>
                     </div>
