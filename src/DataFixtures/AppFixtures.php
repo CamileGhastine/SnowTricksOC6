@@ -28,7 +28,8 @@ class AppFixtures extends Fixture
             ->setPassword($password)
             ->setAvatar('images/users/camile.jpg')
             ->setRegisteredAt(new \DateTime)
-        ;
+            ->setStatus('admin')
+            ;
 
         $this->addReference('user0', $user);
 
