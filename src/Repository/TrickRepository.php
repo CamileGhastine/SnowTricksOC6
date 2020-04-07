@@ -20,17 +20,6 @@ class TrickRepository extends ServiceEntityRepository
     }
 
 
-    public function findMore($nbrResult)
-    {
-        return $this->createQueryBuilder('t')
-            ->orderBy('t.modifiedAt', 'ASC')
-            ->setMaxResults($nbrResult)
-            ->getQuery()
-            ->getResult()
-            ;
-    }
-
-
     // /**
     //  * @return Trick[] Returns an array of Trick objects
     //  */

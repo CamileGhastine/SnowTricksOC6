@@ -21,17 +21,13 @@ class TrickController extends AbstractController
      */
     public function index(TrickRepository $repoTrick, CategoryRepository $repoCategory, Request $request)
     {
-        $nbrTricksByPage = 4;
-        $nbrDisplayTricks = $request->query->get('nbrDisplayTricks') ? $request->query->get('nbrDisplayTricks')+$nbrTricksByPage : $nbrTricksByPage;
-
         $categories = $repoCategory->findAll();
 
-        $tricks = $repoTrick->findMore($nbrDisplayTricks);
+        $tricks = $repoTrick->findBY([], [ 'modifiedAt' => 'ASC']);
 
         return $this->render('trick/index.html.twig', [
             'tricks' => $tricks,
             'categories' => $categories,
-            'nbrDisplayTricks' => $nbrDisplayTricks,
         ]);
     }
 
