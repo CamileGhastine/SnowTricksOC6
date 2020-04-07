@@ -18,12 +18,20 @@ class TrickController extends AbstractController
 {
     /**
      * @Route("/", name="home")
+     * @Route("/trick/{id}/category", name="trick_category")
      */
-    public function index(TrickRepository $repoTrick, CategoryRepository $repoCategory, Request $request)
+    public function index($id = null, TrickRepository $repoTrick, CategoryRepository $repoCategory, Request $request)
     {
         $categories = $repoCategory->findAll();
 
-        $tricks = $repoTrick->findBY([], [ 'updatedAt' => 'DESC']);
+        if(!$id)
+        {
+            $tricks = $repoTrick->findBy([], [ 'updatedAt' => 'DESC']);
+        }
+        else
+        {
+            $tricks = $repoTrick->findByCategory($id);
+        }
 
         return $this->render('trick/index.html.twig', [
             'tricks' => $tricks,

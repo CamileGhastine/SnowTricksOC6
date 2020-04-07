@@ -22,11 +22,12 @@
                 {{ message }}
             </div>
         {% endfor %}
+        <p>{{ tricks | length }}</p>
 
         <div class="mt-4 text-center mt-5 mb-4">
             <a href="{{ path('home') }}" class=""><span class="badge badge-pill badge-secondary mx-3">Tous les tricks</span></a>
             {% for category in categories %}
-                <a href="#" class=""><span class="badge badge-pill badge-secondary mx-3">{{ category.title }}</span></a>
+                <a href="{{ path('trick_category', {'id' : category.id}) }}" class=""><span class="badge badge-pill badge-secondary mx-3">{{ category.title }}</span></a>
             {% endfor %}
         </div>
         <section class="row justify-content-center justify-content-sm-start" id="tricks">
