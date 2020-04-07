@@ -30,6 +30,8 @@ class AppFixtures extends Fixture
             ->setRegisteredAt(new \DateTime)
         ;
 
+        $this->addReference('user0', $user);
+
         $manager->persist($user);
 
 

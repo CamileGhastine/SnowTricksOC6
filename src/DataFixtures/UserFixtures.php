@@ -35,6 +35,8 @@ class UserFixtures extends Fixture
                 ->setRegisteredAt(new \DateTime)
             ;
 
+            $this->addReference('user'.$i, $user);
+
             $manager->persist($user);
         }
 

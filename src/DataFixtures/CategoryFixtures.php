@@ -20,12 +20,10 @@ class CategoryFixtures extends Fixture
                 ->setDescription(implode('<br/>', $faker->sentences(4)))
                 ;
 
+            $this->addReference('category'.$i, $category);
+
             $manager->persist($category);
         }
-
-
-
-
         $manager->flush();
     }
 }
