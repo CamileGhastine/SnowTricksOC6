@@ -48,9 +48,11 @@ class TrickFixtures extends Fixture implements DependentFixtureInterface
                 unset($categories[$key]);
             }
 
+            $this->addReference('trick'.$j, $trick);
+
             $manager->persist($trick);
-            $manager->flush();
         }
+        $manager->flush();
     }
 
     public function getDependencies()
