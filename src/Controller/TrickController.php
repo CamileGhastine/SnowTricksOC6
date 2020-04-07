@@ -93,8 +93,10 @@ class TrickController extends AbstractController
     /**
      * @Route("/trick/{id}", name="trick_show")
      */
-    public function show(Trick $trick, Request $request, TrickRepository $repoTrick, UserRepository $repoUser, EntityManagerInterface $em)
+    public function show($id, Request $request, TrickRepository $repoTrick, UserRepository $repoUser, EntityManagerInterface $em)
     {
+        $trick = $repoTrick->findTrickWithCommentsAndCategories($id);
+
         $comment= new Comment();
 
         $form = $this->createForm(CommentType::class, $comment);
