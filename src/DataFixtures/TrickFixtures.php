@@ -37,7 +37,7 @@ class TrickFixtures extends Fixture implements DependentFixtureInterface
                 ->setImage('images/tricks/noImage.jpg')
                 ->setUser($this->getReference($user))
                 ->setCreatedAt($date)
-                ->setModifiedAt($date)
+                ->setUpdatedAt($date)
             ;
 
             for($i=1; $i<=rand(1,3); $i++)

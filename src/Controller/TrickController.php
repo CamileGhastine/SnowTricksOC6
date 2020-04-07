@@ -23,7 +23,7 @@ class TrickController extends AbstractController
     {
         $categories = $repoCategory->findAll();
 
-        $tricks = $repoTrick->findBY([], [ 'modifiedAt' => 'ASC']);
+        $tricks = $repoTrick->findBY([], [ 'updatedAt' => 'DESC']);
 
         return $this->render('trick/index.html.twig', [
             'tricks' => $tricks,
@@ -53,12 +53,12 @@ class TrickController extends AbstractController
             {
                 $trick->setImage('images/tricks/image.jpg')
                     ->setCreatedAt(new \DateTime())
-                    ->setModifiedAt(new \DateTime())
+                    ->setUpdatedAt(new \DateTime())
                     ->setUser($repoUser->find($request->request->get('userId')));
             }
             else
             {
-                $trick->setModifiedAt(new \DateTime());
+                $trick->setUpdatedAt(new \DateTime());
             }
 
             $em->persist($trick);
