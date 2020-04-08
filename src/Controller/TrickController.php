@@ -40,8 +40,38 @@ class TrickController extends AbstractController
     }
 
     /**
-     * @Route("/trick/new", name="trick_new")
-     * @Route("/trick/{id}/edit", name="trick_edit")
+     * @Route("/trick/{id}", name="trick_show")
+     */
+    public function show($id, Request $request, TrickRepository $repoTrick, UserRepository $repoUser, EntityManagerInterface $em)
+    {
+        $trick = $repoTrick->findTrickWithCommentsAndCategories($id);
+
+        $comment= new Comment();
+
+        $form = $this->createForm(CommentType::class, $comment);
+        $form->handleRequest($request);
+
+        if($form->isSubmitted() && $form->isValid())
+        {
+            $comment->setCreatedAt(new \DateTime())
+                ->setTrick($repoTrick->find($trick->getId()))
+                ->setUser($repoUser->find($request->request->get('userId')));
+
+            $em->persist($comment);
+            $em->flush();
+
+            return $this->redirect($this->generateUrl('trick_show', ['id' => $trick->getId()]).'#comments');
+        }
+
+        return $this->render('trick/show.html.twig', [
+            'trick' => $trick,
+            'form' => $form->createView(),
+        ]);
+    }
+
+    /**
+     * @Route("/trick/edit/new", name="trick_new")
+     * @Route("/trick/edit/{id}/update", name="trick_edit")
      */
     public function form(Request $request, EntityManagerInterface $em, Trick $trick = null, UserRepository $repoUser, CategoryRepository $repoCategory)
     {
@@ -94,38 +124,9 @@ class TrickController extends AbstractController
         ]);
     }
 
-    /**
-     * @Route("/trick/{id}", name="trick_show")
-     */
-    public function show($id, Request $request, TrickRepository $repoTrick, UserRepository $repoUser, EntityManagerInterface $em)
-    {
-        $trick = $repoTrick->findTrickWithCommentsAndCategories($id);
-
-        $comment= new Comment();
-
-        $form = $this->createForm(CommentType::class, $comment);
-        $form->handleRequest($request);
-
-        if($form->isSubmitted() && $form->isValid())
-        {
-            $comment->setCreatedAt(new \DateTime())
-                ->setTrick($repoTrick->find($trick->getId()))
-                ->setUser($repoUser->find($request->request->get('userId')));
-
-            $em->persist($comment);
-            $em->flush();
-
-            return $this->redirect($this->generateUrl('trick_show', ['id' => $trick->getId()]).'#comments');
-        }
-
-        return $this->render('trick/show.html.twig', [
-            'trick' => $trick,
-            'form' => $form->createView(),
-        ]);
-    }
 
     /**
-     * @Route("trick/{id}/delete", name="trick_delete")
+     * @Route("trick/edit/{id}/delete", name="trick_delete")
      */
     public function delete(Trick $trick, EntityManagerInterface $em, Request $request)
     {
