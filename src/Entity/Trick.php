@@ -54,8 +54,16 @@ class Trick
      */
     private $comments;
 
+
+
     /**
      * @ORM\ManyToMany(targetEntity="App\Entity\Category", mappedBy="tricks")
+     * @Assert\Count(
+     *     min = 1,
+     *     max = 3,
+     *     minMessage = "Les figures doivent appartenir à au moins {{ limit }} catégorie.",
+     *     maxMessage = "Les figures ne peuvent appartenir à plus de {{ limit }} catégories.",
+     * )
      */
     private $categories;
 
