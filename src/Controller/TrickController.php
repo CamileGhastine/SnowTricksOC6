@@ -43,13 +43,12 @@ class TrickController extends AbstractController
      * @Route("/trick/new", name="trick_new")
      * @Route("/trick/{id}/edit", name="trick_edit")
      */
-    public function form(Request $request, EntityManagerInterface $em, Trick $trick = null, UserRepository $repoUser)
+    public function form(Request $request, EntityManagerInterface $em, Trick $trick = null, UserRepository $repoUser, CategoryRepository $repoCategory)
     {
         if(!$trick)
         {
             $trick = new Trick();
         }
-
 
         $form = $this->createForm(TrickType::class, $trick);
 
@@ -69,6 +68,11 @@ class TrickController extends AbstractController
                 $trick->setUpdatedAt(new \DateTime());
             }
 
+            foreach($request->request->get('trick')['categories'] as $categoryId)
+            {
+                $trick->removeCategory($repoCategory->find($categoryId));
+                $trick->addCategory($repoCategory->find($categoryId));
+            }
             $em->persist($trick);
             $em->flush();
 
