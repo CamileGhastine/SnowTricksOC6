@@ -54,15 +54,23 @@ class Trick
      */
     private $comments;
 
+
+
     /**
-     * @ORM\ManyToMany(targetEntity="App\Entity\Category", mappedBy="tricks")
+     * @ORM\ManyToMany(targetEntity="App\Entity\Category", mappedBy="tricks", cascade="persist")
+     * @Assert\Count(
+     *     min = 1,
+     *     max = 3,
+     *     minMessage = "Les figures doivent appartenir à au moins {{ limit }} catégorie.",
+     *     maxMessage = "Les figures ne peuvent appartenir à plus de {{ limit }} catégories.",
+     * )
      */
     private $categories;
 
     /**
      * @ORM\Column(type="datetime")
      */
-    private $modifiedAt;
+    private $updatedAt;
 
     /**
      * @ORM\ManyToOne(targetEntity="App\Entity\User", inversedBy="tricks")
@@ -188,14 +196,14 @@ class Trick
         return $this;
     }
 
-    public function getModifiedAt(): ?\DateTimeInterface
+    public function getUpdatedAt(): ?\DateTimeInterface
     {
-        return $this->modifiedAt;
+        return $this->updatedAt;
     }
 
-    public function setModifiedAt(\DateTimeInterface $modifiedAt): self
+    public function setUpdatedAt(\DateTimeInterface $updatedAt): self
     {
-        $this->modifiedAt = $modifiedAt;
+        $this->updatedAt = $updatedAt;
 
         return $this;
     }

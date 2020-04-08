@@ -2,7 +2,10 @@
 
 namespace App\Repository;
 
+use App\Entity\Category;
+use App\Entity\Comment;
 use App\Entity\Trick;
+use App\Entity\User;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
 use Doctrine\Common\Persistence\ManagerRegistry;
 
@@ -19,17 +22,33 @@ class TrickRepository extends ServiceEntityRepository
         parent::__construct($registry, Trick::class);
     }
 
-
-    public function findMore($nbrResult)
+    public function findByCategory($id)
     {
         return $this->createQueryBuilder('t')
-            ->orderBy('t.modifiedAt', 'ASC')
-            ->setMaxResults($nbrResult)
+            ->innerJoin('t.categories', 'c')
+            ->where('c.id = :id')
+            ->setParameter('id', $id)
+            ->orderBy('t.updatedAt', 'DESC')
             ->getQuery()
             ->getResult()
             ;
     }
 
+    public function findTrickWithCommentsAndCategories($id)
+    {
+        return $this->createQueryBuilder('t')
+            ->addSelect('ca')
+            ->addSelect('co')
+            ->addSelect('u')
+            ->leftJoin('t.categories', 'ca')
+            ->leftJoin('t.comments', 'co')
+            ->leftJoin('co.user', 'u')
+            ->where('t.id = :id')
+            ->setParameter('id', $id)
+            ->getQuery()
+            ->getOneOrNullResult()
+            ;
+    }
 
     // /**
     //  * @return Trick[] Returns an array of Trick objects

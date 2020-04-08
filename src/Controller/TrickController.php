@@ -18,20 +18,24 @@ class TrickController extends AbstractController
 {
     /**
      * @Route("/", name="home")
+     * @Route("/trick/{id}/category", name="trick_category")
      */
-    public function index(TrickRepository $repoTrick, CategoryRepository $repoCategory, Request $request)
+    public function index($id = null, TrickRepository $repoTrick, CategoryRepository $repoCategory, Request $request)
     {
-        $nbrTricksByPage = 4;
-        $nbrDisplayTricks = $request->query->get('nbrDisplayTricks') ? $request->query->get('nbrDisplayTricks')+$nbrTricksByPage : $nbrTricksByPage;
-
         $categories = $repoCategory->findAll();
 
-        $tricks = $repoTrick->findMore($nbrDisplayTricks);
+        if(!$id)
+        {
+            $tricks = $repoTrick->findBy([], [ 'updatedAt' => 'DESC']);
+        }
+        else
+        {
+            $tricks = $repoTrick->findByCategory($id);
+        }
 
         return $this->render('trick/index.html.twig', [
             'tricks' => $tricks,
             'categories' => $categories,
-            'nbrDisplayTricks' => $nbrDisplayTricks,
         ]);
     }
 
@@ -39,13 +43,12 @@ class TrickController extends AbstractController
      * @Route("/trick/new", name="trick_new")
      * @Route("/trick/{id}/edit", name="trick_edit")
      */
-    public function form(Request $request, EntityManagerInterface $em, Trick $trick = null, UserRepository $repoUser)
+    public function form(Request $request, EntityManagerInterface $em, Trick $trick = null, UserRepository $repoUser, CategoryRepository $repoCategory)
     {
         if(!$trick)
         {
             $trick = new Trick();
         }
-
 
         $form = $this->createForm(TrickType::class, $trick);
 
@@ -57,14 +60,19 @@ class TrickController extends AbstractController
             {
                 $trick->setImage('images/tricks/image.jpg')
                     ->setCreatedAt(new \DateTime())
-                    ->setModifiedAt(new \DateTime())
+                    ->setUpdatedAt(new \DateTime())
                     ->setUser($repoUser->find($request->request->get('userId')));
             }
             else
             {
-                $trick->setModifiedAt(new \DateTime());
+                $trick->setUpdatedAt(new \DateTime());
             }
 
+            foreach($request->request->get('trick')['categories'] as $categoryId)
+            {
+                $trick->removeCategory($repoCategory->find($categoryId));
+                $trick->addCategory($repoCategory->find($categoryId));
+            }
             $em->persist($trick);
             $em->flush();
 
@@ -89,8 +97,10 @@ class TrickController extends AbstractController
     /**
      * @Route("/trick/{id}", name="trick_show")
      */
-    public function show(Trick $trick, Request $request, TrickRepository $repoTrick, UserRepository $repoUser, EntityManagerInterface $em)
+    public function show($id, Request $request, TrickRepository $repoTrick, UserRepository $repoUser, EntityManagerInterface $em)
     {
+        $trick = $repoTrick->findTrickWithCommentsAndCategories($id);
+
         $comment= new Comment();
 
         $form = $this->createForm(CommentType::class, $comment);

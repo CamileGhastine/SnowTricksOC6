@@ -64,23 +64,6 @@
                             <div class="col-6" id="tricks-video">
                                 <div class="row">
                                     {% for i in 1..2 %}
-                                        {#                                            <a type="button" class="btn btn-primary col-4" data-toggle="modal" data-target="#ba">#}
-                                        {#                                                <iframe class="col-4" src="https://www.youtube.com/embed/V9xuy-rVj9w" frameborder="0" allow="accelerometer; autoplay; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>#}
-                                        {#                                            </a>#}
-                                        {#                                        <div class="modal fade" id="ba" tabindex="-1" role="dialog">#}
-                                        {#                                            <div class="modal-dialog modal-lg" role="document">#}
-                                        {#                                                <div class="modal-content">#}
-                                        {#                                                    <div class="modal-header bg-dark text-white ">#}
-                                        {#                                                        <h5 class="modal-title" id="ba">{{ trick.title }}</h5>#}
-                                        {#                                                        <button type="button" class="close" data-dismiss="modal"><span style="color: white;">&times;</span></button>#}
-                                        {#                                                    </div>#}
-                                        {#                                                    <div class="modal-body">#}
-                                        {#                                                        <iframe class="video" src="https://www.youtube.com/embed/V9xuy-rVj9w" frameborder="0" allow="accelerometer; autoplay; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>#}
-                                        {#                                                    </div>#}
-                                        {#                                                    <div class="modal-footer">{{ trick.title }}</div>#}
-                                        {#                                                </div>#}
-                                        {#                                            </div>#}
-                                        {#                                        </div>#}
                                         <iframe class="col-4" src="https://www.youtube.com/embed/V9xuy-rVj9w" frameborder="0" allow="accelerometer; autoplay; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
                                     {% endfor %}
                                 </div>
@@ -130,7 +113,7 @@
                                 Le {{ comment.createdAt | date('d/m/y') }} à {{ comment.createdAt | date('H:i') }}
                             </div>
                             <div class="col-7 text-justify">
-                                {{ comment.content }}
+                                {{ comment.content | raw }}
                                 <hr/>
                             </div>
                         </div>

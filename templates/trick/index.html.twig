@@ -26,11 +26,11 @@
         <div class="mt-4 text-center mt-5 mb-4">
             <a href="{{ path('home') }}" class=""><span class="badge badge-pill badge-secondary mx-3">Tous les tricks</span></a>
             {% for category in categories %}
-                <a href="#" class=""><span class="badge badge-pill badge-secondary mx-3">{{ category.title }}</span></a>
+                <a href="{{ path('trick_category', {'id' : category.id}) }}" class=""><span class="badge badge-pill badge-secondary mx-3">{{ category.title }}</span></a>
             {% endfor %}
         </div>
         <section class="row justify-content-center justify-content-sm-start" id="tricks">
-            {%  for trick in tricks | reverse %}
+            {%  for trick in tricks %}
                 <article class="col-10 col-sm-6 col-md-4 col-lg-3 my-2">
                     <a href="{{ path('trick_show', {id: trick.id}) }}"><img id="trick-img" src="{{ asset(trick.image) }}" alt="{{ trick.title }}"></a>
                     <div class="row mx-1">
@@ -50,7 +50,7 @@
             {% endfor %}
         </section>
         <div class="text-center my-5">
-            <a href="{{ path('home') }}?nbrDisplayTricks={{ nbrDisplayTricks }}" class="btn btn-primary">Charger plus de figure</a>
+            <a href="" class="btn btn-primary">Charger plus de figure</a>
         </div>
     </div>
     <div class="text-right" id="caret"><a href="#tricks"><i class="fas fa-angle-double-up fa-2x"></i></a></div>
