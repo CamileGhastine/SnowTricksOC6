@@ -22,6 +22,7 @@ class TrickType extends AbstractType
                     'choice_label' => 'title',
                     'multiple' =>true,
                     'expanded' => true,
+                    'by_reference' => false,
             ]);
     }
 

@@ -57,7 +57,7 @@ class Trick
 
 
     /**
-     * @ORM\ManyToMany(targetEntity="App\Entity\Category", mappedBy="tricks")
+     * @ORM\ManyToMany(targetEntity="App\Entity\Category", mappedBy="tricks", cascade="persist")
      * @Assert\Count(
      *     min = 1,
      *     max = 3,
