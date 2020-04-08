@@ -32,7 +32,7 @@ class TrickController extends AbstractController
         {
             $tricks = $repoTrick->findByCategory($id);
         }
-
+dump($this->getUser());
         return $this->render('trick/index.html.twig', [
             'tricks' => $tricks,
             'categories' => $categories,

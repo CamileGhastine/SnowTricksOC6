@@ -8,7 +8,7 @@
         <div class="jumbotron text-center">
             <h1 class="display-3">SnowTricks</h1>
             <h2 class="lead">Le site communautaire de tous les snowboarders</h2>
-            {%  if app.user %}
+            {%  if is_granted('ROLE_USER') %}
                 <p class="mt-5"><a href="{{ path('trick_new') }}" class="btn btn-secondary mb-4">Ajouter une figure</a></p>
             {% endif %}
             <div class="text-right" id="caret"><a href="#tricks"><i class="fas fa-angle-double-down fa-2x"></i></a></div>
