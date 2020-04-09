@@ -76,7 +76,6 @@
                 <p class="row">{{ form_row(form.title) }}</p>
                 <p class="row">{{ form_row(form.description) }}</p>
                 <p class="row">{{ form_row(form.categories) }}</p>
-                <input type="hidden" name="userId" value="{{ app.user.id }}">
                 <button type="submit" class="btn btn-secondary">{{ trick.id ? "Modifier l'article" : "Ajouter l'article" }}</button>
                 {{ form_end(form) }}
             </div>

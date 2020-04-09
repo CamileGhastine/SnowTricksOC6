@@ -32,7 +32,7 @@ class TrickController extends AbstractController
         {
             $tricks = $repoTrick->findByCategory($id);
         }
-dump($this->getUser());
+
         return $this->render('trick/index.html.twig', [
             'tricks' => $tricks,
             'categories' => $categories,
@@ -55,7 +55,7 @@ dump($this->getUser());
         {
             $comment->setCreatedAt(new \DateTime())
                 ->setTrick($repoTrick->find($trick->getId()))
-                ->setUser($repoUser->find($request->request->get('userId')));
+                ->setUser($repoUser->find($this->getUser()->getId()));
 
             $em->persist($comment);
             $em->flush();
@@ -90,7 +90,7 @@ dump($this->getUser());
             {
                 $trick->setImage('images/tricks/image.jpg')
                     ->setCreatedAt(new \DateTime())
-                    ->setUser($repoUser->find($request->request->get('userId')));
+                    ->setUser($repoUser->find($this->getUser()->getId()));
             }
 
             foreach($request->request->get('trick')['categories'] as $categoryId)
