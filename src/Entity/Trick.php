@@ -13,6 +13,7 @@ use Symfony\Component\Validator\Constraints as Assert;
  * @UniqueEntity("title",
  *     message= "Cette figure a déjà été publiée."
  * )
+ * @ORM\HasLifecycleCallbacks()
  */
 class Trick
 {
@@ -68,7 +69,7 @@ class Trick
     private $categories;
 
     /**
-     * @ORM\Column(type="datetime")
+     * @ORM\Column(type="datetime", nullable=true)
      */
     private $updatedAt;
 
@@ -82,6 +83,15 @@ class Trick
     {
         $this->comments = new ArrayCollection();
         $this->categories = new ArrayCollection();
+    }
+
+    /**
+     * @ORM\ PreUpdate
+     * @throws \Exception
+     */
+    public function updateDate()
+    {
+        $this->setUpdatedAt(new \DateTime());
     }
 
     public function getId(): ?int

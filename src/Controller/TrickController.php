@@ -90,12 +90,7 @@ dump($this->getUser());
             {
                 $trick->setImage('images/tricks/image.jpg')
                     ->setCreatedAt(new \DateTime())
-                    ->setUpdatedAt(new \DateTime())
                     ->setUser($repoUser->find($request->request->get('userId')));
-            }
-            else
-            {
-                $trick->setUpdatedAt(new \DateTime());
             }
 
             foreach($request->request->get('trick')['categories'] as $categoryId)
