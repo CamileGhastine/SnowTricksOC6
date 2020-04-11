@@ -9,6 +9,7 @@ use App\Form\TrickType;
 use App\Repository\CategoryRepository;
 use App\Repository\TrickRepository;
 use App\Repository\UserRepository;
+use DateTime;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
@@ -20,7 +21,7 @@ class TrickController extends AbstractController
      * @Route("/", name="home")
      * @Route("/trick/{id}/category", name="trick_category")
      */
-    public function index($id = null, TrickRepository $repoTrick, CategoryRepository $repoCategory, Request $request)
+    public function index( TrickRepository $repoTrick, CategoryRepository $repoCategory, $id = null)
     {
         $categories = $repoCategory->findAll();
 
@@ -42,7 +43,7 @@ class TrickController extends AbstractController
     /**
      * @Route("/trick/{id}", name="trick_show")
      */
-    public function show($id, Request $request, TrickRepository $repoTrick, UserRepository $repoUser, EntityManagerInterface $em)
+    public function show($id, Request $request, TrickRepository $repoTrick, EntityManagerInterface $em)
     {
         $trick = $repoTrick->findTrickWithCommentsAndCategories($id);
 
@@ -53,9 +54,9 @@ class TrickController extends AbstractController
 
         if($form->isSubmitted() && $form->isValid())
         {
-            $comment->setCreatedAt(new \DateTime())
+            $comment->setCreatedAt(new DateTime())
                 ->setTrick($repoTrick->find($trick->getId()))
-                ->setUser($repoUser->find($this->getUser()->getId()));
+                ->setUser($this->getUser());
 
             $em->persist($comment);
             $em->flush();
@@ -73,7 +74,7 @@ class TrickController extends AbstractController
      * @Route("/trick/edit/new", name="trick_new")
      * @Route("/trick/edit/{id}/update", name="trick_edit")
      */
-    public function form(Request $request, EntityManagerInterface $em, Trick $trick = null, UserRepository $repoUser, CategoryRepository $repoCategory)
+    public function form(Request $request, EntityManagerInterface $em, CategoryRepository $repoCategory, Trick $trick = null)
     {
         if(!$trick)
         {
@@ -89,8 +90,8 @@ class TrickController extends AbstractController
             if(!$trick->getId())
             {
                 $trick->setImage('images/tricks/image.jpg')
-                    ->setCreatedAt(new \DateTime())
-                    ->setUser($repoUser->find($this->getUser()->getId()));
+                    ->setCreatedAt(new DateTime())
+                    ->setUser($this->getUser());
             }
 
             foreach($request->request->get('trick')['categories'] as $categoryId)

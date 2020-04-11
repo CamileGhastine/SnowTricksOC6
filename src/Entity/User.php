@@ -2,6 +2,7 @@
 
 namespace App\Entity;
 
+use DateTimeInterface;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
@@ -160,12 +161,12 @@ class User implements UserInterface
         return $this;
     }
 
-    public function getRegisteredAt(): ?\DateTimeInterface
+    public function getRegisteredAt(): ?DateTimeInterface
     {
         return $this->registeredAt;
     }
 
-    public function setRegisteredAt(\DateTimeInterface $registeredAt): self
+    public function setRegisteredAt(DateTimeInterface $registeredAt): self
     {
         $this->registeredAt = $registeredAt;
 
