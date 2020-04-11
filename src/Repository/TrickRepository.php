@@ -20,13 +20,14 @@ class TrickRepository extends ServiceEntityRepository
         parent::__construct($registry, Trick::class);
     }
 
-    public function findByCategory($id)
+    public function findByCategory($id, $order)
     {
+        $key = array_key_first($order);
         return $this->createQueryBuilder('t')
             ->innerJoin('t.categories', 'c')
             ->where('c.id = :id')
-            ->setParameter('id', $id)
-            ->orderBy('t.updatedAt', 'DESC')
+            ->setParameter('id', $id[0])
+            ->orderBy('t.'.$key,  $order[$key])
             ->getQuery()
             ->getResult()
             ;
