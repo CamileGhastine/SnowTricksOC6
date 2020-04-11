@@ -35,20 +35,15 @@ class TrickController extends AbstractController
     {
         $trick = $repoTrick->findTrickWithCommentsAndCategories($id);
 
-        $comment= new Comment();
+        $comment= new Comment($trick, $this->getUser());
 
         $form = $this->createForm(CommentType::class, $comment);
         $form->handleRequest($request);
 
         if($form->isSubmitted() && $form->isValid())
         {
-            $comment->setCreatedAt(new DateTime())
-                ->setTrick($repoTrick->find($trick->getId()))
-                ->setUser($this->getUser());
-
             $em->persist($comment);
             $em->flush();
-
             return $this->redirect($this->generateUrl('trick_show', ['id' => $trick->getId()]).'#comments');
         }
 

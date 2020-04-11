@@ -2,6 +2,7 @@
 
 namespace App\Entity;
 
+use DateTime;
 use DateTimeInterface;
 use Doctrine\ORM\Mapping as ORM;
 use Symfony\Component\Security\Core\User\UserInterface;
@@ -39,6 +40,14 @@ class Comment
      * @ORM\JoinColumn(nullable=false)
      */
     private $user;
+
+
+    public function __construct(Trick $trick, UserInterface $user)
+    {
+        $this->setCreatedAt(new DateTime());
+        $this->setTrick($trick);
+        $this->setUser($user);
+    }
 
     public function getId(): ?int
     {
