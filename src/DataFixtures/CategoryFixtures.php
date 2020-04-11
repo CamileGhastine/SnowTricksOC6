@@ -13,8 +13,7 @@ class CategoryFixtures extends Fixture
     {
         $faker = Factory::create('fr_FR');
 
-        for($i=1; $i<=5; $i++)
-        {
+        for ($i=1; $i<=5; $i++) {
             $category = new Category();
 
             $category->setTitle($faker->word)

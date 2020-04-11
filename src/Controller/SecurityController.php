@@ -24,8 +24,7 @@ class SecurityController extends AbstractController
         $form= $this->createForm(RegistrationType::class, $user);
         $form->handleRequest($request);
 
-        if($form->isSubmitted() && $form->isValid())
-        {
+        if ($form->isSubmitted() && $form->isValid()) {
             $user->setPassword($passwordEncoder ->encodePassword($user, $user->getPassword()))
                 ->setAvatar('images/users/nobody.jpg')
                 ->setRegisteredAt(new DateTime());

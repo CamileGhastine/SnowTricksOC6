@@ -14,18 +14,15 @@ class TrickFixtures extends Fixture implements DependentFixtureInterface
     {
         $faker = Factory::create('fr_FR');
 
-        $users=[];
-        for($i=0; $i<=3; $i++)
-        {
+        $users = [];
+        for ($i=0; $i<=3; $i++) {
             $users[]='user'.$i;
         }
         $user = $users[array_rand($users)];
 
-        for($j=1; $j<=20; $j++)
-        {
+        for ($j=1; $j<=20; $j++) {
             $categories=[];
-            for($i=1; $i<=5; $i++)
-            {
+            for ($i=1; $i<=5; $i++) {
                 $categories[]='category'.$i;
             }
 
@@ -41,8 +38,7 @@ class TrickFixtures extends Fixture implements DependentFixtureInterface
                 ->setUpdatedAt($date)
             ;
 
-            for($i=1; $i<=rand(1,3); $i++)
-            {
+            for ($i=1; $i<=rand(1,3); $i++) {
                 $key = array_rand($categories);
                 $category = $categories[$key];
                 $trick->addCategory($this->getReference($category));

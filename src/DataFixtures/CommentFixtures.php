@@ -15,16 +15,13 @@ class CommentFixtures extends Fixture implements dependentFixtureInterface
     {
         $faker = Factory::create('fr_FR');
 
-        $users=[];
-        for($i=0; $i<=3; $i++)
-        {
+        $users = [];
+        for ($i=0; $i<=3; $i++) {
             $users[]='user'.$i;
         }
 
-        for($j=1; $j<=20; $j++)
-        {
-            for($i=1; $i<rand(-5, 15); $i++)
-            {
+        for ($j=1; $j<=20; $j++) {
+            for ($i=1; $i<rand(-5, 15); $i++) {
                 $comment = new Comment();
 
                 $user = $users[array_rand($users)];

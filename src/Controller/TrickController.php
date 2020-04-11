@@ -40,8 +40,7 @@ class TrickController extends AbstractController
         $form = $this->createForm(CommentType::class, $comment);
         $form->handleRequest($request);
 
-        if($form->isSubmitted() && $form->isValid())
-        {
+        if ($form->isSubmitted() && $form->isValid()) {
             $em->persist($comment);
             $em->flush();
 
@@ -62,8 +61,7 @@ class TrickController extends AbstractController
     {
         $action = 'modifiée';
 
-        if(!$trick)
-        {
+        if (!$trick) {
             $trick = new Trick($this->getUser());
             $action = 'ajoutée';
         }
@@ -71,10 +69,9 @@ class TrickController extends AbstractController
         $form = $this->createForm(TrickType::class, $trick);
         $form->handleRequest($request);
 
-        if($form->isSubmitted() && $form->isValid())
-        {
-            if($action === 'ajoutée')
-            {
+        if ($form->isSubmitted() && $form->isValid()) {
+
+            if ($action === 'ajoutée') {
                 $trick->setImage('images/tricks/image.jpg');
             }
 
@@ -101,8 +98,7 @@ class TrickController extends AbstractController
      */
     public function delete(Trick $trick, EntityManagerInterface $em, Request $request)
     {
-        if($request->request->get('_token') && $this->isCsrfTokenValid('delete'.$trick->getId(), $request->request->get('_token')))
-        {
+        if ($request->request->get('_token') && $this->isCsrfTokenValid('delete'.$trick->getId(), $request->request->get('_token'))) {
             $em->remove($trick);
             $em->flush();
 
