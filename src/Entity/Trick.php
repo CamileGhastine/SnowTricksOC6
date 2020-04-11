@@ -55,11 +55,14 @@ class Trick
     private $createdAt;
 
     /**
+     * @ORM\Column(type="datetime")
+     */
+    private $updatedAt;
+
+    /**
      * @ORM\OneToMany(targetEntity="App\Entity\Comment", mappedBy="trick", orphanRemoval=true)
      */
     private $comments;
-
-
 
     /**
      * @ORM\ManyToMany(targetEntity="App\Entity\Category", mappedBy="tricks", cascade="persist")
@@ -72,10 +75,7 @@ class Trick
      */
     private $categories;
 
-    /**
-     * @ORM\Column(type="datetime", nullable=true)
-     */
-    private $updatedAt;
+
 
     /**
      * @ORM\ManyToOne(targetEntity="App\Entity\User", inversedBy="tricks")
