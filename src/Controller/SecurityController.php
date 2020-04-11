@@ -4,6 +4,7 @@ namespace App\Controller;
 
 use App\Entity\User;
 use App\Form\RegistrationType;
+use DateTime;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
@@ -27,7 +28,7 @@ class SecurityController extends AbstractController
         {
             $user->setPassword($passwordEncoder ->encodePassword($user, $user->getPassword()))
                 ->setAvatar('images/users/nobody.jpg')
-                ->setRegisteredAt(new \DateTime());
+                ->setRegisteredAt(new DateTime());
 
             $em->persist($user);
             $em->flush();

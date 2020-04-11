@@ -8,7 +8,6 @@ use App\Form\CommentType;
 use App\Form\TrickType;
 use App\Repository\CategoryRepository;
 use App\Repository\TrickRepository;
-use App\Repository\UserRepository;
 use DateTime;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
@@ -21,7 +20,7 @@ class TrickController extends AbstractController
      * @Route("/", name="home")
      * @Route("/trick/{id}/category", name="trick_category")
      */
-    public function index( TrickRepository $repoTrick, CategoryRepository $repoCategory, $id = null)
+    public function index(TrickRepository $repoTrick, CategoryRepository $repoCategory, $id = null)
     {
         $categories = $repoCategory->findAll();
 

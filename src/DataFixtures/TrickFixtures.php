@@ -6,12 +6,13 @@ use App\Entity\Trick;
 use Doctrine\Bundle\FixturesBundle\Fixture;
 use Doctrine\Common\DataFixtures\DependentFixtureInterface;
 use Doctrine\Common\Persistence\ObjectManager;
+use Faker\Factory;
 
 class TrickFixtures extends Fixture implements DependentFixtureInterface
 {
     public function load(ObjectManager $manager)
     {
-        $faker = \Faker\Factory::create('fr_FR');
+        $faker = Factory::create('fr_FR');
 
         $users=[];
         for($i=0; $i<=3; $i++)

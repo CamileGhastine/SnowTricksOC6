@@ -2,10 +2,8 @@
 
 namespace App\Repository;
 
-use App\Entity\Category;
-use App\Entity\Comment;
+
 use App\Entity\Trick;
-use App\Entity\User;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
 use Doctrine\Common\Persistence\ManagerRegistry;
 

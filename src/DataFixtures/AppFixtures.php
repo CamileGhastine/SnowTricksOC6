@@ -3,6 +3,7 @@
 namespace App\DataFixtures;
 
 use App\Entity\User;
+use DateTime;
 use Doctrine\Bundle\FixturesBundle\Fixture;
 use Doctrine\Common\Persistence\ObjectManager;
 use Symfony\Component\Security\Core\Encoder\UserPasswordEncoderInterface;
@@ -27,7 +28,7 @@ class AppFixtures extends Fixture
             ->setEmail($username.'@'.$username.'.fr')
             ->setPassword($password)
             ->setAvatar('images/users/camile.jpg')
-            ->setRegisteredAt(new \DateTime)
+            ->setRegisteredAt(new DateTime)
             ->setStatus('admin')
             ;
 
