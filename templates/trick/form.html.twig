@@ -9,9 +9,9 @@
 
         <div class="card mb-5">
             <div class="card-header bg-dark text-white">
-                <img src="{{ trick.id ? asset(trick.image) : asset('images/add.jpg') }}" class="card-img col-6 offset-3 text-center mt-4" alt="{{ trick.title }}">
+                <img src="{{ edit ? asset(trick.image) : asset('images/add.jpg') }}" class="card-img col-6 offset-3 text-center mt-4" alt="{{ trick.title }}">
                 <div class="text-center">
-                    {% if trick.id %}
+                    {% if edit %}
                         <div class="text-right">
                             <a href=""><i class="fas fa-recycle"></i></a>
                             <a href="#"><i class="fas fa-trash-alt"></i></a>
@@ -28,7 +28,7 @@
             </div>
             <div class="card-body text-center">
 
-                {% if trick.id %}
+                {% if edit %}
                     <div class="row my-4">
                         <div class="col-6">
                             <a href="" class="btn btn-secondary">Ajouter une photo</a>
@@ -76,7 +76,7 @@
                 <p class="row">{{ form_row(form.title) }}</p>
                 <p class="row">{{ form_row(form.description) }}</p>
                 <p class="row">{{ form_row(form.categories) }}</p>
-                <button type="submit" class="btn btn-secondary">{{ trick.id ? "Modifier l'article" : "Ajouter l'article" }}</button>
+                <button type="submit" class="btn btn-secondary">{{ edit ? "Modifier l'article" : "Ajouter l'article" }}</button>
                 {{ form_end(form) }}
             </div>
         </div>

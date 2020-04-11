@@ -75,9 +75,12 @@ class TrickController extends AbstractController
      */
     public function form(Request $request, EntityManagerInterface $em, CategoryRepository $repoCategory, Trick $trick = null)
     {
+        $edit = true;
+
         if(!$trick)
         {
             $trick = new Trick();
+            $edit = false;
         }
 
         $form = $this->createForm(TrickType::class, $trick);
@@ -101,14 +104,8 @@ class TrickController extends AbstractController
             $em->persist($trick);
             $em->flush();
 
-            if($request->getRequestUri() == $this->generateUrl('trick_new'))
-            {
-                $this->addFlash('success', 'La figure a été ajoutée avec succès !');
-            }
-            else
-            {
-                $this->addFlash('success', 'La figure a été modifiée avec succès !');
-            }
+            $action = $edit ? "ajoutée" : "modifiée";
+            $this->addFlash('success', 'La figure a été '.$action.' avec succès !');
 
             return $this->redirectToRoute('trick_show', ['id' => $trick->getId()]);
         }
@@ -116,6 +113,7 @@ class TrickController extends AbstractController
         return $this->render('trick/form.html.twig', [
             'form' => $form->createView(),
             'trick' => $trick,
+            'edit' => $edit,
         ]);
     }
 
