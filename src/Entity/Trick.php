@@ -75,28 +75,21 @@ class Trick
      */
     private $categories;
 
-
-
     /**
      * @ORM\ManyToOne(targetEntity="App\Entity\User", inversedBy="tricks")
      * @ORM\JoinColumn(nullable=false)
      */
     private $user;
 
-    public function __construct()
+
+    public function __construct(UserInterface $user)
     {
         $this->comments = new ArrayCollection();
         $this->categories = new ArrayCollection();
+        $this->setCreatedAt(new DateTime());
+        $this->setUser($user);
     }
 
-    /**
-     * @ORM\ PreUpdate
-     * @throws Exception
-     */
-    public function updateDate()
-    {
-        $this->setUpdatedAt(new DateTime());
-    }
 
     public function getId(): ?int
     {

@@ -44,6 +44,7 @@ class TrickController extends AbstractController
         {
             $em->persist($comment);
             $em->flush();
+
             return $this->redirect($this->generateUrl('trick_show', ['id' => $trick->getId()]).'#comments');
         }
 
@@ -57,38 +58,31 @@ class TrickController extends AbstractController
      * @Route("/trick/edit/new", name="trick_new")
      * @Route("/trick/edit/{id}/update", name="trick_edit")
      */
-    public function form(Request $request, EntityManagerInterface $em, CategoryRepository $repoCategory, Trick $trick = null)
+    public function form(Request $request, EntityManagerInterface $em, Trick $trick = null)
     {
-        $edit = true;
+        $action = 'modifiée';
 
         if(!$trick)
         {
-            $trick = new Trick();
-            $edit = false;
+            $trick = new Trick($this->getUser());
+            $action = 'ajoutée';
         }
 
         $form = $this->createForm(TrickType::class, $trick);
-
         $form->handleRequest($request);
 
         if($form->isSubmitted() && $form->isValid())
         {
-            if(!$trick->getId())
+            if($action === 'ajoutée')
             {
-                $trick->setImage('images/tricks/image.jpg')
-                    ->setCreatedAt(new DateTime())
-                    ->setUser($this->getUser());
+                $trick->setImage('images/tricks/image.jpg');
             }
 
-            foreach($request->request->get('trick')['categories'] as $categoryId)
-            {
-                $trick->removeCategory($repoCategory->find($categoryId));
-                $trick->addCategory($repoCategory->find($categoryId));
-            }
+            $trick->setUpdatedAt(new DateTime());
+
             $em->persist($trick);
             $em->flush();
 
-            $action = $edit ? "ajoutée" : "modifiée";
             $this->addFlash('success', 'La figure a été '.$action.' avec succès !');
 
             return $this->redirectToRoute('trick_show', ['id' => $trick->getId()]);
@@ -97,7 +91,7 @@ class TrickController extends AbstractController
         return $this->render('trick/form.html.twig', [
             'form' => $form->createView(),
             'trick' => $trick,
-            'edit' => $edit,
+            'edit' => $action === 'modifiée'
         ]);
     }
 
