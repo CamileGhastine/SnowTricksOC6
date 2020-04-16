@@ -35,21 +35,24 @@ class TrickController extends AbstractController
     {
         $trick = $repoTrick->findTrickWithCommentsAndCategories($id);
 
-        $comment= new Comment($trick, $this->getUser());
+        $user = $this->getUser();
+        if($user)
+        {
+            $comment= new Comment($trick, $this->getUser());
+            $form = $this->createForm(CommentType::class, $comment);
+            $form->handleRequest($request);
 
-        $form = $this->createForm(CommentType::class, $comment);
-        $form->handleRequest($request);
+            if ($form->isSubmitted() && $form->isValid()) {
+                $em->persist($comment);
+                $em->flush();
 
-        if ($form->isSubmitted() && $form->isValid()) {
-            $em->persist($comment);
-            $em->flush();
-
-            return $this->redirect($this->generateUrl('trick_show', ['id' => $trick->getId()]).'#comments');
+                return $this->redirect($this->generateUrl('trick_show', ['id' => $trick->getId()]).'#comments');
+            }
         }
 
         return $this->render('trick/show.html.twig', [
             'trick' => $trick,
-            'form' => $form->createView(),
+            'form' => $user ? $form->createView() : null
         ]);
     }
 
