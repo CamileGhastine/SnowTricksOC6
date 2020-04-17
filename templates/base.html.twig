@@ -39,7 +39,7 @@
                     <li class="nav-item">
                         <a class="nav-link" href="#">Mon Compte</a>
                     </li>
-                    {% if app.user.role == 'ROLE_ADMIN' %}
+                    {% if is_granted('ROLE_ADMIN') %}
                         <li class="nav-item">
                             <a class="nav-link" href="{{ path('admin') }}">Admin</a>
                         </li>

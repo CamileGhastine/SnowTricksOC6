@@ -28,7 +28,6 @@ class AppFixtures extends Fixture
             ->setEmail($username.'@'.$username.'.fr')
             ->setPassword($password)
             ->setAvatar('images/users/camile.jpg')
-            ->setRegisteredAt(new DateTime)
             ->setRole('ROLE_ADMIN')
             ;
 

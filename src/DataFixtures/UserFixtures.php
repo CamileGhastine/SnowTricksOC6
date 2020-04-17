@@ -33,7 +33,6 @@ class UserFixtures extends Fixture
                 ->setEmail($username.'@'.$username.'.fr')
                 ->setPassword($password)
                 ->setAvatar('images/users/nobody.jpg')
-                ->setRegisteredAt(new DateTime)
             ;
 
             $this->addReference('user'.$i, $user);

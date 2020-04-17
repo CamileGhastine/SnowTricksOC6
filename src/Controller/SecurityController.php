@@ -27,8 +27,7 @@ class SecurityController extends AbstractController
         if ($form->isSubmitted() && $form->isValid()) {
             $user->setPassword($passwordEncoder ->encodePassword($user, $user->getPassword()))
                 ->setAvatar('images/users/nobody.jpg')
-                ->setRegisteredAt(new DateTime());
-
+            ;
             $em->persist($user);
             $em->flush();
             $this->addFlash('success', 'Votre inscription a été réalisée avec succès. Connectez vous pour profiter de toutes les fonctionnalités de SnowTricks.');
