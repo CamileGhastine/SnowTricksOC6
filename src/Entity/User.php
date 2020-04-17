@@ -74,7 +74,7 @@ class User implements UserInterface
     /**
      * @ORM\Column(type="string", length=255)
      */
-    private $status='user';
+    private $role='ROLE_USER';
 
     /**
      * @ORM\OneToMany(targetEntity="App\Entity\Comment", mappedBy="user", orphanRemoval=true)
@@ -177,12 +177,7 @@ class User implements UserInterface
      */
     public function getRoles()
     {
-        if ($this->status == 'admin') {
-            return ['ROLE_ADMIN'];
-        } else {
-            return ['ROLE_USER'];
-        }
-
+        return [$this->role] ;
     }
 
     public function getSalt()
@@ -195,14 +190,14 @@ class User implements UserInterface
 
     }
 
-    public function getStatus(): ?string
+    public function getRole(): ?string
     {
-        return $this->status;
+        return $this->role;
     }
 
-    public function setStatus(string $status): self
+    public function setRole(string $role): self
     {
-        $this->status = $status;
+        $this->role = $role;
 
         return $this;
     }

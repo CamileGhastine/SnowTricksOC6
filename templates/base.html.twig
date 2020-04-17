@@ -39,7 +39,7 @@
                     <li class="nav-item">
                         <a class="nav-link" href="#">Mon Compte</a>
                     </li>
-                    {% if app.user.status == 'admin' %}
+                    {% if app.user.role == 'ROLE_ADMIN' %}
                         <li class="nav-item">
                             <a class="nav-link" href="{{ path('admin') }}">Admin</a>
                         </li>
