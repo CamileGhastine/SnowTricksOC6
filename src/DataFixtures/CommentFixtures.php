@@ -20,15 +20,13 @@ class CommentFixtures extends Fixture implements dependentFixtureInterface
             $users[]='user'.$i;
         }
 
-        for ($j=1; $j<=20; $j++) {
+        for ($j=1; $j<=10; $j++) {
             for ($i=1; $i<rand(-5, 15); $i++) {
                 $user = $users[array_rand($users)];
 
                 $comment = new Comment($this->getReference('trick'.$j), $this->getReference($user));
 
-                $comment->setContent(implode('<br/>', $faker->sentences(4)))
-                    ->setCreatedAt(new DateTime())
-                ;
+                $comment->setContent(implode('<br/>', $faker->sentences(4)));
 
                 $manager->persist($comment);
             }

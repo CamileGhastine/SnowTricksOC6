@@ -20,11 +20,17 @@ class TrickFixtures extends Fixture implements DependentFixtureInterface
         }
         $user = $users[array_rand($users)];
 
-        for ($j=1; $j<=20; $j++) {
+        for ($i=0; $i<=29; $i++) {
+            $images[]='image'.$i;
+        }
+
+        for ($j=1; $j<=10; $j++) {
+
             $categories=[];
             for ($i=1; $i<=5; $i++) {
                 $categories[]='category'.$i;
             }
+
 
             $trick = new Trick($this->getReference($user));
 
@@ -32,9 +38,9 @@ class TrickFixtures extends Fixture implements DependentFixtureInterface
 
             $trick->setTitle($faker->sentence(3, true))
                 ->setDescription( implode('<br/>', $faker->sentences(4)) )
-                ->setImage('images/tricks/noImage.jpg')
                 ->setCreatedAt($date)
                 ->setUpdatedAt($date)
+                ->setImage('images/tricks/noImage.jpg')
             ;
 
             for ($i=1; $i<=rand(1,3); $i++) {
@@ -43,6 +49,19 @@ class TrickFixtures extends Fixture implements DependentFixtureInterface
                 $trick->addCategory($this->getReference($category));
                 unset($categories[$key]);
             }
+
+            if (rand(0,5)>1) {
+                for ($i=1; $i<=rand(1,4); $i++) {
+                    $key = array_rand($images);
+                    $image = $this->getReference($images[$key]);
+                    if($i==1) {
+                        $image->setPoster(1);
+                    }
+                    $trick->addImage($image);
+                    unset($images[$key]);
+                }
+            }
+
 
             $this->addReference('trick'.$j, $trick);
 
@@ -56,6 +75,7 @@ class TrickFixtures extends Fixture implements DependentFixtureInterface
         return array(
             CategoryFixtures::class,
             UserFixtures::class,
+            ImageFixtures::class,
         );
     }
 }
