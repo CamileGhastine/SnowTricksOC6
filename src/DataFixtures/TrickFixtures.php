@@ -26,14 +26,13 @@ class TrickFixtures extends Fixture implements DependentFixtureInterface
                 $categories[]='category'.$i;
             }
 
-            $trick = new Trick();
+            $trick = new Trick($this->getReference($user));
 
             $date = $faker->dateTimebetween('-7 days');
 
             $trick->setTitle($faker->sentence(3, true))
                 ->setDescription( implode('<br/>', $faker->sentences(4)) )
                 ->setImage('images/tricks/noImage.jpg')
-                ->setUser($this->getReference($user))
                 ->setCreatedAt($date)
                 ->setUpdatedAt($date)
             ;
