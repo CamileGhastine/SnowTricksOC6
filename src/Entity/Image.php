@@ -27,6 +27,7 @@ class Image
     private $alt;
 
     /**
+     * if $poster=1 the image is the first image
      * @ORM\Column(type="boolean")
      */
     private $poster;

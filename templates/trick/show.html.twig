@@ -15,6 +15,9 @@
                         <div id="carouselExampleIndicators" class="carousel slide" data-ride="carousel">
 
                             <div class="carousel-inner">
+                                {% if trick.images | length == 0 %}
+                                    <img class="d-block w-100 card-img col-6 offset-3 text-center mt-4" src="{{ asset('images/tricks/noImage.jpg') }}" alt="no image">
+                                {% endif %}
 
                                 {% for image in trick.images %}
                                     <div class="carousel-item {{ image.poster == 1 ? 'active' }}">
