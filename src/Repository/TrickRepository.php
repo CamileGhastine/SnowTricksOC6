@@ -20,11 +20,27 @@ class TrickRepository extends ServiceEntityRepository
         parent::__construct($registry, Trick::class);
     }
 
-    public function findByCategory($id)
+    public function findAllWithPoster()
     {
         return $this->createQueryBuilder('t')
+            ->addSelect('i')
+            ->leftJoin('t.images', 'i')
+            ->where('i.poster = 1')
+            ->orWhere('i.poster IS NULL')
+            ->orderBy('t.updatedAt', 'DESC')
+            ->getQuery()
+            ->getResult()
+            ;
+    }
+
+    public function findByCategoryWithPoster($id)
+    {
+        return $this->createQueryBuilder('t')
+            ->addSelect('i')
             ->innerJoin('t.categories', 'c')
+            ->leftJoin('t.images', 'i')
             ->where('c.id = :id')
+            ->andWhere('i.poster = 1 OR i.poster IS NULL')
             ->setParameter('id', $id)
             ->orderBy('t.updatedAt', 'DESC')
             ->getQuery()
