@@ -66,6 +66,19 @@ class TrickRepository extends ServiceEntityRepository
             ;
     }
 
+    public function findWithPoster($id)
+    {
+        return $this->createQueryBuilder('t')
+            ->addSelect('i')
+            ->leftJoin('t.images', 'i')
+            ->where('t.id = :id')
+            ->andWhere('i.poster = 1 OR i.poster IS NULL')
+            ->setParameter('id', $id)
+            ->getQuery()
+            ->getOneOrNullResult()
+            ;
+    }
+
     // /**
     //  * @return Trick[] Returns an array of Trick objects
     //  */

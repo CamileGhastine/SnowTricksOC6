@@ -99,7 +99,7 @@ class TrickController extends AbstractController
     /**
      * @Route("trick/edit/{id}/delete", name="trick_delete")
      */
-    public function delete(Trick $trick, EntityManagerInterface $em, Request $request)
+    public function delete(Trick $trick, EntityManagerInterface $em, Request $request, TrickRepository $repoTrick)
     {
         if ($request->request->get('_token') && $this->isCsrfTokenValid('delete'.$trick->getId(), $request->request->get('_token'))) {
             $em->remove($trick);
@@ -111,7 +111,7 @@ class TrickController extends AbstractController
         }
 
         return $this->render('trick/delete.html.twig', [
-                'trick' => $trick,
+                'trick' => $repoTrick->findWithPoster($trick->getId()),
             ]
         );
     }
