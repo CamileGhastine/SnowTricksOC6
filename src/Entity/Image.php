@@ -33,7 +33,7 @@ class Image
     private $poster;
 
     /**
-     * @ORM\ManyToOne(targetEntity="App\Entity\Trick", inversedBy="images", cascade={"persist", "remove"})
+     * @ORM\ManyToOne(targetEntity="App\Entity\Trick", inversedBy="images")
      */
     private $trick;
 
