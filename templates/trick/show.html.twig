@@ -17,7 +17,7 @@
                             <div class="carousel-inner">
 
                                 {% for image in trick.images %}
-                                    <div class="carousel-item {{ loop.index == 1 ? 'active' }}">
+                                    <div class="carousel-item {{ image.poster == 1 ? 'active' }}">
                                         <img class="d-block w-100 card-img col-6 offset-3 text-center mt-4" src="{{ asset(image.url) }}" alt="slide {{ loop.index }}">
                                     </div>
                                 {% endfor %}
