@@ -74,10 +74,6 @@ class TrickController extends AbstractController
 
         if ($form->isSubmitted() && $form->isValid()) {
 
-            if ($action === 'ajoutée') {
-                $trick->setImage('images/tricks/image.jpg');
-            }
-
             $trick->setUpdatedAt(new DateTime());
 
             $em->persist($trick);

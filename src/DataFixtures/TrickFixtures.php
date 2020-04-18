@@ -40,7 +40,6 @@ class TrickFixtures extends Fixture implements DependentFixtureInterface
                 ->setDescription( implode('<br/>', $faker->sentences(4)) )
                 ->setCreatedAt($date)
                 ->setUpdatedAt($date)
-                ->setImage('images/tricks/noImage.jpg')
             ;
 
             for ($i=1; $i<=rand(1,3); $i++) {
