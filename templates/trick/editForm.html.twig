@@ -1,0 +1,155 @@
+{% extends 'base.html.twig' %}
+{% block title %}SnowTricks : Ajout d'une figure{% endblock %}
+{% block stylesheets %}<link rel="stylesheet" href="{{ asset("css/trick_form.css") }}">{% endblock %}
+
+{% block body %}
+<div class="container">
+
+    {% set poster="" %}
+    {% for image in trick.images %}
+        {% set poster = image.poster == 1 ? image  %}
+    {% endfor %}
+
+    {{ form_start(form) }}
+
+    <div class="card mb-5">
+        <div class="card-header bg-dark text-white">
+            {% if trick.images | length == 0 %}
+                <img src="{{ asset('images/tricks/noImage.jpg') }}" class="card-img col-6 offset-3 text-center mt-4" alt="no image">
+            {% else %}
+                <img src="{{ edit ? asset(poster.url) : asset('images/add.jpg') }}" class="card-img col-6 offset-3 text-center mt-4" alt="{{ poster.alt }}">
+            {% endif %}            <div class="text-center">
+                {% if edit %}
+                    <div class="text-right">
+                        <a href=""><i class="fas fa-recycle"></i></a>
+                        <a href="#"><i class="fas fa-trash-alt"></i></a>
+                    </div>
+                {% else %}
+                    <div class="text-right">
+                        <a href="#"><i class="fas fa-upload"></i></a>
+                    </div>
+                {% endif %}
+                <div class="card-img-overlay col-6">
+                    <p class="card-title mt-5 text-break" id="title-img">{{ trick.title }}</p>
+                </div>
+            </div>
+        </div>
+        <div class="card-body text-center">
+
+            {% if edit %}
+
+                <div class="row my-5">
+                    <div class="col-6 d-flex " id="tricks-img">
+                        <div class="row">
+
+                            {% for image in trick.images %}
+                                <div class="col-4">
+                                    <a class="col-12 mb-3" href=""><img class="card-img" src="{{ asset(image.url) }}" alt="{{ image.alt }}"></a>
+                                    <a href=""><i class="far fa-images"></i></a>
+                                    <a href="#"><i class="fas fa-trash-alt"></i></a>
+                                </div>
+                            {% endfor %}
+                        </div>
+
+                    </div>
+
+                    <div class="col-6" id="tricks-video">
+                        <div class="row">
+                            {% for i in 1..2 %}
+                                <div class="col-4">
+                                    <iframe class="col-12" src="https://www.youtube.com/embed/V9xuy-rVj9w" frameborder="0" allow="accelerometer; autoplay; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
+                                    <a href="#"><i class="fas fa-trash-alt"></i></a>
+                                </div>
+
+                            {% endfor %}
+                        </div>
+                    </div>
+                </div>
+
+            {% endif %}
+
+            <div class="row my-4">
+                <div class="col-6">
+                    <ul class="tags" data-prototype="{{ form_widget(form.images.vars.prototype)|e('html_attr') }}"></ul>
+                    {{ form_widget(form.images) }}
+                </div>
+                <div class="col-6">
+                    <a href="" class="btn btn-secondary">Ajouter une vidéo</a>
+                </div>
+            </div>
+
+            {{ form_row(form.title) }}
+            {{ form_row(form.description) }}
+            {{ form_row(form.categories) }}
+
+            <button type="submit" class="btn btn-secondary">{{ edit ? "Modifier l'article" : "Ajouter l'article" }}</button>
+            {{ form_end(form) }}
+        </div>
+    </div>
+</div>
+
+
+    <script>
+
+        // setup an "add a tag" link
+        var $addTagLink = $('<a href="#" class="add_tag_link btn btn-secondary mt-4">Ajouter une photo</a>');
+        var $newLinkLi = $('<div></div>').append($addTagLink);
+
+        jQuery(document).ready(function() {
+            // Get the ul that holds the collection of tags
+            var $collectionHolder = $('ul.tags');
+
+            // add the "add a tag" anchor and li to the tags ul
+            $collectionHolder.append($newLinkLi);
+
+            // count the current form inputs we have (e.g. 2), use that as the new
+            // index when inserting a new item (e.g. 2)
+            $collectionHolder.data('index', $collectionHolder.find(':input').length);
+
+            $addTagLink.on('click', function(e) {
+                // prevent the link from creating a "#" on the URL
+                e.preventDefault();
+
+                // add a new tag form (see code block below)
+                addTagForm($collectionHolder, $newLinkLi);
+            });
+
+
+        });
+
+        function addTagForm($collectionHolder, $newLinkLi) {
+            // Get the data-prototype explained earlier
+            var prototype = $collectionHolder.data('prototype');
+
+            // get the new index
+            var index = $collectionHolder.data('index');
+
+            // Replace '$$name$$' in the prototype's HTML to
+            // instead be a number based on how many items we have
+            var newForm = prototype.replace(/__name__/g, index);
+
+            // increase the index with one for the next item
+            $collectionHolder.data('index', index + 1);
+
+            // Display the form in the page in an li, before the "Add a tag" link li
+            var $newFormLi = $('<li></li>').append(newForm);
+
+            // also add a remove button, just for this example
+            $newFormLi.append('<a href="#" class="remove-tag btn-sm btn-danger">Annuler</a>');
+            $newFormLi.append('<a href="{{ path('home') }}" class="btn-sm btn-primary">Télécharger</a>');
+
+            $newLinkLi.before($newFormLi);
+
+            // handle the removal, just for this example
+            $('.remove-tag').click(function(e) {
+                e.preventDefault();
+
+                $(this).parent().remove();
+
+                return false;
+            });
+        }
+
+    </script>
+
+{% endblock %}

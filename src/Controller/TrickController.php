@@ -6,6 +6,7 @@ use App\Entity\Comment;
 use App\Entity\Trick;
 use App\Form\AddTrickType;
 use App\Form\CommentType;
+use App\Form\EditTrickType;
 use App\Form\TrickType;
 use App\Repository\CategoryRepository;
 use App\Repository\TrickRepository;
@@ -93,7 +94,7 @@ class TrickController extends AbstractController
     /**
      * @Route("/trick/edit/{id}/update", name="trick_edit")
      */
-    public function form(Request $request, EntityManagerInterface $em, Trick $trick = null)
+    public function edit(Request $request, EntityManagerInterface $em, Trick $trick = null)
     {
         $action = 'modifiée';
 
@@ -102,7 +103,7 @@ class TrickController extends AbstractController
             $action = 'ajoutée';
         }
 
-        $form = $this->createForm(TrickType::class, $trick);
+        $form = $this->createForm(EditTrickType::class, $trick);
         $form->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid()) {
@@ -117,7 +118,7 @@ class TrickController extends AbstractController
             return $this->redirectToRoute('trick_show', ['id' => $trick->getId()]);
         }
 
-        return $this->render('trick/form.html.twig', [
+        return $this->render('trick/editForm.html.twig', [
             'form' => $form->createView(),
             'trick' => $trick,
             'edit' => $action === 'modifiée'
