@@ -2,7 +2,9 @@
 
 namespace App\Entity;
 
+use App\Kernel;
 use Doctrine\ORM\Mapping as ORM;
+use Symfony\Component\HttpFoundation\File\UploadedFile;
 
 /**
  * @ORM\Entity(repositoryClass="App\Repository\ImageRepository")
@@ -36,6 +38,38 @@ class Image
      * @ORM\ManyToOne(targetEntity="App\Entity\Trick", inversedBy="images")
      */
     private $trick;
+
+    /**
+     * @var UploadedFile
+     */
+    private $file;
+
+    public function upload()
+    {
+        $name = $this->file->getClientOriginalName();
+
+        $this->file->move(Kernel::getProjectDir().'/public/images/tricks', $name);
+
+        $this->setUrl('images/tricks/'.$name);
+        $this->setAlt($name);
+        $this->setPoster(0);
+    }
+
+    /**
+     * @return mixed
+     */
+    public function getFile()
+    {
+        return $this->file;
+    }
+
+    /**
+     * @param mixed $file
+     */
+    public function setFile($file): void
+    {
+        $this->file = $file;
+    }
 
     public function getId(): ?int
     {

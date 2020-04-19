@@ -4,6 +4,7 @@ namespace App\Controller;
 
 use App\Entity\Comment;
 use App\Entity\Trick;
+use App\Form\AddTrickType;
 use App\Form\CommentType;
 use App\Form\TrickType;
 use App\Repository\CategoryRepository;
@@ -58,6 +59,38 @@ class TrickController extends AbstractController
 
     /**
      * @Route("/trick/edit/new", name="trick_new")
+     */
+    public function create(Request $request, EntityManagerInterface $em, Trick $trick = null)
+    {
+        $trick = new Trick($this->getUser());
+
+        $form = $this->createForm(AddTrickType::class, $trick);
+        $form->handleRequest($request);
+
+        if ($form->isSubmitted() && $form->isValid()) {
+
+            $trick->setUpdatedAt(new DateTime());
+
+            foreach ($form->getData()->getImages() as $key => $image){
+                $image->upload();
+                $key == 0 ? $image->setPoster(1) : null;
+            }
+
+            $em->persist($trick);
+            $em->flush();
+
+            $this->addFlash('success', 'La figure a été ajoutée avec succès !');
+
+            return $this->redirectToRoute('trick_show', ['id' => $trick->getId()]);
+        }
+
+        return $this->render('trick/addForm.html.twig', [
+            'form' => $form->createView(),
+            'trick' =>$trick,
+        ]);
+    }
+
+    /**
      * @Route("/trick/edit/{id}/update", name="trick_edit")
      */
     public function form(Request $request, EntityManagerInterface $em, Trick $trick = null)
