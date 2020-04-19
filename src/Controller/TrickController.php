@@ -3,6 +3,7 @@
 namespace App\Controller;
 
 use App\Entity\Comment;
+use App\Entity\Image;
 use App\Entity\Trick;
 use App\Form\AddImageType;
 use App\Form\AddTrickType;
@@ -162,5 +163,21 @@ class TrickController extends AbstractController
                 'trick' => $repoTrick->findWithPoster($trick->getId()),
             ]
         );
+    }
+
+    /**
+     * @Route("trick/edit/image/{id}/delete", name="image_delete")
+     */
+    public function deleteImage(Image $image, EntityManagerInterface $em, Request $request)
+    {
+        if ($request->query->get('csrf_token') && $this->isCsrfTokenValid('delete'.$image->getId(), $request->query->get('csrf_token'))) {
+            $em->remove($image);
+            $em->flush();
+
+            $this->addFlash('success', 'La photo a été supprimée avec succès !');
+
+            return $this->redirect($this->generateUrl('trick_edit', ['id' => $image->getTrick()->getId()]) . '#alert');
+        }
+
     }
 }

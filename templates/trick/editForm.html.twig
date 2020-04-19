@@ -47,7 +47,7 @@
                                 <div class="col-4">
                                     <a class="col-12 mb-3" href=""><img class="card-img" src="{{ asset(image.url) }}" alt="{{ image.alt }}"></a>
                                     <a href=""><i class="far fa-images"></i></a>
-                                    <a href="#"><i class="fas fa-trash-alt"></i></a>
+                                    <a href="{{ path('image_delete', { 'id' : image.id, 'csrf_token' : csrf_token('delete'~image.id)}) }}"><i class="fas fa-trash-alt"></i></a>
                                 </div>
                             {% endfor %}
                         </div>
