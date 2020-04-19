@@ -1,5 +1,5 @@
 {% extends 'base.html.twig' %}
-{% block title %}SnowTricks : Ajout d'une figure{% endblock %}
+{% block title %}SnowTricks : Modification d'une figure{% endblock %}
 {% block stylesheets %}<link rel="stylesheet" href="{{ asset("css/trick_form.css") }}">{% endblock %}
 
 {% block body %}
@@ -7,10 +7,11 @@
 
     {% set poster="" %}
     {% for image in trick.images %}
-        {% set poster = image.poster == 1 ? image  %}
+        {% if image.poster == 1 %}
+            {% set poster = image  %}
+        {% endif %}
     {% endfor %}
 
-    {{ form_start(form) }}
 
     <div class="card mb-5">
         <div class="card-header bg-dark text-white">
@@ -70,20 +71,27 @@
 
             <div class="row my-4">
                 <div class="col-6">
-                    <ul class="tags" data-prototype="{{ form_widget(form.images.vars.prototype)|e('html_attr') }}"></ul>
-                    {{ form_widget(form.images) }}
+                    {% for message in app.flashes('success') %}
+                        <div class="alert alert-success" id="alert">
+                            {{ message }}
+                        </div>
+                    {% endfor %}
+                    {{ form_start(formImage) }}
+                    {{ form_widget(formImage.file) }}
+                    <button type="submit" class="btn btn-secondary">téléverser les images</button>
+                    {{ form_end(formImage) }}
                 </div>
                 <div class="col-6">
                     <a href="" class="btn btn-secondary">Ajouter une vidéo</a>
                 </div>
             </div>
 
-            {{ form_row(form.title) }}
-            {{ form_row(form.description) }}
-            {{ form_row(form.categories) }}
+            {{ form_start(formTrick) }}
+            {{ form_row(formTrick.title) }}
+            {{ form_row(formTrick.description) }}
+            {{ form_row(formTrick.categories) }}
+            {{ form_end(formTrick) }}
 
-            <button type="submit" class="btn btn-secondary">{{ edit ? "Modifier l'article" : "Ajouter l'article" }}</button>
-            {{ form_end(form) }}
         </div>
     </div>
 </div>

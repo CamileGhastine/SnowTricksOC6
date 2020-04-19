@@ -4,9 +4,11 @@ namespace App\Controller;
 
 use App\Entity\Comment;
 use App\Entity\Trick;
+use App\Form\AddImageType;
 use App\Form\AddTrickType;
 use App\Form\CommentType;
 use App\Form\EditTrickType;
+use App\Form\ImageType;
 use App\Form\TrickType;
 use App\Repository\CategoryRepository;
 use App\Repository\TrickRepository;
@@ -94,34 +96,45 @@ class TrickController extends AbstractController
     /**
      * @Route("/trick/edit/{id}/update", name="trick_edit")
      */
-    public function edit(Request $request, EntityManagerInterface $em, Trick $trick = null)
+    public function edit(Request $request, EntityManagerInterface $em, Trick $trick)
     {
-        $action = 'modifiée';
+        $formTrick = $this->createForm(EditTrickType::class, $trick);
+        $formTrick->handleRequest($request);
 
-        if (!$trick) {
-            $trick = new Trick($this->getUser());
-            $action = 'ajoutée';
-        }
-
-        $form = $this->createForm(EditTrickType::class, $trick);
-        $form->handleRequest($request);
-
-        if ($form->isSubmitted() && $form->isValid()) {
+        if ($formTrick->isSubmitted() && $formTrick->isValid()) {
 
             $trick->setUpdatedAt(new DateTime());
 
             $em->persist($trick);
             $em->flush();
 
-            $this->addFlash('success', 'La figure a été '.$action.' avec succès !');
+            $this->addFlash('success', 'La figure a été modifiée avec succès !');
 
             return $this->redirectToRoute('trick_show', ['id' => $trick->getId()]);
         }
 
+        $formImage = $this->createForm(ImageType::class);
+        $formImage->handleRequest($request);
+
+        if ($formImage->isSubmitted() && $formImage->isValid()) {
+
+             $image = $formImage->getData();
+             $image->setTrick($trick);
+             $image->upload();
+
+            $em->persist($image);
+            $em->flush();
+
+            $this->addFlash('success', 'La photo a été ajoutée avec succès !');
+
+            return $this->redirect($this->generateUrl('trick_edit', ['id' => $trick->getId()]).'#alert');
+        }
+
         return $this->render('trick/editForm.html.twig', [
-            'form' => $form->createView(),
+            'formTrick' => $formTrick->createView(),
+            'formImage' => $formImage->createView(),
             'trick' => $trick,
-            'edit' => $action === 'modifiée'
+            'edit' => true
         ]);
     }
 

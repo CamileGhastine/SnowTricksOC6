@@ -25,12 +25,6 @@ class EditTrickType extends AbstractType
                     'expanded' => true,
                     'by_reference' => false,
             ])
-            ->add('images', CollectionType::class,[
-                'entry_type' => ImageType::class,
-                'allow_add' => true,
-                'by_reference' => false,
-                'mapped' => false
-            ])
         ;
     }
 
