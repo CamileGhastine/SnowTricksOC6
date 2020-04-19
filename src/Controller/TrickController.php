@@ -118,9 +118,14 @@ class TrickController extends AbstractController
 
         if ($formImage->isSubmitted() && $formImage->isValid()) {
 
-             $image = $formImage->getData();
-             $image->setTrick($trick);
-             $image->upload();
+            $image = $formImage->getData();
+
+            $image->upload();
+
+            $image->setTrick($trick);
+            if (count($trick->getImages()) === 0) {
+                $image->setPoster(1);
+            }
 
             $em->persist($image);
             $em->flush();
