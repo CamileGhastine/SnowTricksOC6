@@ -12,6 +12,7 @@ use App\Form\EditTrickType;
 use App\Form\ImageType;
 use App\Form\TrickType;
 use App\Repository\CategoryRepository;
+use App\Repository\ImageRepository;
 use App\Repository\TrickRepository;
 use DateTime;
 use Doctrine\ORM\EntityManagerInterface;
@@ -178,6 +179,23 @@ class TrickController extends AbstractController
 
             return $this->redirect($this->generateUrl('trick_edit', ['id' => $image->getTrick()->getId()]) . '#alert');
         }
+    }
 
+    /**
+     * @Route("trick/edit/image/{id}/poster/{posterId}", name="image_poster_change")
+     */
+    public function changePoster(ImageRepository $repo, EntityManagerInterface $em, $id, $posterId)
+    {
+        $oldPoster = $repo->find($posterId);
+        $oldPoster->setPoster(0);
+        $em->persist($oldPoster);
+
+        $newPoster = $repo->find($id);
+        $newPoster->setPoster(1);
+        $em->persist($newPoster);
+
+        $em->flush();
+
+        return $this->redirectToRoute('trick_edit', ['id' => $newPoster->getTrick()->getId()]);
     }
 }
