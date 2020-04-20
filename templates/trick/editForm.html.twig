@@ -61,10 +61,10 @@
                         <div class="col-4" id="tricks-video">
                             <div class="row">
                                 {% for i in 1..2 %}
-{#                                    <div class="col-6">#}
-{#                                        <iframe class="col-12" src="https://www.youtube.com/embed/V9xuy-rVj9w" frameborder="0" allow="accelerometer; autoplay; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>#}
-{#                                        <a href="#"><i class="fas fa-trash-alt"></i></a>#}
-{#                                    </div>#}
+                                    {#                                    <div class="col-6">#}
+                                    {#                                        <iframe class="col-12" src="https://www.youtube.com/embed/V9xuy-rVj9w" frameborder="0" allow="accelerometer; autoplay; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>#}
+                                    {#                                        <a href="#"><i class="fas fa-trash-alt"></i></a>#}
+                                    {#                                    </div>#}
 
                                 {% endfor %}
                             </div>
@@ -95,14 +95,40 @@
                         <a href="" class="btn btn-secondary">Ajouter une vidéo</a>
                     </div>
                 </div>
-
                 {{ form_start(formTrick) }}
                 {{ form_row(formTrick.title) }}
                 {{ form_row(formTrick.description) }}
                 {{ form_row(formTrick.categories) }}
-                <button type="submit"class="btn btn-secondary">Modifier la figure</button>
-
+                <button type="submit" class="btn btn-secondary">Modifier la figure</button>
                 {{ form_end(formTrick) }}
+
+                <button type="button" class="btn btn-danger" data-toggle="modal" data-target="#exampleModal">
+                    Supprimer la figure
+                </button>
+                <!-- Modal -->
+                <div class="modal fade" id="exampleModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+                    <div class="modal-dialog" role="document">
+                        <div class="modal-content">
+                            <div class="modal-header">
+                                <h5 class="modal-title " id="exampleModalLabel">{{ trick.title }}</h5>
+                            </div>
+                            <div class="modal-body">
+                                <p>Etes-vous sur de vouloir supprimer cette figure ?</p>
+                                <div class="row px-5">
+                                        <img src="{{ poster=="" ? asset('/images/tricks/noImage.jpg') : asset(poster.url) }}" alt="">
+                                </div>
+                            </div>
+                            <div class="modal-footer">
+                                <button type="button" class="btn btn-secondary" data-dismiss="modal">Annuler</button>
+                                <form action="{{ path('trick_delete', {id: trick.id}) }}" method="post">
+                                    <input type="hidden" name="_token" value="{{ csrf_token('delete'~trick.id) }}">
+                                    <button type="submit" class="btn btn-danger">Supprimer</button>
+                                </form>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
 
             </div>
         </div>
