@@ -178,13 +178,15 @@ class TrickController extends AbstractController
             if($image->getPoster()==1) {
                 $trick = $repo->findTrickWithCommentsAndCategories($image->getTrick()->getId());
                 $images = $trick->getImages();
-                if($images[0] != $image) {
-                    $images[0]->setPoster(1);
-                    $em->persist($images[0]);
-                }
-                else {
-                    $images[1]->setPoster(1);
-                    $em->persist($images[1]);
+                if(count($images) >1) {
+                    if($images[0] != $image) {
+                        $images[0]->setPoster(1);
+                        $em->persist($images[0]);
+                    }
+                    else {
+                        $images[1]->setPoster(1);
+                        $em->persist($images[1]);
+                    }
                 }
             }
 

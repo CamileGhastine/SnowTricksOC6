@@ -21,7 +21,7 @@
                     <img src="{{ edit ? asset(poster.url) : asset('images/add.jpg') }}" class="card-img col-6 offset-3 text-center mt-4" alt="{{ poster.alt }}">
                 {% endif %}
                 <div class="text-center">
-                    {% if edit %}
+                    {% if poster !="" %}
                         <div class="text-right">
                             <a href="#" data-toggle="modal" data-target="#changePosterModal">
                                 <i class="fas fa-recycle"></i>
@@ -29,10 +29,6 @@
                             <a href="{{ path('image_delete', { 'id' : poster.id, 'csrf_token' : csrf_token('delete'~poster.id)}) }}">
                                 <i class="fas fa-trash-alt"></i>
                             </a>
-                        </div>
-                    {% else %}
-                        <div class="text-right">
-                            <a href="#"><i class="fas fa-upload"></i></a>
                         </div>
                     {% endif %}
                     <div class="card-img-overlay col-6">
