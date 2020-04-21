@@ -153,7 +153,11 @@ class TrickController extends AbstractController
     {
         if ($request->request->get('_token') && $this->isCsrfTokenValid('delete'.$trick->getId(), $request->request->get('_token'))) {
             $em->remove($trick);
+                foreach($trick->getImages() as $image) {
+                    unlink(Kernel::getProjectDir().'/public/'.$image->getUrl());
+                }
             $em->flush();
+
 
             $this->addFlash('success', 'la figure a été supprimée avec succès !');
 
