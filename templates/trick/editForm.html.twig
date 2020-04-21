@@ -1,6 +1,6 @@
 {% extends 'base.html.twig' %}
 {% block title %}SnowTricks : Modification d'une figure{% endblock %}
-{% block stylesheets %}<link rel="stylesheet" href="{{ asset("css/trick_form.css") }}">{% endblock %}
+{% block stylesheets %}<link rel="stylesheet" href="{{ asset("css/trick_editForm.css") }}">{% endblock %}
 
 {% block body %}
     <div class="container">
@@ -18,7 +18,7 @@
                 {% if trick.images | length == 0 %}
                     <img src="{{ asset('images/tricks/noImage.jpg') }}" class="card-img col-6 offset-3 text-center mt-4" alt="no image">
                 {% else %}
-                    <img src="{{ edit ? asset(poster.url) : asset('images/add.jpg') }}" class="card-img col-6 offset-3 text-center mt-4" alt="{{ poster.alt }}">
+                    <img src="{{ asset(poster.url) }}" class="card-img col-6 offset-3 text-center mt-4" alt="{{ poster.alt }}">
                 {% endif %}
                 <div class="text-center">
                     {% if poster !="" %}
@@ -38,71 +38,69 @@
             </div>
             <div class="card-body text-center">
 
-                {% if edit %}
-                    {% for message in app.flashes('success') %}
-                        <div class="alert alert-success" id="alert">
-                            {{ message }}
-                        </div>
-                    {% endfor %}
-                    <div class="row my-5">
-                        <div class="col-8 d-flex " id="tricks-img">
-                            <div class="row">
+                {% for message in app.flashes('success') %}
+                    <div class="alert alert-success" id="alert">
+                        {{ message }}
+                    </div>
+                {% endfor %}
+                <div class="row my-5">
+                    <div class="col-8 d-flex " id="tricks-img">
+                        <div class="row">
 
-                                {% for image in trick.images %}
-                                    <div class="col-2">
-                                        <a class="col-12 mb-3" href=""><img class="card-img" src="{{ asset(image.url) }}" alt="{{ image.alt }}"></a>
-                                        {% if image.poster == 0 %}
-                                            <a href="{{ path('image_poster_change', {'id' : image.id, 'posterId' : poster.id}) }}"><i class="far fa-images"></i></a>
-                                        {% else %}
-                                            <a href="#" data-toggle="modal" data-target="#changePosterModal">
-                                                <i class="fas fa-recycle"></i>
-                                            </a>
-                                        {% endif %}
-                                        <a href="{{ path('image_delete', { 'id' : image.id, 'csrf_token' : csrf_token('delete'~image.id)}) }}"><i class="fas fa-trash-alt"></i></a>
-                                    </div>
-                                {% endfor %}
-                            </div>
-                        </div>
-
-                        <!-- Modal -->
-                        <div class="modal fade" id="changePosterModal" tabindex="-1" role="dialog" aria-labelledby="changePosterModalLabel" aria-hidden="true">
-                            <div class="modal-dialog" role="document">
-                                <div class="modal-content">
-                                    <div class="modal-header">
-                                        <h5 class="modal-title " id="changePosterModalLabel">Choisissez la nouvelle image principale pour cette figure</h5>
-                                    </div>
-                                    <div class="modal-body">
-                                        <div class="row">
-                                            {% for image in trick.images %}
-                                                <div class="col-3">
-                                                    <a href="{{ path('image_poster_change', {'id' : image.id, 'posterId' : poster.id}) }}">
-                                                        <img class="img-modal" src="{{ asset(image.url) }}" alt="{{ image.alt }}">
-                                                    </a>
-                                                </div>
-                                            {% endfor %}
-                                        </div>
-                                    </div>
-                                    <div class="modal-footer">
-                                        <button type="button" class="btn btn-secondary" data-dismiss="modal">Annuler</button>
-
-                                    </div>
+                            {% for image in trick.images %}
+                                <div class="col-2">
+                                    <a class="col-12 mb-3" href=""><img class="card-img" src="{{ asset(image.url) }}" alt="{{ image.alt }}"></a>
+                                    {% if image.poster == 0 %}
+                                        <a href="{{ path('image_poster_change', {'id' : image.id, 'posterId' : poster.id}) }}"><i class="far fa-images"></i></a>
+                                    {% else %}
+                                        <a href="#" data-toggle="modal" data-target="#changePosterModal">
+                                            <i class="fas fa-recycle"></i>
+                                        </a>
+                                    {% endif %}
+                                    <a href="{{ path('image_delete', { 'id' : image.id, 'csrf_token' : csrf_token('delete'~image.id)}) }}"><i class="fas fa-trash-alt"></i></a>
                                 </div>
-                            </div>
-                        </div>
-                        <div class="col-4" id="tricks-video">
-                            <div class="row">
-                                {% for i in 1..2 %}
-                                    {#                                    <div class="col-6">#}
-                                    {#                                        <iframe class="col-12" src="https://www.youtube.com/embed/V9xuy-rVj9w" frameborder="0" allow="accelerometer; autoplay; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>#}
-                                    {#                                        <a href="#"><i class="fas fa-trash-alt"></i></a>#}
-                                    {#                                    </div>#}
-
-                                {% endfor %}
-                            </div>
+                            {% endfor %}
                         </div>
                     </div>
 
-                {% endif %}
+                    <!-- Modal -->
+                    <div class="modal fade" id="changePosterModal" tabindex="-1" role="dialog" aria-labelledby="changePosterModalLabel" aria-hidden="true">
+                        <div class="modal-dialog" role="document">
+                            <div class="modal-content">
+                                <div class="modal-header">
+                                    <h5 class="modal-title " id="changePosterModalLabel">Choisissez la nouvelle image principale pour cette figure</h5>
+                                </div>
+                                <div class="modal-body">
+                                    <div class="row">
+                                        {% for image in trick.images %}
+                                            <div class="col-3">
+                                                <a href="{{ path('image_poster_change', {'id' : image.id, 'posterId' : poster.id}) }}">
+                                                    <img class="img-modal" src="{{ asset(image.url) }}" alt="{{ image.alt }}">
+                                                </a>
+                                            </div>
+                                        {% endfor %}
+                                    </div>
+                                </div>
+                                <div class="modal-footer">
+                                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Annuler</button>
+
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-4" id="tricks-video">
+                        <div class="row">
+                            {% for i in 1..2 %}
+                                {#                                    <div class="col-6">#}
+                                {#                                        <iframe class="col-12" src="https://www.youtube.com/embed/V9xuy-rVj9w" frameborder="0" allow="accelerometer; autoplay; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>#}
+                                {#                                        <a href="#"><i class="fas fa-trash-alt"></i></a>#}
+                                {#                                    </div>#}
+
+                            {% endfor %}
+                        </div>
+                    </div>
+                </div>
+
 
                 <div class="row my-4">
                     <div class="col-8">

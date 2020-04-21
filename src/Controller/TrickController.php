@@ -141,7 +141,6 @@ class TrickController extends AbstractController
             'formTrick' => $formTrick->createView(),
             'formImage' => $formImage->createView(),
             'trick' => $trick,
-            'edit' => true
         ]);
     }
 
