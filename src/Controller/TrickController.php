@@ -169,9 +169,23 @@ class TrickController extends AbstractController
     /**
      * @Route("trick/edit/image/{id}/delete", name="image_delete")
      */
-    public function deleteImage(Image $image, EntityManagerInterface $em, Request $request)
+    public function deleteImage(Image $image, EntityManagerInterface $em, Request $request, TrickRepository $repo)
     {
         if ($request->query->get('csrf_token') && $this->isCsrfTokenValid('delete'.$image->getId(), $request->query->get('csrf_token'))) {
+
+            //delete poster => new poster before delete
+            if($image->getPoster()==1) {
+                $trick = $repo->findTrickWithCommentsAndCategories($image->getTrick()->getId());
+                $images = $trick->getImages();
+                if($images[0] != $image) {
+                    $images[0]->setPoster(1);
+                    $em->persist($images[0]);
+                }
+                else {
+                    $images[1]->setPoster(1);
+                    $em->persist($images[1]);                }
+            }
+
             $em->remove($image);
             $em->flush();
 
