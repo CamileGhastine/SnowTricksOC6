@@ -5,12 +5,10 @@ namespace App\Controller;
 use App\Entity\Comment;
 use App\Entity\Image;
 use App\Entity\Trick;
-use App\Form\AddImageType;
 use App\Form\AddTrickType;
 use App\Form\CommentType;
 use App\Form\EditTrickType;
 use App\Form\ImageType;
-use App\Form\TrickType;
 use App\Kernel;
 use App\Repository\CategoryRepository;
 use App\Repository\ImageRepository;
@@ -20,6 +18,7 @@ use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\Routing\Annotation\Route;
+use Symfony\Component\String\Slugger\SluggerInterface;
 
 class TrickController extends AbstractController
 {
@@ -66,7 +65,7 @@ class TrickController extends AbstractController
     /**
      * @Route("/trick/edit/new", name="trick_new")
      */
-    public function create(Request $request, EntityManagerInterface $em, Trick $trick = null)
+    public function create(Request $request, EntityManagerInterface $em, Trick $trick = null, SluggerInterface $slugger)
     {
         $trick = new Trick($this->getUser());
 
@@ -78,7 +77,7 @@ class TrickController extends AbstractController
             $trick->setUpdatedAt(new DateTime());
 
             foreach ($form->getData()->getImages() as $key => $image){
-                $image->upload();
+                $image->upload($slugger);
                 $key == 0 ? $image->setPoster(1) : null;
             }
 
@@ -99,7 +98,7 @@ class TrickController extends AbstractController
     /**
      * @Route("/trick/edit/{id}/update", name="trick_edit")
      */
-    public function edit(Request $request, EntityManagerInterface $em, Trick $trick)
+    public function edit(Request $request, EntityManagerInterface $em, Trick $trick, SluggerInterface $slugger)
     {
         $formTrick = $this->createForm(EditTrickType::class, $trick);
         $formTrick->handleRequest($request);
@@ -123,7 +122,7 @@ class TrickController extends AbstractController
 
             $image = $formImage->getData();
 
-            $image->upload();
+            $image->upload($slugger);
 
             $image->setTrick($trick);
             if (count($trick->getImages()) === 0) {

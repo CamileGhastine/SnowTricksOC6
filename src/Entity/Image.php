@@ -44,9 +44,11 @@ class Image
      */
     private $file;
 
-    public function upload()
+
+    public function upload($slugger)
     {
-        $name = $this->file->getClientOriginalName();
+        $OriginalName = pathinfo($this->file->getClientOriginalName(), PATHINFO_FILENAME);
+        $name = $slugger->slug($OriginalName).'-'.uniqid().'.'.pathinfo($this->file->getClientOriginalName(), PATHINFO_EXTENSION);
 
         $this->file->move(Kernel::getProjectDir().'/public/images/tricks', $name);
 
