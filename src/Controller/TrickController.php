@@ -11,6 +11,7 @@ use App\Form\CommentType;
 use App\Form\EditTrickType;
 use App\Form\ImageType;
 use App\Form\TrickType;
+use App\Kernel;
 use App\Repository\CategoryRepository;
 use App\Repository\ImageRepository;
 use App\Repository\TrickRepository;
@@ -183,11 +184,14 @@ class TrickController extends AbstractController
                 }
                 else {
                     $images[1]->setPoster(1);
-                    $em->persist($images[1]);                }
+                    $em->persist($images[1]);
+                }
             }
 
             $em->remove($image);
             $em->flush();
+
+            unlink(Kernel::getProjectDir().'/public/'.$image->getUrl());
 
             $this->addFlash('success', 'La photo a été supprimée avec succès !');
 
