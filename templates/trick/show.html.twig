@@ -45,7 +45,7 @@
                                 <a href="{{ path('trick_edit', {id: trick.id}) }}">
                                     <i class="fas fa-pencil-alt mr-3"></i>
                                 </a>
-                                <a type="button" href="#" data-toggle="modal" data-target="#exampleModal">
+                                <a type="button" href="#" data-toggle="modal" data-target="#deleteTrickModal">
                                     <i class="fas fa-trash-alt"></i>
                                 </a>
                             </div>
@@ -58,11 +58,11 @@
                 </div>
 
                 <!-- Modal -->
-                <div class="modal fade" id="exampleModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+                <div class="modal fade" id="deleteTrickModal" tabindex="-1" role="dialog" aria-labelledby="deleteTrickModalLabel" aria-hidden="true">
                     <div class="modal-dialog" role="document">
                         <div class="modal-content">
                             <div class="modal-header">
-                                <h5 class="modal-title " id="exampleModalLabel">{{ trick.title }}</h5>
+                                <h5 class="modal-title " id="deleteTrickModalLabel">{{ trick.title }}</h5>
                             </div>
                             <div class="modal-body">
                                 <p>Etes-vous sur de vouloir supprimer cette figure ?</p>
@@ -93,7 +93,7 @@
                         <div class="col-6 d-flex " id="tricks-img">
                             <div class="row carousel-indicator">
                                 {% for image in trick.images %}
-                                    <a class="col-4 mb-3" data-target="#carouselExampleIndicators" data-slide-to="{{ loop.index }}" href="">
+                                    <a class="col-3 mb-3" data-target="#carouselExampleIndicators" data-slide-to="{{ loop.index }}" href="">
                                         <img class="card-img" src="{{ asset(image.url) }}" alt="{{ image.alt }}">
                                     </a>
                                 {% endfor %}
