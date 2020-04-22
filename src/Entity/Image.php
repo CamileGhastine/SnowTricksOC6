@@ -2,7 +2,11 @@
 
 namespace App\Entity;
 
+use App\Kernel;
 use Doctrine\ORM\Mapping as ORM;
+use Symfony\Component\HttpFoundation\File\UploadedFile;
+use Symfony\Component\Validator\Constraints as Assert;
+
 
 /**
  * @ORM\Entity(repositoryClass="App\Repository\ImageRepository")
@@ -36,6 +40,45 @@ class Image
      * @ORM\ManyToOne(targetEntity="App\Entity\Trick", inversedBy="images")
      */
     private $trick;
+
+    /**
+     * @var UploadedFile
+     * @Assert\File(
+     *     maxSize = "1024k",
+     *     mimeTypes = {"image/jpeg", "image/png"},
+     *     mimeTypesMessage = "L'image doit être au format jpeg ou png"
+     * )
+     */
+    private $file;
+
+
+    public function upload($slugger)
+    {
+        $OriginalName = pathinfo($this->file->getClientOriginalName(), PATHINFO_FILENAME);
+        $name = $slugger->slug($OriginalName).'-'.uniqid().'.'.pathinfo($this->file->getClientOriginalName(), PATHINFO_EXTENSION);
+
+        $this->file->move(Kernel::getProjectDir().'/public/images/tricks', $name);
+
+        $this->setUrl('images/tricks/'.$name);
+        $this->setAlt($name);
+        $this->setPoster(0);
+    }
+
+    /**
+     * @return mixed
+     */
+    public function getFile()
+    {
+        return $this->file;
+    }
+
+    /**
+     * @param mixed $file
+     */
+    public function setFile($file): void
+    {
+        $this->file = $file;
+    }
 
     public function getId(): ?int
     {

@@ -1,0 +1,67 @@
+{% extends 'base.html.twig' %}
+{% block title %}SnowTricks : Ajout d'une figure{% endblock %}
+{% block stylesheets %}<link rel="stylesheet" href="{{ asset("css/trick_addForm.css") }}">{% endblock %}
+
+{% block body %}
+
+    <div class="container">
+
+        {{ form_start(form) }}
+
+        <div class="card mb-5">
+            <div class="card-header bg-dark text-white">
+                <div id="carouselExampleIndicators" class="carousel slide" data-ride="carousel">
+                    <div class="carousel-inner">
+                            <img class="d-block w-100 card-img col-6 offset-3 text-center mt-4" src="{{ asset('images/tricks/noImage.jpg') }}" alt="no image">
+                    </div>
+                </div>
+                <div class="text-center">
+                    <div class="card-img-overlay col-6">
+                        <h1 class="card-title mt-5 text-break" id="title-img">Ajouter une figure</h1>
+                    </div>
+                </div>
+            </div>
+
+            <div class="card-body mt-5">
+
+                {{ form_row(form.title) }}
+                {{ form_row(form.description) }}
+
+                <div class="row my-5 text-center">
+                    <div class="col-6">
+                        <h5>Ajouter une photo</h5>
+                        <div class="images text-left" data-prototype="{{ form_widget(form.images.vars.prototype)|e('html_attr') }}"></div>
+                        {{ form_row(form.images) }}
+                    </div>
+                    <div class="col-6">
+                        <h5>Ajouter une vidéo</h5>
+                        <a href="#"><i class="fas fa-plus-circle"></i></a>
+                    </div>
+                </div>
+
+                <div class="row mb-5">
+                    <div class="col-6">
+                        <div class="categories">
+                            {{ form_row(form.categories) }}
+                        </div>
+                    </div>
+                    <div class="col-6">
+                        <div class="text-center">
+                            <h5>Ajouter une catégorie</h5>
+                            <a href="#"><i class="fas fa-plus-circle"></i></a>
+                        </div>
+                    </div>
+                </div>
+
+
+                <div class="text-center">
+                    <button type="submit" class="btn btn-secondary">{{ "Ajouter l'article" }}</button>
+                </div>
+                {{ form_end(form) }}
+            </div>
+        </div>
+    </div>
+
+<script src="{{ asset('js/add_trick_form.js') }}"></script>
+
+{% endblock %}
