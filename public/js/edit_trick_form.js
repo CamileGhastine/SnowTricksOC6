@@ -10,6 +10,7 @@ $('a.add-form').click(function(){
     }
 );
 
+// display uploaded file
 $('.custom-file-input').on('change', function(event) {
     var inputFile = event.currentTarget;
     $(inputFile).parent()

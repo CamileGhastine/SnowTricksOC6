@@ -14,7 +14,7 @@ $categoriesFieldsetLegend.show();
 
 // setup an "add an image" link
 var $addImageLink = $('<a href="#" class="add_image_link"><i class="fas fa-plus-circle"></i></a>');
-var $newLink = $('<div></div>').append($addImageLink);
+var $newLink = $('<div class="text-center"></div>').append($addImageLink);
 
 jQuery(document).ready(function() {
     // Get the ul that holds the collection of images
@@ -68,4 +68,18 @@ function addImageForm($collectionHolder, $newLink) {
 
         return false;
     });
+
+    // display uploaded file
+    $('.custom-file-input').on('change', function() {
+        var $el = $(this),
+            files = $el[0].files,
+            label = files[0].name;
+        if (files.length > 1) {
+            label = label + " and " + String(files.length - 1) + " more files"
+        }
+        $el.next('.custom-file-label').html(label);
+    });
+
+
+
 }
