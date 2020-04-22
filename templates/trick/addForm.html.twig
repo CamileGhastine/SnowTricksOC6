@@ -10,9 +10,23 @@
 
         <div class="card mb-5">
             <div class="card-header bg-dark text-white">
-                <img src="{{ asset('images/add.jpg') }}" class="card-img col-6 offset-3 text-center mt-4" alt="ajouter une image">
+                <div id="carouselExampleIndicators" class="carousel slide" data-ride="carousel">
+                    <div class="carousel-inner">
+                            <img class="d-block w-100 card-img col-6 offset-3 text-center mt-4" src="{{ asset('images/tricks/noImage.jpg') }}" alt="no image">
+                    </div>
+                </div>
+                <div class="text-center">
+                    <div class="card-img-overlay col-6">
+                        <h1 class="card-title mt-5 text-break" id="title-img">Ajouter une figure</h1>
+                    </div>
+                </div>
             </div>
-            <div class="card-body">
+
+            <div class="card-body mt-5">
+
+                {{ form_row(form.title) }}
+                {{ form_row(form.description) }}
+
                 <div class="row my-5 text-center">
                     <div class="col-6">
                         <h5>Ajouter une photo</h5>
@@ -25,10 +39,7 @@
                     </div>
                 </div>
 
-                {{ form_row(form.title) }}
-                {{ form_row(form.description) }}
-
-                <div class="row">
+                <div class="row mb-5">
                     <div class="col-6">
                         <div class="categories">
                             {{ form_row(form.categories) }}
@@ -41,6 +52,8 @@
                         </div>
                     </div>
                 </div>
+
+
                 <div class="text-center">
                     <button type="submit" class="btn btn-secondary">{{ "Ajouter l'article" }}</button>
                 </div>
