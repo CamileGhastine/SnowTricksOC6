@@ -30,12 +30,14 @@
                 <div class="row my-5 text-center">
                     <div class="col-6">
                         <h5>Ajouter une photo</h5>
-                        <div class="images text-left" data-prototype="{{ form_widget(form.images.vars.prototype)|e('html_attr') }}"></div>
-                        {{ form_row(form.images) }}
+                        <div class="images text-left" data-prototype="{{ form_widget(form.images.vars.prototype)|e('html_attr') }}">
+                            {{ form_row(form.images) }}
+                        </div>
                     </div>
                     <div class="col-6">
                         <h5>Ajouter une vidéo</h5>
-                        <a href="#"><i class="fas fa-plus-circle"></i></a>
+                        <div class="videos text-left" data-prototype="{{ form_widget(form.videos.vars.prototype)|e('html_attr') }}"></div>
+                        {{ form_row(form.videos) }}
                     </div>
                 </div>
 

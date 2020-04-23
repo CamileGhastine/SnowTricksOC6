@@ -53,7 +53,7 @@ function addImageForm($collectionHolder, $newLink) {
     $collectionHolder.data('index', index + 1);
 
     // Display the form in the page in an li, before the "Add an image" link li
-    var $newForm = $('<div class="row"></div>').append(newForm);
+    var $newForm = $('<div class="row justify-content-center"></div>').append(newForm);
 
     // also add a remove button, just for this example
     $newForm.append('<a href="#" class="remove-image col-2"><i class="far fa-window-close"></i></a>');
@@ -79,7 +79,63 @@ function addImageForm($collectionHolder, $newLink) {
         }
         $el.next('.custom-file-label').html(label);
     });
-
-
-
 }
+
+// setup an "add a tag" link
+var $addVideoLink = $('<a href="#" class="add_video_link"><i class="fas fa-plus-circle"></i></a>');
+var $newLinkVideo = $('<div class="text-center"></div>').append($addVideoLink);
+
+jQuery(document).ready(function() {
+    // Get the ul that holds the collection of tags
+    var $collectionHolderVideo = $('div.videos');
+
+    // add the "add a tag" anchor and li to the tags ul
+    $collectionHolderVideo.append($newLinkVideo);
+
+    // count the current form inputs we have (e.g. 2), use that as the new
+    // index when inserting a new item (e.g. 2)
+    $collectionHolderVideo.data('index', $collectionHolderVideo.find(':input').length);
+
+    $addVideoLink.on('click', function(e) {
+        // prevent the link from creating a "#" on the URL
+        e.preventDefault();
+
+        // add a new tag form (see code block below)
+        addVideoForm($collectionHolderVideo, $newLinkVideo);
+    });
+
+
+});
+
+function addVideoForm($collectionHolder, $newLinkLi) {
+    // Get the data-prototype explained earlier
+    var prototype = $collectionHolder.data('prototype');
+
+    // get the new index
+    var index = $collectionHolder.data('index');
+
+    // Replace '$$name$$' in the prototype's HTML to
+    // instead be a number based on how many items we have
+    var newForm = prototype.replace(/__name__/g, index);
+
+    // increase the index with one for the next item
+    $collectionHolder.data('index', index + 1);
+
+    // Display the form in the page in an li, before the "Add a tag" link li
+    var $newFormLi = $('<div class="row justify-content-center"></div>').append(newForm);
+
+    // also add a remove button, just for this example
+    $newFormLi.append('<a href="#" class="remove-tag col-2"><i class="far fa-window-close"></i></a>');
+
+    $newLinkLi.before($newFormLi);
+
+    // handle the removal, just for this example
+    $('.remove-tag').click(function(e) {
+        e.preventDefault();
+
+        $(this).parent().remove();
+
+        return false;
+    });
+}
+
