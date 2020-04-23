@@ -5,6 +5,7 @@ namespace App\Controller;
 use App\Entity\Comment;
 use App\Entity\Image;
 use App\Entity\Trick;
+use App\Entity\Video;
 use App\Form\AddTrickType;
 use App\Form\CommentType;
 use App\Form\EditTrickType;
@@ -116,16 +117,15 @@ class TrickController extends AbstractController
             return $this->redirectToRoute('trick_show', ['id' => $trick->getId()]);
         }
 
-        $formImage = $this->createForm(ImageType::class);
+        $image = new Image();
+        $formImage = $this->createForm(ImageType::class, $image);
         $formImage->handleRequest($request);
 
         if ($formImage->isSubmitted() && $formImage->isValid()) {
 
-            $image = $formImage->getData();
-
             $image->upload($slugger);
-
             $image->setTrick($trick);
+
             if (count($trick->getImages()) === 0) {
                 $image->setPoster(1);
             }
@@ -138,9 +138,21 @@ class TrickController extends AbstractController
             return $this->redirect($this->generateUrl('trick_edit', ['id' => $trick->getId()]).'#alert');
         }
 
-        $formVideo = $this->createForm(VideoType::class);
+        $video = new Video();
+        $formVideo = $this->createForm(VideoType::class, $video);
         $formVideo->handleRequest($request);
 
+        if ($formVideo->isSubmitted() && $formVideo->isValid()) {
+
+            $video->setTrick($trick);
+
+            $em->persist($video);
+            $em->flush();
+
+            $this->addFlash('success', 'La vidéo a été ajoutée avec succès !');
+
+            return $this->redirect($this->generateUrl('trick_edit', ['id' => $trick->getId()]).'#alert');
+        }
 
         return $this->render('trick/editForm.html.twig', [
             'formTrick' => $formTrick->createView(),

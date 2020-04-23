@@ -102,9 +102,11 @@
 
                         <div class="col-6" id="tricks-video">
                             <div class="row">
-                                {#                                    {% for i in 1..2 %}#}
-                                {#                                        <iframe class="col-4" src="https://www.youtube.com/embed/V9xuy-rVj9w" frameborder="0" allow="accelerometer; autoplay; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>#}
-                                {#                                    {% endfor %}#}
+                                {% for video in trick.videos %}
+                                    <div class="col-4">
+                                        {{ video.iframe | raw }}
+                                    </div>
+                                {% endfor %}
                             </div>
                         </div>
 
