@@ -85,6 +85,8 @@ function addImageForm($collectionHolder, $newLink) {
 var $addVideoLink = $('<a href="#" class="add_video_link"><i class="fas fa-plus-circle"></i></a>');
 var $newLinkVideo = $('<div class="text-center"></div>').append($addVideoLink);
 
+$('#explanation').hide();
+
 jQuery(document).ready(function() {
     // Get the ul that holds the collection of tags
     var $collectionHolderVideo = $('div.videos');
@@ -100,14 +102,17 @@ jQuery(document).ready(function() {
         // prevent the link from creating a "#" on the URL
         e.preventDefault();
 
+        $('#explanation').show();
+
         // add a new tag form (see code block below)
         addVideoForm($collectionHolderVideo, $newLinkVideo);
+
     });
 
 
 });
 
-function addVideoForm($collectionHolder, $newLinkLi) {
+function addVideoForm($collectionHolder, $newLink) {
     // Get the data-prototype explained earlier
     var prototype = $collectionHolder.data('prototype');
 
@@ -122,12 +127,13 @@ function addVideoForm($collectionHolder, $newLinkLi) {
     $collectionHolder.data('index', index + 1);
 
     // Display the form in the page in an li, before the "Add a tag" link li
-    var $newFormLi = $('<div class="row justify-content-center"></div>').append(newForm);
+    var $newFormVideo = $('<div class="row justify-content-center"></div>').append(newForm);
 
     // also add a remove button, just for this example
-    $newFormLi.append('<a href="#" class="remove-tag col-2"><i class="far fa-window-close"></i></a>');
+    $newFormVideo.append('<a href="#" class="remove-tag col-2"><i class="far fa-window-close"></i></a>');
 
-    $newLinkLi.before($newFormLi);
+    $newLink.before($newFormVideo);
+
 
     // handle the removal, just for this example
     $('.remove-tag').click(function(e) {
@@ -138,4 +144,5 @@ function addVideoForm($collectionHolder, $newLinkLi) {
         return false;
     });
 }
+
 
