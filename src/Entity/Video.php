@@ -26,32 +26,42 @@ class Video
      */
     private $trick;
 
-    public function getId(): ?int
+    public function refactorIframe()
     {
-        return $this->id;
+        $array = explode(' ', $this->iframe);
+        foreach ($array as $value) {
+            if ( strstr($value, 'src="')) {
+                $this->iframe = '<iframe '.$value.'></iframe>';
+            }
+        }
     }
 
-    public function getIframe(): ?string
-    {
-        return $this->iframe;
-    }
+public function getId(): ?int
+{
+    return $this->id;
+}
 
-    public function setIframe(string $iframe): self
-    {
-        $this->iframe = $iframe;
+public function getIframe(): ?string
+{
+    return $this->iframe;
+}
 
-        return $this;
-    }
+public function setIframe(string $iframe): self
+{
+    $this->iframe = $iframe;
 
-    public function getTrick(): ?Trick
-    {
-        return $this->trick;
-    }
+    return $this;
+}
 
-    public function setTrick(?Trick $trick): self
-    {
-        $this->trick = $trick;
+public function getTrick(): ?Trick
+{
+    return $this->trick;
+}
 
-        return $this;
-    }
+public function setTrick(?Trick $trick): self
+{
+    $this->trick = $trick;
+
+    return $this;
+}
 }

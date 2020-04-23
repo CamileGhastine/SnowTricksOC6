@@ -78,6 +78,10 @@ class TrickController extends AbstractController
 
             $trick->setUpdatedAt(new DateTime());
 
+            foreach ($form->getData()->getVideos() as $video) {
+                $video->refactorIframe();
+            }
+
             foreach ($form->getData()->getImages() as $key => $image){
                 $image->upload($slugger);
                 $key == 0 ? $image->setPoster(1) : null;
@@ -145,6 +149,7 @@ class TrickController extends AbstractController
         if ($formVideo->isSubmitted() && $formVideo->isValid()) {
 
             $video->setTrick($trick);
+            $video->refactorIframe();
 
             $em->persist($video);
             $em->flush();
@@ -170,9 +175,9 @@ class TrickController extends AbstractController
     {
         if ($request->request->get('_token') && $this->isCsrfTokenValid('delete'.$trick->getId(), $request->request->get('_token'))) {
             $em->remove($trick);
-                foreach($trick->getImages() as $image) {
-                    unlink(Kernel::getProjectDir().'/public/'.$image->getUrl());
-                }
+            foreach($trick->getImages() as $image) {
+                unlink(Kernel::getProjectDir().'/public/'.$image->getUrl());
+            }
             $em->flush();
 
 
