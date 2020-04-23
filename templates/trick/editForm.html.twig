@@ -105,9 +105,9 @@
                     <div class="col-8">
                         <h5>Ajouter une photo</h5>
                         {{ form_start(formImage) }}
-                        <a class="add-form mb-4" role="button"><i class="fas fa-plus-circle"></i></a>
+                        <a class="add-image-form mb-4" role="button"><i class="fas fa-plus-circle"></i></a>
                         {{ form_errors(formImage.file) }}
-                        <div class="row formImageHidden justify-content-center">
+                        <div class="row form-image-hidden justify-content-center">
                             <div class="col-4 text-left mt-3 mb-2">
                                 {{ form_widget(formImage.file) }}
                             </div>
@@ -124,9 +124,9 @@
                     <div class="col-4">
                         <h5>Ajouter une vidéo</h5>
                         {{ form_start(formVideo) }}
-                        <a class="add-form mb-4" role="button"><i class="fas fa-plus-circle"></i></a>
+                        <a class="add-video-form mb-4" role="button"><i class="fas fa-plus-circle"></i></a>
                         {{ form_errors(formVideo.iframe) }}
-                        <div class="row formImageHidden justify-content-center">
+                        <div class="row form-video-hidden justify-content-center">
                             <div class="col-8 text-left mt-3 mb-2">
                                 {{ form_widget(formVideo.iframe) }}
                             </div>
