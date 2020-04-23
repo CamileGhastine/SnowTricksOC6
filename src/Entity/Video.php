@@ -3,6 +3,7 @@
 namespace App\Entity;
 
 use Doctrine\ORM\Mapping as ORM;
+use Symfony\Component\Validator\Constraints as Assert;
 
 /**
  * @ORM\Entity(repositoryClass="App\Repository\VideoRepository")
@@ -18,6 +19,10 @@ class Video
 
     /**
      * @ORM\Column(type="string", length=255)
+     * @Assert\Regex(
+         *     pattern = "/^(<iframe\s).*src=.*(<\/iframe>)$/i",
+     *     message = "La valeur entrée n'est pas un format iframe valide"
+     * )
      */
     private $iframe;
 
