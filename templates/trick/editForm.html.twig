@@ -39,17 +39,16 @@
             <div class="card-body">
 
                 {% for message in app.flashes('success') %}
-                    <div class="alert alert-success" id="alert">
+                    <div class="alert alert-success text-center" id="alert">
                         {{ message }}
                     </div>
                 {% endfor %}
                 <div class="row my-5">
                     <div class="col-8 d-flex " id="tricks-img">
                         <div class="row">
-
                             {% for image in trick.images %}
-                                <div class="col-2">
-                                    <a class="col-12 mb-3" href=""><img class="card-img" src="{{ asset(image.url) }}" alt="{{ image.alt }}"></a>
+                                <div class="col-2 text-center">
+                                    <img class="card-img" src="{{ asset(image.url) }}" alt="{{ image.alt }}">
                                     {% if image.poster == 0 %}
                                         <a href="{{ path('image_poster_change', {'id' : image.id, 'posterId' : poster.id}) }}"><i class="far fa-images"></i></a>
                                     {% else %}
@@ -71,7 +70,7 @@
                                     <h5 class="modal-title " id="changePosterModalLabel">Choisissez la nouvelle image principale pour cette figure</h5>
                                 </div>
                                 <div class="modal-body">
-                                    <div class="row">
+                                    <div class="row text-center">
                                         {% for image in trick.images %}
                                             <div class="col-3">
                                                 <a href="{{ path('image_poster_change', {'id' : image.id, 'posterId' : poster.id}) }}">
@@ -88,11 +87,15 @@
                             </div>
                         </div>
                     </div>
+
                     <div class="col-4" id="tricks-video">
                         <div class="row">
                             {% for video in trick.videos %}
-                                <div class="col-4">
+                                <div class="col-4 text-center">
                                     {{ video.iframe | raw }}
+                                    <a href="{{ path('video_delete', { 'id' : video.id, 'csrf_token' : csrf_token('delete'~video.id)}) }}">
+                                        <i class="fas fa-trash-alt"></i>
+                                    </a>
                                 </div>
                             {% endfor %}
                         </div>

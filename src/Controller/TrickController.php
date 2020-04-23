@@ -238,4 +238,20 @@ class TrickController extends AbstractController
 
         return $this->redirectToRoute('trick_edit', ['id' => $newPoster->getTrick()->getId()]);
     }
+
+    /**
+     * @Route("trick/edit/video/{id}/delete", name="video_delete")
+     */
+    public function deleteVideo(Video $video, EntityManagerInterface $em, Request $request)
+    {
+        if ($request->query->get('csrf_token') && $this->isCsrfTokenValid('delete'.$video->getId(), $request->query->get('csrf_token'))) {
+
+            $em->remove($video);
+            $em->flush();
+
+            $this->addFlash('success', 'La vidéo a été supprimée avec succès !');
+
+            return $this->redirect($this->generateUrl('trick_edit', ['id' => $video->getTrick()->getId()]) . '#alert');
+        }
+    }
 }
