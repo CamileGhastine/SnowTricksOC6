@@ -9,6 +9,7 @@ use App\Form\AddTrickType;
 use App\Form\CommentType;
 use App\Form\EditTrickType;
 use App\Form\ImageType;
+use App\Form\VideoType;
 use App\Kernel;
 use App\Repository\CategoryRepository;
 use App\Repository\ImageRepository;
@@ -137,9 +138,14 @@ class TrickController extends AbstractController
             return $this->redirect($this->generateUrl('trick_edit', ['id' => $trick->getId()]).'#alert');
         }
 
+        $formVideo = $this->createForm(VideoType::class);
+        $formVideo->handleRequest($request);
+
+
         return $this->render('trick/editForm.html.twig', [
             'formTrick' => $formTrick->createView(),
             'formImage' => $formImage->createView(),
+            'formVideo' => $formVideo->createView(),
             'trick' => $trick,
         ]);
     }

@@ -105,7 +105,6 @@
                     <div class="col-8">
                         <h5>Ajouter une photo</h5>
                         {{ form_start(formImage) }}
-
                         <a class="add-form mb-4" role="button"><i class="fas fa-plus-circle"></i></a>
                         {{ form_errors(formImage.file) }}
                         <div class="row formImageHidden justify-content-center">
@@ -120,14 +119,29 @@
                             </p>
                         </div>
                         {{ form_end(formImage) }}
-
                     </div>
+
                     <div class="col-4">
                         <h5>Ajouter une vidéo</h5>
+                        {{ form_start(formVideo) }}
                         <a class="add-form mb-4" role="button"><i class="fas fa-plus-circle"></i></a>
+                        {{ form_errors(formVideo.iframe) }}
+                        <div class="row formImageHidden justify-content-center">
+                            <div class="col-8 text-left mt-3 mb-2">
+                                {{ form_widget(formVideo.iframe) }}
+                            </div>
+                            <div class="col-1 mt-4">
+                                <button type="submit" class="icone-button"><i class="fas fa-download"></i></button>
+                            </div>
+                            <p class="col-12 font-weight-light">
+                                <small>(Sélectionner un fichier et cliquer sur l'icone <i class="fas fa-download"></i> pour valider)</small>
+                            </p>
+                        </div>                        {{ form_widget(formVideo) }}
                     </div>
+                    {{ form_end(formImage) }}
                 </div>
-                <div></div>
+
+
                 {{ form_start(formTrick) }}
                 {{ form_row(formTrick.title) }}
                 {{ form_row(formTrick.description) }}
