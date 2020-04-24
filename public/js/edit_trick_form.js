@@ -3,10 +3,10 @@ var $formLabel = $('legend.col-form-label');
 $formLabel.removeClass('col-sm-2');
 
 // $('div.formImageHidden').hide();
-$('div.formImageHidden').hide();
+$('div.form-image-hidden').hide();
 
-$('a.add-form').click(function(){
-        $('div.formImageHidden').toggle()
+$('a.add-image-form').click(function(){
+        $('div.form-image-hidden').toggle()
     }
 );
 
@@ -17,3 +17,12 @@ $('.custom-file-input').on('change', function(event) {
         .find('.custom-file-label')
         .html(inputFile.files[0].name);
 });
+
+
+// $('div.formImageHidden').hide();
+$('div.form-video-hidden').hide();
+
+$('a.add-video-form').click(function(){
+        $('div.form-video-hidden').toggle()
+    }
+);

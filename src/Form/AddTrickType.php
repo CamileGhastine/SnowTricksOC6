@@ -30,6 +30,11 @@ class AddTrickType extends AbstractType
                 'allow_add' => true,
                 'by_reference' => false
             ])
+            ->add('videos', CollectionType::class,[
+                'entry_type' => VideoType::class,
+                'allow_add' => true,
+                'by_reference' => false
+            ])
         ;
     }
 

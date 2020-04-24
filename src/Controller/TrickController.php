@@ -5,10 +5,12 @@ namespace App\Controller;
 use App\Entity\Comment;
 use App\Entity\Image;
 use App\Entity\Trick;
+use App\Entity\Video;
 use App\Form\AddTrickType;
 use App\Form\CommentType;
 use App\Form\EditTrickType;
 use App\Form\ImageType;
+use App\Form\VideoType;
 use App\Kernel;
 use App\Repository\CategoryRepository;
 use App\Repository\ImageRepository;
@@ -76,6 +78,10 @@ class TrickController extends AbstractController
 
             $trick->setUpdatedAt(new DateTime());
 
+            foreach ($form->getData()->getVideos() as $video) {
+                $video->refactorIframe();
+            }
+
             foreach ($form->getData()->getImages() as $key => $image){
                 $image->upload($slugger);
                 $key == 0 ? $image->setPoster(1) : null;
@@ -115,16 +121,15 @@ class TrickController extends AbstractController
             return $this->redirectToRoute('trick_show', ['id' => $trick->getId()]);
         }
 
-        $formImage = $this->createForm(ImageType::class);
+        $image = new Image();
+        $formImage = $this->createForm(ImageType::class, $image);
         $formImage->handleRequest($request);
 
         if ($formImage->isSubmitted() && $formImage->isValid()) {
 
-            $image = $formImage->getData();
-
             $image->upload($slugger);
-
             $image->setTrick($trick);
+
             if (count($trick->getImages()) === 0) {
                 $image->setPoster(1);
             }
@@ -137,9 +142,27 @@ class TrickController extends AbstractController
             return $this->redirect($this->generateUrl('trick_edit', ['id' => $trick->getId()]).'#alert');
         }
 
+        $video = new Video();
+        $formVideo = $this->createForm(VideoType::class, $video);
+        $formVideo->handleRequest($request);
+
+        if ($formVideo->isSubmitted() && $formVideo->isValid()) {
+
+            $video->setTrick($trick);
+            $video->refactorIframe();
+
+            $em->persist($video);
+            $em->flush();
+
+            $this->addFlash('success', 'La vidéo a été ajoutée avec succès !');
+
+            return $this->redirect($this->generateUrl('trick_edit', ['id' => $trick->getId()]).'#alert');
+        }
+
         return $this->render('trick/editForm.html.twig', [
             'formTrick' => $formTrick->createView(),
             'formImage' => $formImage->createView(),
+            'formVideo' => $formVideo->createView(),
             'trick' => $trick,
         ]);
     }
@@ -152,9 +175,9 @@ class TrickController extends AbstractController
     {
         if ($request->request->get('_token') && $this->isCsrfTokenValid('delete'.$trick->getId(), $request->request->get('_token'))) {
             $em->remove($trick);
-                foreach($trick->getImages() as $image) {
-                    unlink(Kernel::getProjectDir().'/public/'.$image->getUrl());
-                }
+            foreach($trick->getImages() as $image) {
+                unlink(Kernel::getProjectDir().'/public/'.$image->getUrl());
+            }
             $em->flush();
 
 
@@ -219,5 +242,21 @@ class TrickController extends AbstractController
         $em->flush();
 
         return $this->redirectToRoute('trick_edit', ['id' => $newPoster->getTrick()->getId()]);
+    }
+
+    /**
+     * @Route("trick/edit/video/{id}/delete", name="video_delete")
+     */
+    public function deleteVideo(Video $video, EntityManagerInterface $em, Request $request)
+    {
+        if ($request->query->get('csrf_token') && $this->isCsrfTokenValid('delete'.$video->getId(), $request->query->get('csrf_token'))) {
+
+            $em->remove($video);
+            $em->flush();
+
+            $this->addFlash('success', 'La vidéo a été supprimée avec succès !');
+
+            return $this->redirect($this->generateUrl('trick_edit', ['id' => $video->getTrick()->getId()]) . '#alert');
+        }
     }
 }
