@@ -50,7 +50,7 @@
                                 <div class="col-2 text-center">
                                     <img class="card-img" src="{{ asset(image.url) }}" alt="{{ image.alt }}">
                                     {% if image.poster == 0 %}
-                                        <a href="{{ path('image_poster_change', {'id' : image.id, 'posterId' : poster.id}) }}"><i class="far fa-images"></i></a>
+                                        <a href="{{ path('image_poster_change', {'newPoster' : image.id, 'oldPoster' : poster.id}) }}"><i class="far fa-images"></i></a>
                                     {% else %}
                                         <a href="#" data-toggle="modal" data-target="#changePosterModal">
                                             <i class="fas fa-recycle"></i>
@@ -73,7 +73,7 @@
                                     <div class="row text-center">
                                         {% for image in trick.images %}
                                             <div class="col-3">
-                                                <a href="{{ path('image_poster_change', {'id' : image.id, 'posterId' : poster.id}) }}">
+                                                <a href="{{ path('image_poster_change', {'newPoster' : image.id, 'oldPoster' : poster.id}) }}">
                                                     <img class="img-modal" src="{{ asset(image.url) }}" alt="{{ image.alt }}">
                                                 </a>
                                             </div>
@@ -205,6 +205,9 @@
         </div>
     </div>
 
-    <script src="{{ asset('js/edit_trick_form.js') }}"></script>
 
+{% endblock %}
+
+{% block javascripts %}
+    <script src="{{ asset('js/edit_trick_form.js') }}"></script>
 {% endblock %}

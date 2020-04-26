@@ -13,7 +13,6 @@ use App\Form\ImageType;
 use App\Form\VideoType;
 use App\Kernel;
 use App\Repository\CategoryRepository;
-use App\Repository\ImageRepository;
 use App\Repository\TrickRepository;
 use DateTime;
 use Doctrine\ORM\EntityManagerInterface;
@@ -22,8 +21,25 @@ use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Component\String\Slugger\SluggerInterface;
 
+
 class TrickController extends AbstractController
 {
+
+    private $maxResult = 2;
+
+    /**
+     * @Route("/ajax/loadMore", name="ajax_load_more")
+     */
+    public function ajaxLoadMore(TrickRepository $repoTrick, Request $request)
+    {
+        $id = $request->request->get('id');
+        $firstResult = $request->request->get('page') * $this->maxResult;
+        return $this->render('trick/ajax/load_more.html.twig', [
+            'tricks' => $id ? $repoTrick->findByCategoryWithPoster($id, $this->maxResult, $firstResult) : $repoTrick->findAllWithPoster($this->maxResult, $firstResult),
+
+        ]);
+    }
+
     /**
      * @Route("/", name="home")
      * @Route("/trick/{id}/category", name="trick_category")
@@ -31,8 +47,9 @@ class TrickController extends AbstractController
     public function index(TrickRepository $repoTrick, CategoryRepository $repoCategory, $id = null)
     {
         return $this->render('trick/index.html.twig', [
-            'tricks' => $id ? $repoTrick->findByCategoryWithPoster($id) : $repoTrick->findAllWithPoster(),
-            'categories' => $repoCategory->findAll()
+            'tricks' => $id ? $repoTrick->findByCategoryWithPoster($id, $this->maxResult) : $repoTrick->findAllWithPoster($this->maxResult),
+            'categories' => $repoCategory->findAll(),
+            'categoryId' => $id
         ]);
     }
 
@@ -67,7 +84,7 @@ class TrickController extends AbstractController
     /**
      * @Route("/trick/edit/new", name="trick_new")
      */
-    public function create(Request $request, EntityManagerInterface $em, Trick $trick = null, SluggerInterface $slugger)
+    public function create(Request $request, EntityManagerInterface $em, SluggerInterface $slugger)
     {
         $trick = new Trick($this->getUser());
 
@@ -75,16 +92,17 @@ class TrickController extends AbstractController
         $form->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid()) {
-
             $trick->setUpdatedAt(new DateTime());
 
+            /** @var Video $video */
             foreach ($form->getData()->getVideos() as $video) {
                 $video->refactorIframe();
             }
 
+            /** @var Image $image */
             foreach ($form->getData()->getImages() as $key => $image){
                 $image->upload($slugger);
-                $key == 0 ? $image->setPoster(1) : null;
+                $key === 0 ? $image->setPoster(true) : null;
             }
 
             $em->persist($trick);
@@ -97,7 +115,6 @@ class TrickController extends AbstractController
 
         return $this->render('trick/addForm.html.twig', [
             'form' => $form->createView(),
-            'trick' =>$trick,
         ]);
     }
 
@@ -173,71 +190,59 @@ class TrickController extends AbstractController
      */
     public function delete(Trick $trick, EntityManagerInterface $em, Request $request, TrickRepository $repoTrick)
     {
-        if ($request->request->get('_token') && $this->isCsrfTokenValid('delete'.$trick->getId(), $request->request->get('_token'))) {
-            $em->remove($trick);
-            foreach($trick->getImages() as $image) {
-                unlink(Kernel::getProjectDir().'/public/'.$image->getUrl());
-            }
-            $em->flush();
-
-
-            $this->addFlash('success', 'la figure a été supprimée avec succès !');
-
-            return $this->redirectToRoute('home');
+        if (!$request->request->get('_token') || !$this->isCsrfTokenValid('delete'.$trick->getId(), $request->request->get('_token'))) {
+            return $this->render('trick/editForm.html.twig', ['trick' => $repoTrick->findWithPoster($trick->getId())]);
         }
 
-        return $this->render('trick/delete.html.twig', [
-                'trick' => $repoTrick->findWithPoster($trick->getId()),
-            ]
-        );
+        foreach($trick->getImages() as $image) {
+            unlink(Kernel::getProjectDir().'/public/'.$image->getUrl());
+        }
+
+        $em->remove($trick);
+        $em->flush();
+
+
+        $this->addFlash('success', 'la figure a été supprimée avec succès !');
+
+        return $this->redirectToRoute('home');
     }
 
     /**
      * @Route("trick/edit/image/{id}/delete", name="image_delete")
      */
-    public function deleteImage(Image $image, EntityManagerInterface $em, Request $request, TrickRepository $repo)
+    public function deleteImage(Image $image, EntityManagerInterface $em, Request $request)
     {
-        if ($request->query->get('csrf_token') && $this->isCsrfTokenValid('delete'.$image->getId(), $request->query->get('csrf_token'))) {
-
-            //delete poster => new poster before delete
-            if($image->getPoster()==1) {
-                $trick = $repo->findTrickWithCommentsAndCategories($image->getTrick()->getId());
-                $images = $trick->getImages();
-                if(count($images) >1) {
-                    if($images[0] != $image) {
-                        $images[0]->setPoster(1);
-                        $em->persist($images[0]);
-                    }
-                    else {
-                        $images[1]->setPoster(1);
-                        $em->persist($images[1]);
-                    }
-                }
-            }
-
-            $em->remove($image);
-            $em->flush();
-
-            unlink(Kernel::getProjectDir().'/public/'.$image->getUrl());
-
-            $this->addFlash('success', 'La photo a été supprimée avec succès !');
-
-            return $this->redirect($this->generateUrl('trick_edit', ['id' => $image->getTrick()->getId()]) . '#alert');
+        if (!$request->query->get('csrf_token') || !$this->isCsrfTokenValid('delete'.$image->getId(), $request->query->get('csrf_token'))) {
+            return $this->redirect($this->generateUrl('trick_edit', ['id' => $image->getTrick()->getId()]));
         }
+
+        //delete poster => new poster before delete
+        $trick = $image->getTrick();
+        $images = $trick->getImages();
+        if($image->getPoster() && count($images)>1) {
+            if ($images[0] === $image) {
+                $images[1]->setPoster(true);
+            }
+            $images[0]->setPoster(true);
+        }
+
+        $em->remove($image);
+        $em->flush();
+
+        unlink(Kernel::getProjectDir().'/public/'.$image->getUrl());
+
+        $this->addFlash('success', 'La photo a été supprimée avec succès !');
+
+        return $this->redirect($this->generateUrl('trick_edit', ['id' => $trick->getId()]) . '#alert');
     }
 
     /**
-     * @Route("trick/edit/image/{id}/poster/{posterId}", name="image_poster_change")
+     * @Route("trick/edit/image/{newPoster}/poster/{oldPoster}", name="image_poster_change")
      */
-    public function changePoster(ImageRepository $repo, EntityManagerInterface $em, $id, $posterId)
+    public function changePoster(EntityManagerInterface $em, Image $newPoster, Image $oldPoster)
     {
-        $oldPoster = $repo->find($posterId);
-        $oldPoster->setPoster(0);
-        $em->persist($oldPoster);
-
-        $newPoster = $repo->find($id);
-        $newPoster->setPoster(1);
-        $em->persist($newPoster);
+        $oldPoster->setPoster(false);
+        $newPoster->setPoster(true);
 
         $em->flush();
 
