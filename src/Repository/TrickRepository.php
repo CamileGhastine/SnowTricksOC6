@@ -20,7 +20,7 @@ class TrickRepository extends ServiceEntityRepository
         parent::__construct($registry, Trick::class);
     }
 
-    public function findAllWithPoster()
+    public function findAllWithPoster($maxResult = null, $firstResult = null)
     {
         return $this->createQueryBuilder('t')
             ->addSelect('i')
@@ -28,6 +28,8 @@ class TrickRepository extends ServiceEntityRepository
             ->where('i.poster = 1')
             ->orWhere('i.poster IS NULL')
             ->orderBy('t.updatedAt', 'DESC')
+            ->setFirstResult($firstResult)
+            ->setMaxResults($maxResult)
             ->getQuery()
             ->getResult()
             ;

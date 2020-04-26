@@ -31,11 +31,11 @@
 
         <div class="mt-4 text-center mt-5 mb-4">
             <a href="{{ path('home') }}" class="">
-                <span class="badge badge-pill badge-secondary mx-3">Tous les tricks</span>
+                <span class="badge badge-pill badge-{{ categoryId is null ? 'primary' : 'secondary' }} mx-3 ">Tous les tricks</span>
             </a>
             {% for category in categories %}
                 <a href="{{ path('trick_category', {'id' : category.id}) }}" class="">
-                    <span class="badge badge-pill badge-secondary mx-3">{{ category.title }}</span>
+                    <span class="badge badge-pill badge-{{ categoryId == category.id ? 'primary' : 'secondary' }} mx-3">{{ category.title }}</span>
                 </a>
             {% endfor %}
         </div>
@@ -104,15 +104,20 @@
                 </article>
 
             {% endfor %}
-
+            <div id="ajax-load-more">
+            </div>
         </section>
 
         <div class="text-center my-5">
-            <a href="" class="btn btn-primary">Charger plus de figure</a>
+            <a href="{{ path('ajax_load_more') }}" id="button" class="btn btn-primary">Charger plus de figure</a>
         </div>
 
     </div>
 
     <div class="text-right" id="caret"><a href="#tricks"><i class="fas fa-angle-double-up fa-2x"></i></a></div>
 
+{% endblock %}
+
+{% block javascripts %}
+    <script src="{{ asset('js/index.js') }}"></script>
 {% endblock %}

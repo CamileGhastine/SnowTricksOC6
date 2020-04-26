@@ -24,6 +24,20 @@ use Symfony\Component\String\Slugger\SluggerInterface;
 
 class TrickController extends AbstractController
 {
+
+    private $maxResult = 2;
+
+    /**
+     * @Route("/ajax", name="ajax_load_more")
+     */
+    public function ajaxLoadMore(TrickRepository $repoTrick)
+    {
+        $firstResult = $_POST['page'] * $this->maxResult;
+        return $this->render('trick/ajax/load_more.html.twig', [
+            'tricks' => $repoTrick->findAllWithPoster($this->maxResult, $firstResult),
+        ]);
+    }
+
     /**
      * @Route("/", name="home")
      * @Route("/trick/{id}/category", name="trick_category")
@@ -31,8 +45,9 @@ class TrickController extends AbstractController
     public function index(TrickRepository $repoTrick, CategoryRepository $repoCategory, $id = null)
     {
         return $this->render('trick/index.html.twig', [
-            'tricks' => $id ? $repoTrick->findByCategoryWithPoster($id) : $repoTrick->findAllWithPoster(),
-            'categories' => $repoCategory->findAll()
+            'tricks' => $id ? $repoTrick->findByCategoryWithPoster($id) : $repoTrick->findAllWithPoster($this->maxResult),
+            'categories' => $repoCategory->findAll(),
+            'categoryId' => $id
         ]);
     }
 
