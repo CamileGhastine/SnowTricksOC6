@@ -116,8 +116,23 @@
 
     <div class="text-right" id="caret"><a href="#tricks"><i class="fas fa-angle-double-up fa-2x"></i></a></div>
 
-{% endblock %}
+    <script>
 
-{% block javascripts %}
-    <script src="{{ asset('js/index.js') }}"></script>
+        // load More button
+        var $page = 1;
+        $(document).ready(function(){
+            $("#button").click(function(e){
+                e.preventDefault();
+                var $url = this.href;
+                $.post($url,
+                    { 'page' : $page,
+                        'id': '{{ categoryId }}'},
+                    function ($data) {
+                        $('#ajax-load-more').before($data);
+                        $page = $page + 1;
+                    }
+                );
+            });
+        });
+    </script>
 {% endblock %}

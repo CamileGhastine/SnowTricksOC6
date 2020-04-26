@@ -28,13 +28,15 @@ class TrickController extends AbstractController
     private $maxResult = 2;
 
     /**
-     * @Route("/ajax", name="ajax_load_more")
+     * @Route("/ajax/loadMore", name="ajax_load_more")
      */
-    public function ajaxLoadMore(TrickRepository $repoTrick)
+    public function ajaxLoadMore(TrickRepository $repoTrick, Request $request)
     {
-        $firstResult = $_POST['page'] * $this->maxResult;
+        $id = $request->request->get('id');
+        $firstResult = $request->request->get('page') * $this->maxResult;
         return $this->render('trick/ajax/load_more.html.twig', [
-            'tricks' => $repoTrick->findAllWithPoster($this->maxResult, $firstResult),
+            'tricks' => $id ? $repoTrick->findByCategoryWithPoster($id, $this->maxResult, $firstResult) : $repoTrick->findAllWithPoster($this->maxResult, $firstResult),
+
         ]);
     }
 
@@ -45,7 +47,7 @@ class TrickController extends AbstractController
     public function index(TrickRepository $repoTrick, CategoryRepository $repoCategory, $id = null)
     {
         return $this->render('trick/index.html.twig', [
-            'tricks' => $id ? $repoTrick->findByCategoryWithPoster($id) : $repoTrick->findAllWithPoster($this->maxResult),
+            'tricks' => $id ? $repoTrick->findByCategoryWithPoster($id, $this->maxResult) : $repoTrick->findAllWithPoster($this->maxResult),
             'categories' => $repoCategory->findAll(),
             'categoryId' => $id
         ]);

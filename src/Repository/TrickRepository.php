@@ -35,7 +35,7 @@ class TrickRepository extends ServiceEntityRepository
             ;
     }
 
-    public function findByCategoryWithPoster($id)
+    public function findByCategoryWithPoster($id, $maxResult = null, $firstResult = null)
     {
         return $this->createQueryBuilder('t')
             ->addSelect('i')
@@ -45,6 +45,8 @@ class TrickRepository extends ServiceEntityRepository
             ->andWhere('i.poster = 1 OR i.poster IS NULL')
             ->setParameter('id', $id)
             ->orderBy('t.updatedAt', 'DESC')
+            ->setFirstResult($firstResult)
+            ->setMaxResults($maxResult)
             ->getQuery()
             ->getResult()
             ;
