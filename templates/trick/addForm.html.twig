@@ -12,7 +12,7 @@
             <div class="card-header bg-dark text-white">
                 <div id="carouselExampleIndicators" class="carousel slide" data-ride="carousel">
                     <div class="carousel-inner">
-                            <img class="d-block w-100 card-img col-6 offset-3 text-center mt-4" src="{{ asset('images/tricks/noImage.jpg') }}" alt="no image">
+                        <img class="d-block w-100 card-img col-6 offset-3 text-center mt-4" src="{{ asset('images/tricks/noImage.jpg') }}" alt="no image">
                     </div>
                 </div>
                 <div class="text-center">
@@ -51,7 +51,10 @@
                     <div class="col-6">
                         <div class="text-center">
                             <h5>Ajouter une catégorie</h5>
-                            <a href="#"><i class="fas fa-plus-circle"></i></a>
+                            <a href="#" class="add-category-form"><i class="fas fa-plus-circle"></i></a>
+                            <div id="category-form-location">
+                                {#                            location of category form move with jQuery#}
+                            </div>
                         </div>
                     </div>
                 </div>
@@ -89,9 +92,26 @@
         </div>
     </div>
 
+    <div id="category-form">
+
+        {{ form_start(formCategory) }}
+        {{ form_row(formCategory.title) }}
+        {{ form_row(formCategory.description) }}
+        <button class="btn btn-secondary">Ajouter la catégorie</button>
+        {{ form_end(formCategory) }}
+    </div>
 {% endblock %}
 
 {% block javascripts %}
     <script src="{{ asset('js/add_trick_form.js') }}"></script>
+    <script>
+        $('#category-form').hide();
+        $('#category-form-location').append($('#category-form'));
+        $('.add-category-form').click(function (e) {
+            e.preventDefault();
+            $('#category-form').toggle();
+        })
+
+    </script>
 {% endblock %}
 

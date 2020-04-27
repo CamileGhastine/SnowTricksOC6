@@ -2,11 +2,13 @@
 
 namespace App\Controller;
 
+use App\Entity\Category;
 use App\Entity\Comment;
 use App\Entity\Image;
 use App\Entity\Trick;
 use App\Entity\Video;
 use App\Form\AddTrickType;
+use App\Form\CategoryType;
 use App\Form\CommentType;
 use App\Form\EditTrickType;
 use App\Form\ImageType;
@@ -86,6 +88,17 @@ class TrickController extends AbstractController
      */
     public function create(Request $request, EntityManagerInterface $em, SluggerInterface $slugger)
     {
+
+        $category = new Category();
+
+        $formCategory = $this->createForm(CategoryType::class, $category);
+        $formCategory->handleRequest($request);
+
+        if($formCategory->isSubmitted() && $formCategory->isValid()) {
+            $em->persist($category);
+            $em->flush();
+        }
+
         $trick = new Trick($this->getUser());
 
         $form = $this->createForm(AddTrickType::class, $trick);
@@ -115,6 +128,7 @@ class TrickController extends AbstractController
 
         return $this->render('trick/addForm.html.twig', [
             'form' => $form->createView(),
+            'formCategory' => $formCategory->createView(),
         ]);
     }
 
