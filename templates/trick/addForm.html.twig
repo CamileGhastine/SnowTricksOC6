@@ -97,21 +97,28 @@
         {{ form_start(formCategory) }}
         {{ form_row(formCategory.title) }}
         {{ form_row(formCategory.description) }}
-        <button class="btn btn-secondary">Ajouter la catégorie</button>
+        <button class="btn btn-secondary button-add-category">Ajouter la catégorie</button>
         {{ form_end(formCategory) }}
     </div>
+
+    <script>
+
+        $('form[name="category"]').submit(function(e){
+            e.preventDefault();
+            $.post('{{ path('ajax_add_category')}}',
+                $(this).serialize(),
+                function($data){
+                console.log($(this).serialize());
+                $('#add_trick_categories').append($data);
+            })
+        });
+
+    </script>
+
 {% endblock %}
 
 {% block javascripts %}
     <script src="{{ asset('js/add_trick_form.js') }}"></script>
-    <script>
-        $('#category-form').hide();
-        $('#category-form-location').append($('#category-form'));
-        $('.add-category-form').click(function (e) {
-            e.preventDefault();
-            $('#category-form').toggle();
-        })
 
-    </script>
 {% endblock %}
 

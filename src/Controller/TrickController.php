@@ -30,13 +30,13 @@ class TrickController extends AbstractController
     private $maxResult = 2;
 
     /**
-     * @Route("/ajax/loadMore", name="ajax_load_more")
+     * @Route("/trick/ajax/loadMore", name="ajax_load_more")
      */
     public function ajaxLoadMore(TrickRepository $repoTrick, Request $request)
     {
         $id = $request->request->get('id');
         $firstResult = $request->request->get('page') * $this->maxResult;
-        return $this->render('trick/ajax/load_more.html.twig', [
+        return $this->render('trick/ajax/ajax_load_more.html.twig', [
             'tricks' => $id ? $repoTrick->findByCategoryWithPoster($id, $this->maxResult, $firstResult) : $repoTrick->findAllWithPoster($this->maxResult, $firstResult),
 
         ]);
@@ -84,11 +84,10 @@ class TrickController extends AbstractController
     }
 
     /**
-     * @Route("/trick/edit/new", name="trick_new")
+     * @Route("/trick/ajax/addCategory", name="ajax_add_category")
      */
-    public function create(Request $request, EntityManagerInterface $em, SluggerInterface $slugger)
+    public function ajaxAddCategory(Request $request, EntityManagerInterface $em)
     {
-
         $category = new Category();
 
         $formCategory = $this->createForm(CategoryType::class, $category);
@@ -98,6 +97,20 @@ class TrickController extends AbstractController
             $em->persist($category);
             $em->flush();
         }
+        return $this->render('trick/ajax/ajax_add_category.html.twig',[
+            'category' => $category
+        ]);
+    }
+
+    /**
+     * @Route("/trick/edit/new", name="trick_new")
+     */
+    public function create(Request $request, EntityManagerInterface $em, SluggerInterface $slugger)
+    {
+        $category = new Category();
+
+        $formCategory = $this->createForm(CategoryType::class, $category);
+
 
         $trick = new Trick($this->getUser());
 
