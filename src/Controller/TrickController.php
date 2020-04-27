@@ -165,6 +165,20 @@ class TrickController extends AbstractController
             return $this->redirectToRoute('trick_show', ['id' => $trick->getId()]);
         }
 
+        $category = new Category();
+        $formCategory = $this->createForm(CategoryType::class, $category);
+        $formCategory->handleRequest($request);
+
+        if($formCategory->isSubmitted() && $formCategory->isValid()) {
+
+            $em->persist($category);
+            $em->flush();
+
+            $this->addFlash('success', 'La catégorie a été ajoutée avec succès !');
+
+            return $this->redirect($this->generateUrl('trick_edit', ['id' => $trick->getId()]).'#alert');
+        }
+
         $image = new Image();
         $formImage = $this->createForm(ImageType::class, $image);
         $formImage->handleRequest($request);
@@ -207,6 +221,7 @@ class TrickController extends AbstractController
             'formTrick' => $formTrick->createView(),
             'formImage' => $formImage->createView(),
             'formVideo' => $formVideo->createView(),
+            'formCategory' => $formCategory->createView(),
             'trick' => $trick,
         ]);
     }

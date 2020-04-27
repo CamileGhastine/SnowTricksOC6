@@ -147,26 +147,38 @@
                 {{ form_start(formTrick) }}
                 {{ form_row(formTrick.title) }}
                 {{ form_row(formTrick.description) }}
-                <div class="row">
-                    <div class="col-8">
+                <div class="row mt-4">
+                    <div class="col-6">
                         <div class="row">
-                            <div class="col-3">
+                            <div class="col-4">
                                 {{ form_label(formTrick.categories) }}
                             </div>
-                            <div class="col-6">
+                            <div class="col-8">
                                 {{ form_widget(formTrick.categories) }}
                             </div>
                         </div>
                     </div>
-                    <div class="col-4">
+
+                    <div class="col-6">
                         <div class="text-center">
-                            <h5>Ajouter une catégorie</h5>
-                            <a href="#"><i class="fas fa-plus-circle"></i></a>
+                            <div class="offset-4">
+                                <h5>Ajouter une catégorie</h5>
+                                <a href="#"><i class="fas fa-plus-circle" id="href"></i></a>
+                            </div>
+                            <div class="text-left" id="category-form">
+                                {{ form_start(formCategory) }}
+                                {{ form_row(formCategory.title) }}
+                                {{ form_row(formCategory.description) }}
+                                <div class="text-center">
+                                    <button class="btn btn-secondary button-add-category">Ajouter la catégorie</button>
+                                </div>
+                                {{ form_end(formCategory) }}
+                            </div>
                         </div>
                     </div>
                 </div>
-                <div class="text-center">
 
+                <div class="text-center mt-5">
                     <button type="submit" class="btn btn-secondary">Modifier la figure</button>
                     {{ form_end(formTrick) }}
                     <br/>

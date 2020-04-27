@@ -147,8 +147,7 @@ function addVideoForm($collectionHolder, $newLink) {
 
 //move and hide category form
 $('#category-form').hide();
-$('#category-form-location').append($('#category-form'));
-$('.add-category-form').click(function (e) {
+$('.add-category').click(function (e) {
     e.preventDefault();
     $('#category-form').toggle();
 });
