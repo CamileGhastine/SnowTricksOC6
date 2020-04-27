@@ -96,10 +96,11 @@ class TrickController extends AbstractController
         if($formCategory->isSubmitted() && $formCategory->isValid()) {
             $em->persist($category);
             $em->flush();
+
+            return $this->render('trick/ajax/ajax_add_category.html.twig',[
+                'category' => $category
+            ]);
         }
-        return $this->render('trick/ajax/ajax_add_category.html.twig',[
-            'category' => $category
-        ]);
     }
 
     /**

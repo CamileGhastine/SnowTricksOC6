@@ -109,7 +109,6 @@
             $.post('{{ path('ajax_add_category')}}',
                 $(this).serialize(),
                 function($data){
-                console.log($(this).serialize());
                 $('#add_trick_categories').append($data);
                 $('form[name="category"]')[0].reset();
                 $('#category-form').hide();

@@ -2,11 +2,11 @@
 var $formLabel = $('legend.col-form-label');
 $formLabel.removeClass('col-sm-2');
 
-var $categoriesFieldset =  $('.categories > fieldset > div')
+var $categoriesFieldset =  $('.categories > fieldset > div > div')
 var $categoriesFieldsetLegend = $('.categories > fieldset > div > legend');
 $categoriesFieldsetLegend.addClass('col-4');
-$categoriesFieldset.find('div').removeClass('col-sm-10');
-$categoriesFieldset.find('div').addClass('col-6');
+$categoriesFieldset.removeClass('col-sm-10');
+$categoriesFieldset.addClass('col-8');
 
 //hide the image upload label when form not valid
 $formLabel.hide();
