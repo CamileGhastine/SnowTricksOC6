@@ -52,13 +52,12 @@
                         <div class="text-center">
                             <h5>Ajouter une catégorie</h5>
                             <a href="#" class="add-category-form"><i class="fas fa-plus-circle"></i></a>
-                            <div id="category-form-location">
+                            <div id="category-form-location" class="text-left mt-4">
                                 {#                            location of category form move with jQuery#}
                             </div>
                         </div>
                     </div>
                 </div>
-
 
                 <div class="text-center">
                     <button type="submit" class="btn btn-secondary">{{ "Ajouter l'article" }}</button>
@@ -97,7 +96,9 @@
         {{ form_start(formCategory) }}
         {{ form_row(formCategory.title) }}
         {{ form_row(formCategory.description) }}
-        <button class="btn btn-secondary button-add-category">Ajouter la catégorie</button>
+        <div class="text-center">
+            <button class="btn btn-secondary button-add-category">Ajouter la catégorie</button>
+        </div>
         {{ form_end(formCategory) }}
     </div>
 
@@ -110,7 +111,9 @@
                 function($data){
                 console.log($(this).serialize());
                 $('#add_trick_categories').append($data);
-            })
+                $('form[name="category"]')[0].reset();
+                $('#category-form').hide();
+                })
         });
 
     </script>

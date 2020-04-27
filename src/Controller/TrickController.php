@@ -111,7 +111,6 @@ class TrickController extends AbstractController
 
         $formCategory = $this->createForm(CategoryType::class, $category);
 
-
         $trick = new Trick($this->getUser());
 
         $form = $this->createForm(AddTrickType::class, $trick);
