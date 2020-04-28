@@ -163,17 +163,14 @@
                         <div class="text-center">
                             <div class="offset-4">
                                 <h5>Ajouter une catégorie</h5>
+                                {{ form_start(formCategory) }}
                                 <a href="#"><i class="fas fa-plus-circle" id="href"></i></a>
                             </div>
-                            <div class="text-left" id="category-form">
-                                {{ form_start(formCategory) }}
-                                {{ form_row(formCategory.title) }}
-                                {{ form_row(formCategory.description) }}
-                                <div class="text-center">
-                                    <button class="btn btn-secondary button-add-category">Ajouter la catégorie</button>
-                                </div>
-                                {{ form_end(formCategory) }}
+
+                            <div id="category-form-location" class="text-left mt-4">
+                                {#                            location of category form move with jQuery#}
                             </div>
+
                         </div>
                     </div>
                 </div>
@@ -216,6 +213,21 @@
             </div>
         </div>
     </div>
+
+    <div id="category-form-to-move">
+        {{ form_errors(formCategory.title) }}
+        {{ form_errors(formCategory.description) }}
+
+        <div class="text-left" id="category-form">
+            {{ form_row(formCategory.title) }}
+            {{ form_row(formCategory.description) }}
+            <div class="text-center">
+                <button class="btn btn-secondary button-add-category">Ajouter la catégorie</button>
+            </div>
+            {{ form_end(formCategory) }}
+        </div>
+    </div>
+
 
 
 {% endblock %}

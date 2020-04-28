@@ -41,3 +41,10 @@ $formLabelCategory.addClass('col-4');
 var $categoryField =  $('#category-form > .form-group').find('div');
 $categoryField.removeClass('col-sm-10');
 $categoryField.addClass('col-8');
+
+//move and hide category form
+$('#category-form-location').append($('#category-form'));
+$('.add-category-form').click(function (e) {
+    e.preventDefault();
+    $('#category-form').toggle();
+});

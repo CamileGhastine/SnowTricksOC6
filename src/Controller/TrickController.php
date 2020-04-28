@@ -153,7 +153,9 @@ class TrickController extends AbstractController
         $formTrick = $this->createForm(EditTrickType::class, $trick);
         $formTrick->handleRequest($request);
 
+
         if ($formTrick->isSubmitted() && $formTrick->isValid()) {
+            dd('test');
 
             $trick->setUpdatedAt(new DateTime());
 
