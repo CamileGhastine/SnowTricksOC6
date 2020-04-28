@@ -128,6 +128,7 @@
                         <a class="add-video-form mb-4" role="button"><i class="fas fa-plus-circle"></i></a>
                         {{ form_errors(formVideo.iframe) }}
                         <div class="row form-video-hidden justify-content-center">
+                            <p id="explanation" class="font-weight-light"><small>Coller un iframe dans le cadre ci-dessous</small> <button type="button" class="icone-button" data-toggle="modal" data-target="#explanationModal"><i class="fas fa-question-circle"></i></button></p>
                             <div class="col-8 text-left mt-3 mb-2">
                                 {{ form_widget(formVideo.iframe) }}
                             </div>
@@ -223,6 +224,29 @@
         </div>
     </div>
 
+    <!-- Modal -->
+    <div class="modal fade" id="explanationModal" tabindex="-1" role="dialog" aria-labelledby="explanationModalLabel" aria-hidden="true">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="explanationModalLabel">Ou trouver l'iframe d'une vidéo ?</h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    Sur votre plateforme vidéo favorite :
+                    <ul>
+                        <li>Cliquer sur partager la vidéo.</li>
+                        <li>Choisir l'option intégrer.</li>
+                        <li>Copier le lien qui s'affiche.</li>
+                        <li>Coller le lien dans le cadre du formulaire.</li>
+                    </ul>
+                </div>
+
+            </div>
+        </div>
+    </div>
 
 
 
