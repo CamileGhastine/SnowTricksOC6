@@ -143,40 +143,58 @@
                     {{ form_end(formImage) }}
                 </div>
 
-
-                {{ form_start(formTrick) }}
-                {{ form_row(formTrick.title) }}
-                {{ form_row(formTrick.description) }}
                 <div class="row">
                     <div class="col-8">
+                        {{ form_start(formTrick) }}
+                        {{ form_row(formTrick.title) }}
+                        {{ form_row(formTrick.description) }}
+                        <div class="row mt-4">
+                            <div class="col-8">
+                                <div class="row">
+                                    <div class="col-4">
+                                        {{ form_label(formTrick.categories) }}
+                                    </div>
+                                    <div class="col-8">
+                                        {{ form_widget(formTrick.categories) }}
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="text-center offset-7 mt-5">
+                            <a href="{{ path('trick_show', {'id' : trick.id}) }}" class="btn btn-secondary">
+                                <i class="fas fa-eye"></i>
+                            </a>
+                            <button type="submit" class="btn btn-secondary">Modifier la figure</button>
+                            {{ form_end(formTrick) }}
+
+                            <button type="button" class="btn btn-danger" data-toggle="modal" data-target="#deleteTrickModal">
+                                <i class="fas fa-trash-alt"></i>
+                            </button>
+
+                        </div>
+
+                    </div>
+
+                    <div class="col-4 d-flex align-items-center justify-content-center">
                         <div class="row">
-                            <div class="col-3">
-                                {{ form_label(formTrick.categories) }}
+                            <div class="col-12 text-center">
+                                <h5>Ajouter une catégorie</h5>
+                                <a href="#"><i class="fas fa-plus-circle" id="href"></i></a>
+                                {{ form_start(formCategory) }}
+                                {{ form_errors(formCategory.title) }}
                             </div>
-                            <div class="col-6">
-                                {{ form_widget(formTrick.categories) }}
+                            <div id="category-form" class="col-12 text-left mt-4">
+                                {{ form_row(formCategory.title) }}
+                                <div class="text-center">
+                                    <button class="btn btn-sm btn-secondary button-add-category">Ajouter la catégorie</button>
+                                </div>
+                                {{ form_end(formCategory) }}
                             </div>
                         </div>
                     </div>
-                    <div class="col-4">
-                        <div class="text-center">
-                            <h5>Ajouter une catégorie</h5>
-                            <a href="#"><i class="fas fa-plus-circle"></i></a>
-                        </div>
-                    </div>
-                </div>
-                <div class="text-center">
 
-                    <button type="submit" class="btn btn-secondary">Modifier la figure</button>
-                    {{ form_end(formTrick) }}
-                    <br/>
-                    <button type="button" class="btn btn-danger" data-toggle="modal" data-target="#deleteTrickModal">
-                        Supprimer la figure
-                    </button>
-                    <br/>
-                    <a href="{{ path('trick_show', {'id' : trick.id}) }}" class="btn btn-secondary">Annuler</a>
                 </div>
-
 
                 <!-- Modal -->
                 <div class="modal fade" id="deleteTrickModal" tabindex="-1" role="dialog" aria-labelledby="deleteTrickModalLabel" aria-hidden="true">
@@ -204,6 +222,8 @@
             </div>
         </div>
     </div>
+
+
 
 
 {% endblock %}

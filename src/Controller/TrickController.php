@@ -2,11 +2,13 @@
 
 namespace App\Controller;
 
+use App\Entity\Category;
 use App\Entity\Comment;
 use App\Entity\Image;
 use App\Entity\Trick;
 use App\Entity\Video;
 use App\Form\AddTrickType;
+use App\Form\CategoryType;
 use App\Form\CommentType;
 use App\Form\EditTrickType;
 use App\Form\ImageType;
@@ -28,13 +30,13 @@ class TrickController extends AbstractController
     private $maxResult = 2;
 
     /**
-     * @Route("/ajax/loadMore", name="ajax_load_more")
+     * @Route("/trick/ajax/loadMore", name="ajax_load_more")
      */
     public function ajaxLoadMore(TrickRepository $repoTrick, Request $request)
     {
         $id = $request->request->get('id');
         $firstResult = $request->request->get('page') * $this->maxResult;
-        return $this->render('trick/ajax/load_more.html.twig', [
+        return $this->render('trick/ajax/ajax_load_more.html.twig', [
             'tricks' => $id ? $repoTrick->findByCategoryWithPoster($id, $this->maxResult, $firstResult) : $repoTrick->findAllWithPoster($this->maxResult, $firstResult),
 
         ]);
@@ -82,10 +84,34 @@ class TrickController extends AbstractController
     }
 
     /**
+     * @Route("/trick/ajax/addCategory", name="ajax_add_category")
+     */
+    public function ajaxAddCategory(Request $request, EntityManagerInterface $em)
+    {
+        $category = new Category();
+
+        $formCategory = $this->createForm(CategoryType::class, $category);
+        $formCategory->handleRequest($request);
+
+        if($formCategory->isSubmitted() && $formCategory->isValid()) {
+            $em->persist($category);
+            $em->flush();
+
+            return $this->render('trick/ajax/ajax_add_category.html.twig',[
+                'category' => $category
+            ]);
+        }
+    }
+
+    /**
      * @Route("/trick/edit/new", name="trick_new")
      */
     public function create(Request $request, EntityManagerInterface $em, SluggerInterface $slugger)
     {
+        $category = new Category();
+
+        $formCategory = $this->createForm(CategoryType::class, $category);
+
         $trick = new Trick($this->getUser());
 
         $form = $this->createForm(AddTrickType::class, $trick);
@@ -115,6 +141,7 @@ class TrickController extends AbstractController
 
         return $this->render('trick/addForm.html.twig', [
             'form' => $form->createView(),
+            'formCategory' => $formCategory->createView(),
         ]);
     }
 
@@ -126,6 +153,7 @@ class TrickController extends AbstractController
         $formTrick = $this->createForm(EditTrickType::class, $trick);
         $formTrick->handleRequest($request);
 
+
         if ($formTrick->isSubmitted() && $formTrick->isValid()) {
 
             $trick->setUpdatedAt(new DateTime());
@@ -136,6 +164,19 @@ class TrickController extends AbstractController
             $this->addFlash('success', 'La figure a été modifiée avec succès !');
 
             return $this->redirectToRoute('trick_show', ['id' => $trick->getId()]);
+        }
+
+        $category = new Category();
+        $formCategory = $this->createForm(CategoryType::class, $category);
+        $formCategory->handleRequest($request);
+
+        if($formCategory->isSubmitted() && $formCategory->isValid()) {
+            $em->persist($category);
+            $em->flush();
+
+            $this->addFlash('success', 'La catégorie a été ajoutée avec succès !');
+
+            return $this->redirect($this->generateUrl('trick_edit', ['id' => $trick->getId()]).'#alert');
         }
 
         $image = new Image();
@@ -180,6 +221,7 @@ class TrickController extends AbstractController
             'formTrick' => $formTrick->createView(),
             'formImage' => $formImage->createView(),
             'formVideo' => $formVideo->createView(),
+            'formCategory' => $formCategory->createView(),
             'trick' => $trick,
         ]);
     }

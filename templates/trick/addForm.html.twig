@@ -12,7 +12,7 @@
             <div class="card-header bg-dark text-white">
                 <div id="carouselExampleIndicators" class="carousel slide" data-ride="carousel">
                     <div class="carousel-inner">
-                            <img class="d-block w-100 card-img col-6 offset-3 text-center mt-4" src="{{ asset('images/tricks/noImage.jpg') }}" alt="no image">
+                        <img class="d-block w-100 card-img col-6 offset-3 text-center mt-4" src="{{ asset('images/tricks/noImage.jpg') }}" alt="no image">
                     </div>
                 </div>
                 <div class="text-center">
@@ -51,11 +51,13 @@
                     <div class="col-6">
                         <div class="text-center">
                             <h5>Ajouter une catégorie</h5>
-                            <a href="#"><i class="fas fa-plus-circle"></i></a>
+                            <a href="#" class="add-category-form"><i class="fas fa-plus-circle"></i></a>
+                            <div id="category-form-location" class="text-left mt-4">
+                                {#                            location of category form move with jQuery#}
+                            </div>
                         </div>
                     </div>
                 </div>
-
 
                 <div class="text-center">
                     <button type="submit" class="btn btn-secondary">{{ "Ajouter l'article" }}</button>
@@ -89,9 +91,34 @@
         </div>
     </div>
 
+    <div id="category-form">
+        {{ form_start(formCategory) }}
+        {{ form_row(formCategory.title) }}
+        <div class="text-center">
+            <button class="btn btn-secondary button-add-category">Ajouter la catégorie</button>
+        </div>
+        {{ form_end(formCategory) }}
+    </div>
+
+    <script>
+
+        $('form[name="category"]').submit(function(e){
+            e.preventDefault();
+            $.post('{{ path('ajax_add_category')}}',
+                $(this).serialize(),
+                function($data){
+                $('#add_trick_categories').append($data);
+                $('form[name="category"]')[0].reset();
+                $('#category-form').hide();
+                })
+        });
+
+    </script>
+
 {% endblock %}
 
 {% block javascripts %}
     <script src="{{ asset('js/add_trick_form.js') }}"></script>
+
 {% endblock %}
 

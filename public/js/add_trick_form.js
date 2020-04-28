@@ -2,11 +2,11 @@
 var $formLabel = $('legend.col-form-label');
 $formLabel.removeClass('col-sm-2');
 
-var $categoriesFieldset =  $('.categories > fieldset > div')
+var $categoriesFieldset =  $('.categories > fieldset > div > div')
 var $categoriesFieldsetLegend = $('.categories > fieldset > div > legend');
 $categoriesFieldsetLegend.addClass('col-4');
-$categoriesFieldset.find('div').removeClass('col-sm-10');
-$categoriesFieldset.find('div').addClass('col-6');
+$categoriesFieldset.removeClass('col-sm-10');
+$categoriesFieldset.addClass('col-8');
 
 //hide the image upload label when form not valid
 $formLabel.hide();
@@ -144,5 +144,23 @@ function addVideoForm($collectionHolder, $newLink) {
         return false;
     });
 }
+
+//move and hide category form
+$('#category-form').hide();
+$('#category-form-location').append($('#category-form'));
+$('.add-category-form').click(function (e) {
+    e.preventDefault();
+    $('#category-form').toggle();
+});
+
+// Arrange display categories form
+var $formLabelCategory = $('form[name="category"] > .form-group').find('label');
+$formLabelCategory.removeClass('col-sm-2');
+$formLabelCategory.addClass('col-3');
+
+var $categoryField =  $('form[name="category"] > .form-group').find('div');
+$categoryField.removeClass('col-sm-10');
+$categoryField.addClass('col-9');
+
 
 

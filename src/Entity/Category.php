@@ -5,11 +5,13 @@ namespace App\Entity;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
+use Symfony\Bridge\Doctrine\Validator\Constraints\UniqueEntity;
 use Symfony\Component\Validator\Constraints as Assert;
 
 
 /**
  * @ORM\Entity(repositoryClass="App\Repository\CategoryRepository")
+ * @UniqueEntity("title")
  */
 class Category
 {
@@ -25,12 +27,6 @@ class Category
      * @Assert\NotBlank
      */
     private $title;
-
-    /**
-     * @ORM\Column(type="text")
-     * @Assert\NotBlank
-     */
-    private $description;
 
     /**
      * @ORM\ManyToMany(targetEntity="App\Entity\Trick", inversedBy="categories")
@@ -55,18 +51,6 @@ class Category
     public function setTitle(string $title): self
     {
         $this->title = $title;
-
-        return $this;
-    }
-
-    public function getDescription(): ?string
-    {
-        return $this->description;
-    }
-
-    public function setDescription(string $description): self
-    {
-        $this->description = $description;
 
         return $this;
     }

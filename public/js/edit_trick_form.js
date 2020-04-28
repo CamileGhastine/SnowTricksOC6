@@ -26,3 +26,18 @@ $('a.add-video-form').click(function(){
         $('div.form-video-hidden').toggle()
     }
 );
+//move and hide category form
+$('#category-form').hide();
+$('#href').click(function (e) {
+    e.preventDefault();
+    $('#category-form').toggle();
+});
+
+// Arrange display categories form
+var $formLabelCategory = $('#category-form').find('label');
+$formLabelCategory.removeClass('col-sm-2');
+$formLabelCategory.addClass('col-3');
+
+var $categoryField =  $('#category-form > .form-group').find('div');
+$categoryField.removeClass('col-sm-10');
+$categoryField.addClass('col-9');
