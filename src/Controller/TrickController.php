@@ -15,6 +15,7 @@ use App\Form\ImageType;
 use App\Form\VideoType;
 use App\Kernel;
 use App\Repository\CategoryRepository;
+use App\Repository\CommentRepository;
 use App\Repository\TrickRepository;
 use DateTime;
 use Doctrine\ORM\EntityManagerInterface;
@@ -58,9 +59,10 @@ class TrickController extends AbstractController
     /**
      * @Route("/trick/{id}", name="trick_show")
      */
-    public function show($id, Request $request, TrickRepository $repoTrick, EntityManagerInterface $em)
+    public function show($id, Request $request, TrickRepository $repoTrick, CommentRepository $repoComment, EntityManagerInterface $em)
     {
         $trick = $repoTrick->findTrickWithCommentsAndCategories($id);
+        $comments = $repoComment->findCommentWithUser($id, 3, 2);
 
         $user = $this->getUser();
         if($user)
@@ -79,6 +81,7 @@ class TrickController extends AbstractController
 
         return $this->render('trick/show.html.twig', [
             'trick' => $trick,
+            'comments' => $comments,
             'form' => $user ? $form->createView() : null
         ]);
     }
