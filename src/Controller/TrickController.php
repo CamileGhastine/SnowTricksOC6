@@ -155,7 +155,6 @@ class TrickController extends AbstractController
 
 
         if ($formTrick->isSubmitted() && $formTrick->isValid()) {
-            dd('test');
 
             $trick->setUpdatedAt(new DateTime());
 
@@ -172,7 +171,6 @@ class TrickController extends AbstractController
         $formCategory->handleRequest($request);
 
         if($formCategory->isSubmitted() && $formCategory->isValid()) {
-
             $em->persist($category);
             $em->flush();
 

@@ -29,12 +29,6 @@ class Category
     private $title;
 
     /**
-     * @ORM\Column(type="text")
-     * @Assert\NotBlank
-     */
-    private $description;
-
-    /**
      * @ORM\ManyToMany(targetEntity="App\Entity\Trick", inversedBy="categories")
      */
     private $tricks;
@@ -57,18 +51,6 @@ class Category
     public function setTitle(string $title): self
     {
         $this->title = $title;
-
-        return $this;
-    }
-
-    public function getDescription(): ?string
-    {
-        return $this->description;
-    }
-
-    public function setDescription(string $description): self
-    {
-        $this->description = $description;
 
         return $this;
     }

@@ -17,7 +17,6 @@ class CategoryFixtures extends Fixture
             $category = new Category();
 
             $category->setTitle($faker->word)
-                ->setDescription(implode('<br/>', $faker->sentences(4)))
             ;
 
             $this->addReference('category'.$i, $category);
