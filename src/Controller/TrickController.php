@@ -27,7 +27,7 @@ use Symfony\Component\String\Slugger\SluggerInterface;
 class TrickController extends AbstractController
 {
 
-    private $maxResult = 2;
+    private $maxResult = 10;
 
     /**
      * @Route("/trick/ajax/loadMore", name="ajax_load_more")
