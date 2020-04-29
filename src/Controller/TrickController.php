@@ -63,7 +63,7 @@ class TrickController extends AbstractController
      */
     public function show($id, Request $request, TrickRepository $repoTrick, Paginator $paginator, EntityManagerInterface $em, $page = 1)
     {
-        $trick = $repoTrick->findTrickWithCommentsAndCategories($id);
+        $trick = $repoTrick->findTrickWithCategoriesImagesVideosComments($id);
         $paginatorResponse = $paginator->paginate($id, $page);
 
         $user = $this->getUser();

@@ -52,15 +52,17 @@ class TrickRepository extends ServiceEntityRepository
             ;
     }
 
-    public function findTrickWithCommentsAndCategories($id)
+    public function findTrickWithCategoriesImagesVideosComments($id)
     {
         return $this->createQueryBuilder('t')
-            ->addSelect('c')
+            ->addSelect('ca')
             ->addSelect('i')
             ->addSelect('v')
-            ->leftJoin('t.categories', 'c')
+            ->addSelect('co')
+            ->leftJoin('t.categories', 'ca')
             ->leftJoin('t.images', 'i')
             ->leftJoin('t.videos', 'v')
+            ->leftJoin('t.comments', 'co')
             ->where('t.id = :id')
             ->setParameter('id', $id)
             ->getQuery()

@@ -19,7 +19,7 @@ class CommentRepository extends ServiceEntityRepository
         parent::__construct($registry, Comment::class);
     }
 
-    public function findCommentWithUser($id, $maxResult = null, $firstResult = null)
+    public function findCommentsWithUser($id, $maxResult = null, $firstResult = null)
     {
         return $this->createQueryBuilder('c')
             ->addSelect('u')

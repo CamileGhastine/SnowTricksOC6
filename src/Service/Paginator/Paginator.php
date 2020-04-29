@@ -19,7 +19,7 @@ class Paginator
 
     public function paginate($id, int $page) {
         $this->id = $id;
-        $this->allComments = $this->repo->findCommentWithUser($id);
+        $this->allComments = $this->repo->findCommentsWithUser($id);
         $this->page = $page;
         $this->numberPages = ceil(count($this->allComments)/self::MAX_RESULTS);
 
