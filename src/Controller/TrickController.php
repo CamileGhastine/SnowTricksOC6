@@ -15,7 +15,9 @@ use App\Form\ImageType;
 use App\Form\VideoType;
 use App\Kernel;
 use App\Repository\CategoryRepository;
+use App\Repository\CommentRepository;
 use App\Repository\TrickRepository;
+use App\Service\Paginator\Paginator;
 use DateTime;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
@@ -57,13 +59,15 @@ class TrickController extends AbstractController
 
     /**
      * @Route("/trick/{id}", name="trick_show")
+     * @Route("/trick/{id}/{page}", name="trick_show_comment")
      */
-    public function show($id, Request $request, TrickRepository $repoTrick, EntityManagerInterface $em)
+    public function show($id, Request $request, TrickRepository $repoTrick, Paginator $paginator, EntityManagerInterface $em, $page = 1)
     {
         $trick = $repoTrick->findTrickWithCommentsAndCategories($id);
+        $paginatorResponse = $paginator->paginate($id, $page);
 
         $user = $this->getUser();
-        if($user)
+        if ($user)
         {
             $comment= new Comment($trick, $this->getUser());
             $form = $this->createForm(CommentType::class, $comment);
@@ -79,6 +83,8 @@ class TrickController extends AbstractController
 
         return $this->render('trick/show.html.twig', [
             'trick' => $trick,
+            'comments' => $paginatorResponse['comments'],
+            'render' => $paginatorResponse['render'],
             'form' => $user ? $form->createView() : null
         ]);
     }
@@ -93,7 +99,7 @@ class TrickController extends AbstractController
         $formCategory = $this->createForm(CategoryType::class, $category);
         $formCategory->handleRequest($request);
 
-        if($formCategory->isSubmitted() && $formCategory->isValid()) {
+        if ($formCategory->isSubmitted() && $formCategory->isValid()) {
             $em->persist($category);
             $em->flush();
 
@@ -170,7 +176,7 @@ class TrickController extends AbstractController
         $formCategory = $this->createForm(CategoryType::class, $category);
         $formCategory->handleRequest($request);
 
-        if($formCategory->isSubmitted() && $formCategory->isValid()) {
+        if ($formCategory->isSubmitted() && $formCategory->isValid()) {
             $em->persist($category);
             $em->flush();
 
@@ -261,7 +267,7 @@ class TrickController extends AbstractController
         //delete poster => new poster before delete
         $trick = $image->getTrick();
         $images = $trick->getImages();
-        if($image->getPoster() && count($images)>1) {
+        if ($image->getPoster() && count($images)>1) {
             if ($images[0] === $image) {
                 $images[1]->setPoster(true);
             }

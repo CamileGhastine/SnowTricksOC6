@@ -156,7 +156,7 @@
 
                 <aside class="ml-5 mt-5">
 
-                    {% for comment in trick.comments | reverse %}
+                    {% for comment in comments %}
 
                         <div class="row">
                             <div class="d-flex align-items-start">
@@ -179,7 +179,8 @@
 
                 </aside>
 
-                <p class="text-center mt-4">Page : <span class="badge badge-pill badge-secondary mx-2">1</span> <span class="badge badge-pill badge-secondary mx-2">2</span></p>
+                    {{ render |raw }}
+
             </div>
 
         </section>
