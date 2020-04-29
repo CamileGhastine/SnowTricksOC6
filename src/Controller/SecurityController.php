@@ -3,6 +3,7 @@
 namespace App\Controller;
 
 use App\Entity\User;
+use App\Form\ForgottenPasswordType;
 use App\Form\RegistrationType;
 use DateTime;
 use Doctrine\ORM\EntityManagerInterface;
@@ -59,6 +60,19 @@ class SecurityController extends AbstractController
      */
     public function logout()
     {
+    }
+
+    /**
+     * @Route("/fogotten_password", name="security_forgotten")
+     */
+    public function forgotenPasword ()
+    {
+        $user = new User();
+        $form = $this->createForm(ForgottenPasswordType::class, $user);
+
+        return $this->render('/security/forgottenPassword.html.twig',[
+            'form' => $form->createView()
+        ]);
     }
 
 
