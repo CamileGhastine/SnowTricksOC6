@@ -6,10 +6,12 @@ use App\Entity\User;
 use App\Form\ForgottenPasswordType;
 use App\Form\RegistrationType;
 use App\Repository\UserRepository;
-use DateTime;
+use App\Service\Emailer\Emailer;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
+use Symfony\Component\Mailer\MailerInterface;
+use Symfony\Component\Mime\Email;
 use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Component\Security\Core\Encoder\UserPasswordEncoderInterface;
 use Symfony\Component\Security\Http\Authentication\AuthenticationUtils;
@@ -64,21 +66,24 @@ class SecurityController extends AbstractController
     }
 
     /**
-     * @Route("/fogotten_password", name="security_forgotten")
+     * @Route("/forgotten_password", name="security_forgotten")
      */
-    public function forgotenPasword (Request $request, UserRepository $repo)
+    public function forgotenPasword (Request $request, UserRepository $repo, Emailer $emailer)
     {
         $form = $this->createForm(ForgottenPasswordType::class);
         $form->handleRequest($request);
 
-
         if ($form->isSubmitted() && $form->isValid()) {
 
-            if (!$repo->findOneBy(['email' => $form->getData()['email'] ])) {
+            $adress = $form->getData()['email'];
+
+            if (!$repo->findOneBy(['email' => $adress ])) {
                 $this->addFlash('danger', 'Cette adresse n\'existe pas.');
                 return $this->redirectToRoute('security_forgotten');
             }
+
             $this->addFlash('success', 'Un lien de reconnexion vient de vous être envoyé à votre adresse courriel.');
+            $emailer->sendEmailForgotten($adress);
         }
 
         return $this->render('/security/forgottenPassword.html.twig',[
@@ -86,5 +91,11 @@ class SecurityController extends AbstractController
         ]);
     }
 
-
+    /**
+     * @Route("/reset_password", name="reset_password")
+     */
+    public function resetPassword ()
+    {
+        dd('test');
+    }
 }
