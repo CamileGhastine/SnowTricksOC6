@@ -5,6 +5,7 @@ namespace App\Controller;
 use App\Entity\User;
 use App\Form\ForgottenPasswordType;
 use App\Form\RegistrationType;
+use App\Repository\UserRepository;
 use DateTime;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
@@ -65,10 +66,20 @@ class SecurityController extends AbstractController
     /**
      * @Route("/fogotten_password", name="security_forgotten")
      */
-    public function forgotenPasword ()
+    public function forgotenPasword (Request $request, UserRepository $repo)
     {
-        $user = new User();
-        $form = $this->createForm(ForgottenPasswordType::class, $user);
+        $form = $this->createForm(ForgottenPasswordType::class);
+        $form->handleRequest($request);
+
+
+        if ($form->isSubmitted() && $form->isValid()) {
+
+            if (!$repo->findOneBy(['email' => $form->getData()['email'] ])) {
+                $this->addFlash('danger', 'Cette adresse n\'existe pas.');
+                return $this->redirectToRoute('security_forgotten');
+            }
+            $this->addFlash('success', 'Un lien de reconnexion vient de vous être envoyé à votre adresse courriel.');
+        }
 
         return $this->render('/security/forgottenPassword.html.twig',[
             'form' => $form->createView()
