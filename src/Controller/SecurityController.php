@@ -5,6 +5,7 @@ namespace App\Controller;
 use App\Entity\User;
 use App\Form\ForgottenPasswordType;
 use App\Form\RegistrationType;
+use App\Form\ResetPasswordType;
 use App\Repository\UserRepository;
 use App\Service\Emailer\Emailer;
 use Doctrine\ORM\EntityManagerInterface;
@@ -75,9 +76,7 @@ class SecurityController extends AbstractController
 
         if ($form->isSubmitted() && $form->isValid()) {
 
-            $adress = $form->getData()['email'];
-
-            $user = $repo->findOneBy(['email' => $adress ]);
+            $user = $repo->findOneBy(['email' => $form->getData()->getEmail()]);
 
             if (!$user) {
                 $this->addFlash('danger', 'Cette adresse n\'existe pas.');
@@ -96,14 +95,26 @@ class SecurityController extends AbstractController
     /**
      * @Route("/reset_password", name="reset_password")
      */
-    public function resetPassword (UserRepository $repo, Request $request)
+    public function resetPassword (UserRepository $repo, Request $request, UserPasswordEncoderInterface $passwordEncoder, EntityManagerInterface $em)
     {
         $user = $repo->findOneBy(['email' => $request->query->get('email')]);
 
         if (password_verify('forgotten_password'.$user->getId().$user->getEmail(), $request->query->get('token'))) {
+            $form = $this->createForm(ResetPasswordType::class);
+            $form->handleRequest($request);
 
+            if($form->isSubmitted() && $form->isValid()) {
+                $user->setPassword($passwordEncoder ->encodePassword($user, $form->getData()->getPassword()));
+                $em->flush();
+
+                $this->addFlash('success', 'Connectez-vous avec votre nouveau mot de passe.');
+                return $this->redirectToRoute('security_login');
+            }
+
+            return $this->render('/security/reset_pasword.html.twig', [
+                'form' => $form->createView()
+            ]);
 
         }
-
     }
 }
