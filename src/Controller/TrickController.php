@@ -59,7 +59,7 @@ class TrickController extends AbstractController
 
     /**
      * @Route("/trick/{id}", name="trick_show")
-     * @Route("/trick/{id}/{page}", name="trick_show_comment")
+     * @Route("/trick/{id<[0-9]+>}/{page<[0-9]+>}", name="trick_show_comment")
      */
     public function show($id, Request $request, TrickRepository $repoTrick, Paginator $paginator, EntityManagerInterface $em, $page = 1)
     {
