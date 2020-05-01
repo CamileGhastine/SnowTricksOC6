@@ -16,6 +16,10 @@ class EmailerService
         $this->mailer = $mailer;
     }
 
+    /**
+     * @param User $user
+     * @throws \Symfony\Component\Mailer\Exception\TransportExceptionInterface
+     */
     public function sendEmailForgotten(User $user)
     {
         $token = password_hash('forgotten_password'.$user->getId().$user->getEmail(), PASSWORD_DEFAULT);

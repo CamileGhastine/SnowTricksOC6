@@ -17,6 +17,11 @@ class PaginatorService
         $this->repo = $repo;
     }
 
+    /**
+     * @param $id
+     * @param int $page
+     * @return array
+     */
     public function paginate($id, int $page) {
         $this->id = $id;
         $this->allComments = $this->repo->findCommentsWithUser($id);
@@ -29,6 +34,10 @@ class PaginatorService
         return ['comments' =>$paginatedComments, 'render' => $render ];
     }
 
+    /**
+     * select paginate comments
+     * @return array
+     */
     private function selectComments() {
         $paginatedComments = [];
         for ($i=($this->page-1)*self::MAX_RESULTS; $i<($this->page*self::MAX_RESULTS); $i++) {
@@ -38,6 +47,10 @@ class PaginatorService
         return $paginatedComments;
     }
 
+    /**
+     * render de HTML pagination links
+     * @return string
+     */
     private function renderPagination() {
         $render="";
         for ($i=1; $i<=$this->numberPages; $i++) {
