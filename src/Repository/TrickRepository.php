@@ -20,6 +20,11 @@ class TrickRepository extends ServiceEntityRepository
         parent::__construct($registry, Trick::class);
     }
 
+    /**
+     * @param null $maxResult
+     * @param null $firstResult
+     * @return int|mixed|string
+     */
     public function findAllWithPoster($maxResult = null, $firstResult = null)
     {
         return $this->createQueryBuilder('t')
@@ -35,6 +40,12 @@ class TrickRepository extends ServiceEntityRepository
             ;
     }
 
+    /**
+     * @param $id
+     * @param null $maxResult
+     * @param null $firstResult
+     * @return int|mixed|string
+     */
     public function findByCategoryWithPoster($id, $maxResult = null, $firstResult = null)
     {
         return $this->createQueryBuilder('t')
@@ -52,6 +63,11 @@ class TrickRepository extends ServiceEntityRepository
             ;
     }
 
+    /**
+     * @param $id
+     * @return int|mixed|string|null
+     * @throws \Doctrine\ORM\NonUniqueResultException
+     */
     public function findTrickWithCategoriesImagesVideosComments($id)
     {
         return $this->createQueryBuilder('t')
@@ -70,6 +86,11 @@ class TrickRepository extends ServiceEntityRepository
             ;
     }
 
+    /**
+     * @param $id
+     * @return int|mixed|string|null
+     * @throws \Doctrine\ORM\NonUniqueResultException
+     */
     public function findWithPoster($id)
     {
         return $this->createQueryBuilder('t')
