@@ -77,13 +77,15 @@ class SecurityController extends AbstractController
 
             $adress = $form->getData()['email'];
 
-            if (!$repo->findOneBy(['email' => $adress ])) {
+            $user = $repo->findOneBy(['email' => $adress ]);
+
+            if (!$user) {
                 $this->addFlash('danger', 'Cette adresse n\'existe pas.');
                 return $this->redirectToRoute('security_forgotten');
             }
 
             $this->addFlash('success', 'Un lien de reconnexion vient de vous être envoyé à votre adresse courriel.');
-            $emailer->sendEmailForgotten($adress);
+            $emailer->sendEmailForgotten($user);
         }
 
         return $this->render('/security/forgottenPassword.html.twig',[
@@ -94,8 +96,14 @@ class SecurityController extends AbstractController
     /**
      * @Route("/reset_password", name="reset_password")
      */
-    public function resetPassword ()
+    public function resetPassword (UserRepository $repo, Request $request)
     {
-        dd('test');
+        $user = $repo->findOneBy(['email' => $request->query->get('email')]);
+
+        if (password_verify('forgotten_password'.$user->getId().$user->getEmail(), $request->query->get('token'))) {
+
+
+        }
+
     }
 }
