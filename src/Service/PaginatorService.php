@@ -1,10 +1,10 @@
 <?php
 
-Namespace App\Service\Paginator;
+Namespace App\Service;
 
 use App\Repository\CommentRepository;
 
-class Paginator
+class PaginatorService
 {
     const MAX_RESULTS = 3;
     private $repo;
@@ -25,22 +25,25 @@ class Paginator
 
         $paginatedComments = $this->selectComments();
         $render = $this->renderPagination();
+
         return ['comments' =>$paginatedComments, 'render' => $render ];
     }
 
-    public function selectComments() {
+    private function selectComments() {
         $paginatedComments = [];
         for ($i=($this->page-1)*self::MAX_RESULTS; $i<($this->page*self::MAX_RESULTS); $i++) {
             if (isset($this->allComments[$i])) $paginatedComments[] = $this->allComments[$i];
         }
+
         return $paginatedComments;
     }
 
-    public function renderPagination() {
+    private function renderPagination() {
         $render="";
         for ($i=1; $i<=$this->numberPages; $i++) {
             $render .= '<a href="/trick/ajax/commentsPagination/'.$this->id.'/'.$i.'"><span class="badge badge-pill badge-'.($i === $this->page ? 'primary' : 'secondary').' mx-2">'.$i.'</span></a> ';
         }
+
         return '<p class="text-center mt-4 pagination">'.$render.'</p>';
     }
 }

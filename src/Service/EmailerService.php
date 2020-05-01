@@ -1,13 +1,13 @@
 <?php
 
-namespace App\Service\Emailer;
+namespace App\Service;
 
 use App\Entity\User;
 use Symfony\Component\Mailer\MailerInterface;
 use Symfony\Component\Mime\Email;
 use Symfony\Component\Security\Csrf\TokenGenerator\TokenGeneratorInterface;
 
-class Emailer
+class EmailerService
 {
     private $mailer;
 

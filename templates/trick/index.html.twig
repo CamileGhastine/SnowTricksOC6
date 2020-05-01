@@ -28,6 +28,11 @@
                 {{ message }}
             </div>
         {% endfor %}
+        {% for message in app.flashes('danger') %}
+            <div class="alert alert-danger text-center">
+                {{ message }}
+            </div>
+        {% endfor %}
 
         <div class="mt-4 text-center mt-5 mb-4">
             <a href="{{ path('home') }}" class="">

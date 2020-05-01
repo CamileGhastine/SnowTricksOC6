@@ -15,9 +15,8 @@ use App\Form\ImageType;
 use App\Form\VideoType;
 use App\Kernel;
 use App\Repository\CategoryRepository;
-use App\Repository\CommentRepository;
 use App\Repository\TrickRepository;
-use App\Service\Paginator\Paginator;
+use App\Service\PaginatorService;
 use DateTime;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
@@ -59,7 +58,7 @@ class TrickController extends AbstractController
     /**
      * @Route("/trick/ajax/commentsPagination/{id<[0-9]+>}/{page<[0-9]+>}", name="ajax_comments_pagination")
      */
-    public function ajaxCommentsPagination ($id, $page, Paginator $paginator)
+    public function ajaxCommentsPagination ($id, $page, PaginatorService $paginator)
     {
         $paginatorResponse = $paginator->paginate($id, $page);
 
@@ -72,7 +71,7 @@ class TrickController extends AbstractController
     /**
      * @Route("/trick/{id<[0-9]+>}", name="trick_show")
      */
-    public function show($id, Request $request, TrickRepository $repoTrick, Paginator $paginator, EntityManagerInterface $em)
+    public function show($id, Request $request, TrickRepository $repoTrick, PaginatorService $paginator, EntityManagerInterface $em)
     {
         $trick = $repoTrick->findTrickWithCategoriesImagesVideosComments($id);
         $paginatorResponse = $paginator->paginate($id, 1);
