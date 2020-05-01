@@ -31,19 +31,6 @@ class TrickController extends AbstractController
     private $maxResult = 10;
 
     /**
-     * @Route("/trick/ajax/loadMore", name="ajax_load_more")
-     */
-    public function ajaxLoadMore(TrickRepository $repoTrick, Request $request)
-    {
-        $id = $request->request->get('id');
-        $firstResult = $request->request->get('page') * $this->maxResult;
-        return $this->render('trick/ajax/ajax_load_more.html.twig', [
-            'tricks' => $id ? $repoTrick->findByCategoryWithPoster($id, $this->maxResult, $firstResult) : $repoTrick->findAllWithPoster($this->maxResult, $firstResult),
-
-        ]);
-    }
-
-    /**
      * @Route("/", name="home")
      * @Route("/trick/{id<[0-9]+>}/category", name="trick_category")
      */
@@ -55,20 +42,23 @@ class TrickController extends AbstractController
             'categoryId' => $id
         ]);
     }
-    /**
-     * @Route("/trick/ajax/commentsPagination/{id<[0-9]+>}/{page<[0-9]+>}", name="ajax_comments_pagination")
-     */
-    public function ajaxCommentsPagination ($id, $page, PaginatorService $paginator)
-    {
-        $paginatorResponse = $paginator->paginate($id, $page);
 
-        return $this->render('trick/ajax/ajax_comments_pagination.html.twig', [
-            'comments' => $paginatorResponse['comments'],
-            'render' => $paginatorResponse['render'],
+    /**
+     * Load More trick button in homme page
+     * @Route("/trick/ajax/loadMore", name="ajax_load_more")
+     */
+    public function ajaxLoadMore(TrickRepository $repoTrick, Request $request)
+    {
+        $id = $request->request->get('id');
+        $firstResult = $request->request->get('page') * $this->maxResult;
+
+        return $this->render('trick/ajax/ajax_load_more.html.twig', [
+            'tricks' => $id ? $repoTrick->findByCategoryWithPoster($id, $this->maxResult, $firstResult) : $repoTrick->findAllWithPoster($this->maxResult, $firstResult),
         ]);
     }
 
     /**
+     * Show one trick
      * @Route("/trick/{id<[0-9]+>}", name="trick_show")
      */
     public function show($id, Request $request, TrickRepository $repoTrick, PaginatorService $paginator, EntityManagerInterface $em)
@@ -100,6 +90,63 @@ class TrickController extends AbstractController
     }
 
     /**
+     * Paginate comments
+     * @Route("/trick/ajax/commentsPagination/{id<[0-9]+>}/{page<[0-9]+>}", name="ajax_comments_pagination")
+     */
+    public function ajaxCommentsPagination ($id, $page, PaginatorService $paginator)
+    {
+        $paginatorResponse = $paginator->paginate($id, $page);
+
+        return $this->render('trick/ajax/ajax_comments_pagination.html.twig', [
+            'comments' => $paginatorResponse['comments'],
+            'render' => $paginatorResponse['render'],
+        ]);
+    }
+
+    /**
+     * Create new trick
+     * @Route("/trick/edit/new", name="trick_new")
+     */
+    public function create(Request $request, EntityManagerInterface $em, SluggerInterface $slugger)
+    {
+        $category = new Category();
+        $formCategory = $this->createForm(CategoryType::class, $category);
+
+        $trick = new Trick($this->getUser());
+
+        $form = $this->createForm(AddTrickType::class, $trick);
+        $form->handleRequest($request);
+
+        if (!$form->isSubmitted() OR !$form->isValid()) {
+            return $this->render('trick/addForm.html.twig', [
+                'form' => $form->createView(),
+                'formCategory' => $formCategory->createView(),
+            ]);
+        }
+
+        $trick->setUpdatedAt(new DateTime());
+
+        /** @var Video $video */
+        foreach ($form->getData()->getVideos() as $video) {
+            $video->refactorIframe();
+        }
+
+        /** @var Image $image */
+        foreach ($form->getData()->getImages() as $key => $image){
+            $image->upload($slugger);
+            $key === 0 ? $image->setPoster(true) : null;
+        }
+
+        $em->persist($trick);
+        $em->flush();
+
+        $this->addFlash('success', 'La figure a été ajoutée avec succès !');
+
+        return $this->redirectToRoute('trick_show', ['id' => $trick->getId()]);
+    }
+
+    /**
+     * Create new category in add trick form
      * @Route("/trick/ajax/addCategory", name="ajax_add_category")
      */
     public function ajaxAddCategory(Request $request, EntityManagerInterface $em)
@@ -119,56 +166,15 @@ class TrickController extends AbstractController
         }
     }
 
-    /**
-     * @Route("/trick/edit/new", name="trick_new")
-     */
-    public function create(Request $request, EntityManagerInterface $em, SluggerInterface $slugger)
-    {
-        $category = new Category();
-
-        $formCategory = $this->createForm(CategoryType::class, $category);
-
-        $trick = new Trick($this->getUser());
-
-        $form = $this->createForm(AddTrickType::class, $trick);
-        $form->handleRequest($request);
-
-        if ($form->isSubmitted() && $form->isValid()) {
-            $trick->setUpdatedAt(new DateTime());
-
-            /** @var Video $video */
-            foreach ($form->getData()->getVideos() as $video) {
-                $video->refactorIframe();
-            }
-
-            /** @var Image $image */
-            foreach ($form->getData()->getImages() as $key => $image){
-                $image->upload($slugger);
-                $key === 0 ? $image->setPoster(true) : null;
-            }
-
-            $em->persist($trick);
-            $em->flush();
-
-            $this->addFlash('success', 'La figure a été ajoutée avec succès !');
-
-            return $this->redirectToRoute('trick_show', ['id' => $trick->getId()]);
-        }
-
-        return $this->render('trick/addForm.html.twig', [
-            'form' => $form->createView(),
-            'formCategory' => $formCategory->createView(),
-        ]);
-    }
 
     /**
+     * Edit a trick
      * @Route("/trick/edit/{id<[0-9]+>}/update", name="trick_edit")
      */
     public function edit(Request $request, EntityManagerInterface $em, Trick $trick, SluggerInterface $slugger)
     {
         $formTrick = $this->createForm(EditTrickType::class, $trick);
         $formTrick->handleRequest($request);
-
 
         if ($formTrick->isSubmitted() && $formTrick->isValid()) {
 
@@ -244,12 +250,15 @@ class TrickController extends AbstractController
 
 
     /**
+     * Delete a trick
      * @Route("trick/edit/{id<[0-9]+>}/delete", name="trick_delete")
      */
     public function delete(Trick $trick, EntityManagerInterface $em, Request $request, TrickRepository $repoTrick)
     {
         if (!$request->request->get('_token') || !$this->isCsrfTokenValid('delete'.$trick->getId(), $request->request->get('_token'))) {
-            return $this->render('trick/editForm.html.twig', ['trick' => $repoTrick->findWithPoster($trick->getId())]);
+            $this->addFlash('danger', 'La figure n\'a pas pu être supprimée');
+
+            return $this->redirectToRoute('home');
         }
 
         foreach($trick->getImages() as $image) {
@@ -259,19 +268,21 @@ class TrickController extends AbstractController
         $em->remove($trick);
         $em->flush();
 
-
         $this->addFlash('success', 'la figure a été supprimée avec succès !');
 
         return $this->redirectToRoute('home');
     }
 
     /**
+     * Delete image in edit trick page
      * @Route("trick/edit/image/{id<[0-9]+>}/delete", name="image_delete")
      */
     public function deleteImage(Image $image, EntityManagerInterface $em, Request $request)
     {
         if (!$request->query->get('csrf_token') || !$this->isCsrfTokenValid('delete'.$image->getId(), $request->query->get('csrf_token'))) {
-            return $this->redirect($this->generateUrl('trick_edit', ['id' => $image->getTrick()->getId()]));
+            $this->addFlash('danger', 'L\'image n\'a pas pu être supprimée');
+
+            return $this->redirect($this->generateUrl('trick_edit', ['id' => $image->getTrick()->getId()]) . '#alert');
         }
 
         //delete poster => new poster before delete
@@ -295,6 +306,7 @@ class TrickController extends AbstractController
     }
 
     /**
+     * Changer the poster in edit trick page
      * @Route("trick/edit/image/{newPoster}/poster/{oldPoster}", name="image_poster_change")
      */
     public function changePoster(EntityManagerInterface $em, Image $newPoster, Image $oldPoster)
@@ -308,11 +320,16 @@ class TrickController extends AbstractController
     }
 
     /**
+     * Delete video in edit trick page
      * @Route("trick/edit/video/{id<[0-9]+>}/delete", name="video_delete")
      */
     public function deleteVideo(Video $video, EntityManagerInterface $em, Request $request)
     {
-        if ($request->query->get('csrf_token') && $this->isCsrfTokenValid('delete'.$video->getId(), $request->query->get('csrf_token'))) {
+        if (!$request->query->get('csrf_token') OR !$this->isCsrfTokenValid('delete'.$video->getId(), $request->query->get('csrf_token'))) {
+            $this->addFlash('danger', 'La vidéo n\'a pas pu être supprimée.');
+
+            return $this->redirect($this->generateUrl('trick_edit', ['id' => $video->getTrick()->getId()]) . '#alert');
+        }
 
             $em->remove($video);
             $em->flush();
@@ -320,6 +337,5 @@ class TrickController extends AbstractController
             $this->addFlash('success', 'La vidéo a été supprimée avec succès !');
 
             return $this->redirect($this->generateUrl('trick_edit', ['id' => $video->getTrick()->getId()]) . '#alert');
-        }
     }
 }
