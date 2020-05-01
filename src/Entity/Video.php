@@ -31,6 +31,9 @@ class Video
      */
     private $trick;
 
+    /**
+     * Refactor the iframe paste by user
+     */
     public function refactorIframe()
     {
         $array = explode(' ', $this->iframe);

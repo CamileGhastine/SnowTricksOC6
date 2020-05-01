@@ -52,7 +52,9 @@ class Image
      */
     private $file;
 
-
+    /**
+     * @param SluggerInterface $slugger
+     */
     public function upload(SluggerInterface $slugger)
     {
         $OriginalName = pathinfo($this->file->getClientOriginalName(), PATHINFO_FILENAME);

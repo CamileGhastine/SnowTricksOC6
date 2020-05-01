@@ -5,7 +5,11 @@ namespace App\Entity;
 use Symfony\Bridge\Doctrine\Validator\Constraints\UniqueEntity;
 use Symfony\Component\Validator\Constraints as Assert;
 
-
+/**
+ * class use for forgotten password and for reset password
+ * Class UserProto
+ * @package App\Entity
+ */
 class UserProto
 {
 
