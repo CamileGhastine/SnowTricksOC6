@@ -33,6 +33,10 @@ class TrickController extends AbstractController
     /**
      * @Route("/", name="home")
      * @Route("/trick/{id<[0-9]+>}/category", name="trick_category")
+     * @param TrickRepository $repoTrick
+     * @param CategoryRepository $repoCategory
+     * @param null $id
+     * @return \Symfony\Component\HttpFoundation\Response
      */
     public function index(TrickRepository $repoTrick, CategoryRepository $repoCategory, $id = null)
     {
@@ -46,6 +50,9 @@ class TrickController extends AbstractController
     /**
      * Load More trick button in homme page
      * @Route("/trick/ajax/loadMore", name="ajax_load_more")
+     * @param TrickRepository $repoTrick
+     * @param Request $request
+     * @return \Symfony\Component\HttpFoundation\Response
      */
     public function ajaxLoadMore(TrickRepository $repoTrick, Request $request)
     {
@@ -60,6 +67,13 @@ class TrickController extends AbstractController
     /**
      * Show one trick
      * @Route("/trick/{id<[0-9]+>}", name="trick_show")
+     * @param $id
+     * @param Request $request
+     * @param TrickRepository $repoTrick
+     * @param PaginatorService $paginator
+     * @param EntityManagerInterface $em
+     * @return \Symfony\Component\HttpFoundation\RedirectResponse|\Symfony\Component\HttpFoundation\Response
+     * @throws \Doctrine\ORM\NonUniqueResultException
      */
     public function show($id, Request $request, TrickRepository $repoTrick, PaginatorService $paginator, EntityManagerInterface $em)
     {
@@ -92,6 +106,10 @@ class TrickController extends AbstractController
     /**
      * Paginate comments
      * @Route("/trick/ajax/commentsPagination/{id<[0-9]+>}/{page<[0-9]+>}", name="ajax_comments_pagination")
+     * @param $id
+     * @param $page
+     * @param PaginatorService $paginator
+     * @return \Symfony\Component\HttpFoundation\Response
      */
     public function ajaxCommentsPagination ($id, $page, PaginatorService $paginator)
     {
@@ -106,6 +124,10 @@ class TrickController extends AbstractController
     /**
      * Create new trick
      * @Route("/trick/edit/new", name="trick_new")
+     * @param Request $request
+     * @param EntityManagerInterface $em
+     * @param SluggerInterface $slugger
+     * @return \Symfony\Component\HttpFoundation\RedirectResponse|\Symfony\Component\HttpFoundation\Response
      */
     public function create(Request $request, EntityManagerInterface $em, SluggerInterface $slugger)
     {
@@ -148,6 +170,9 @@ class TrickController extends AbstractController
     /**
      * Create new category in add trick form
      * @Route("/trick/ajax/addCategory", name="ajax_add_category")
+     * @param Request $request
+     * @param EntityManagerInterface $em
+     * @return \Symfony\Component\HttpFoundation\Response
      */
     public function ajaxAddCategory(Request $request, EntityManagerInterface $em)
     {
@@ -170,6 +195,11 @@ class TrickController extends AbstractController
     /**
      * Edit a trick
      * @Route("/trick/edit/{id<[0-9]+>}/update", name="trick_edit")
+     * @param Request $request
+     * @param EntityManagerInterface $em
+     * @param Trick $trick
+     * @param SluggerInterface $slugger
+     * @return \Symfony\Component\HttpFoundation\RedirectResponse|\Symfony\Component\HttpFoundation\Response
      */
     public function edit(Request $request, EntityManagerInterface $em, Trick $trick, SluggerInterface $slugger)
     {
@@ -252,6 +282,11 @@ class TrickController extends AbstractController
     /**
      * Delete a trick
      * @Route("trick/edit/{id<[0-9]+>}/delete", name="trick_delete")
+     * @param Trick $trick
+     * @param EntityManagerInterface $em
+     * @param Request $request
+     * @param TrickRepository $repoTrick
+     * @return \Symfony\Component\HttpFoundation\RedirectResponse
      */
     public function delete(Trick $trick, EntityManagerInterface $em, Request $request, TrickRepository $repoTrick)
     {
@@ -276,6 +311,10 @@ class TrickController extends AbstractController
     /**
      * Delete image in edit trick page
      * @Route("trick/edit/image/{id<[0-9]+>}/delete", name="image_delete")
+     * @param Image $image
+     * @param EntityManagerInterface $em
+     * @param Request $request
+     * @return \Symfony\Component\HttpFoundation\RedirectResponse
      */
     public function deleteImage(Image $image, EntityManagerInterface $em, Request $request)
     {
@@ -308,6 +347,10 @@ class TrickController extends AbstractController
     /**
      * Changer the poster in edit trick page
      * @Route("trick/edit/image/{newPoster}/poster/{oldPoster}", name="image_poster_change")
+     * @param EntityManagerInterface $em
+     * @param Image $newPoster
+     * @param Image $oldPoster
+     * @return \Symfony\Component\HttpFoundation\RedirectResponse
      */
     public function changePoster(EntityManagerInterface $em, Image $newPoster, Image $oldPoster)
     {
@@ -322,6 +365,10 @@ class TrickController extends AbstractController
     /**
      * Delete video in edit trick page
      * @Route("trick/edit/video/{id<[0-9]+>}/delete", name="video_delete")
+     * @param Video $video
+     * @param EntityManagerInterface $em
+     * @param Request $request
+     * @return \Symfony\Component\HttpFoundation\RedirectResponse
      */
     public function deleteVideo(Video $video, EntityManagerInterface $em, Request $request)
     {

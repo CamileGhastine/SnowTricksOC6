@@ -19,6 +19,10 @@ class SecurityController extends AbstractController
 {
     /**
      * @Route("/inscription", name="security_registration")
+     * @param Request $request
+     * @param EntityManagerInterface $em
+     * @param UserPasswordEncoderInterface $passwordEncoder
+     * @return \Symfony\Component\HttpFoundation\RedirectResponse|\Symfony\Component\HttpFoundation\Response
      */
     public function registration(Request $request, EntityManagerInterface $em, UserPasswordEncoderInterface $passwordEncoder)
     {
@@ -47,6 +51,8 @@ class SecurityController extends AbstractController
 
     /**
      * @Route("/login", name="security_login")
+     * @param AuthenticationUtils $authenticationUtils
+     * @return \Symfony\Component\HttpFoundation\Response
      */
     public function login(authenticationUtils $authenticationUtils)
     {
@@ -68,6 +74,11 @@ class SecurityController extends AbstractController
 
     /**
      * @Route("/forgotten_password", name="security_forgotten")
+     * @param Request $request
+     * @param UserRepository $repo
+     * @param EmailerService $emailer
+     * @return \Symfony\Component\HttpFoundation\RedirectResponse|\Symfony\Component\HttpFoundation\Response
+     * @throws \Symfony\Component\Mailer\Exception\TransportExceptionInterface
      */
     public function forgotenPasword (Request $request, UserRepository $repo, EmailerService $emailer)
     {
@@ -97,6 +108,11 @@ class SecurityController extends AbstractController
 
     /**
      * @Route("/reset_password", name="reset_password")
+     * @param UserRepository $repo
+     * @param Request $request
+     * @param UserPasswordEncoderInterface $passwordEncoder
+     * @param EntityManagerInterface $em
+     * @return \Symfony\Component\HttpFoundation\RedirectResponse|\Symfony\Component\HttpFoundation\Response
      */
     public function resetPassword (UserRepository $repo, Request $request, UserPasswordEncoderInterface $passwordEncoder, EntityManagerInterface $em)
     {
