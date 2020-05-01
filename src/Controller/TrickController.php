@@ -46,7 +46,7 @@ class TrickController extends AbstractController
 
     /**
      * @Route("/", name="home")
-     * @Route("/trick/{id}/category", name="trick_category")
+     * @Route("/trick/{id<[0-9]+>}/category", name="trick_category")
      */
     public function index(TrickRepository $repoTrick, CategoryRepository $repoCategory, $id = null)
     {
@@ -56,15 +56,26 @@ class TrickController extends AbstractController
             'categoryId' => $id
         ]);
     }
+    /**
+     * @Route("/trick/ajax/commentsPagination/{id<[0-9]+>}/{page<[0-9]+>}", name="ajax_comments_pagination")
+     */
+    public function ajaxCommentsPagination ($id, $page, Paginator $paginator)
+    {
+        $paginatorResponse = $paginator->paginate($id, $page);
+
+        return $this->render('trick/ajax/ajax_comments_pagination.html.twig', [
+            'comments' => $paginatorResponse['comments'],
+            'render' => $paginatorResponse['render'],
+        ]);
+    }
 
     /**
-     * @Route("/trick/{id}", name="trick_show")
-     * @Route("/trick/{id<[0-9]+>}/{page<[0-9]+>}", name="trick_show_comment")
+     * @Route("/trick/{id<[0-9]+>}", name="trick_show")
      */
-    public function show($id, Request $request, TrickRepository $repoTrick, Paginator $paginator, EntityManagerInterface $em, $page = 1)
+    public function show($id, Request $request, TrickRepository $repoTrick, Paginator $paginator, EntityManagerInterface $em)
     {
         $trick = $repoTrick->findTrickWithCategoriesImagesVideosComments($id);
-        $paginatorResponse = $paginator->paginate($id, $page);
+        $paginatorResponse = $paginator->paginate($id, 1);
 
         $user = $this->getUser();
         if ($user)
@@ -152,7 +163,7 @@ class TrickController extends AbstractController
     }
 
     /**
-     * @Route("/trick/edit/{id}/update", name="trick_edit")
+     * @Route("/trick/edit/{id<[0-9]+>}/update", name="trick_edit")
      */
     public function edit(Request $request, EntityManagerInterface $em, Trick $trick, SluggerInterface $slugger)
     {
@@ -234,7 +245,7 @@ class TrickController extends AbstractController
 
 
     /**
-     * @Route("trick/edit/{id}/delete", name="trick_delete")
+     * @Route("trick/edit/{id<[0-9]+>}/delete", name="trick_delete")
      */
     public function delete(Trick $trick, EntityManagerInterface $em, Request $request, TrickRepository $repoTrick)
     {
@@ -256,7 +267,7 @@ class TrickController extends AbstractController
     }
 
     /**
-     * @Route("trick/edit/image/{id}/delete", name="image_delete")
+     * @Route("trick/edit/image/{id<[0-9]+>}/delete", name="image_delete")
      */
     public function deleteImage(Image $image, EntityManagerInterface $em, Request $request)
     {
@@ -298,7 +309,7 @@ class TrickController extends AbstractController
     }
 
     /**
-     * @Route("trick/edit/video/{id}/delete", name="video_delete")
+     * @Route("trick/edit/video/{id<[0-9]+>}/delete", name="video_delete")
      */
     public function deleteVideo(Video $video, EntityManagerInterface $em, Request $request)
     {

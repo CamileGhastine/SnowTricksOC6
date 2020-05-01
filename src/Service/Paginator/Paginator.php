@@ -39,8 +39,8 @@ class Paginator
     public function renderPagination() {
         $render="";
         for ($i=1; $i<=$this->numberPages; $i++) {
-            $render .= '<a href="/trick/'.$this->id.'/'.$i.'#comments"><span class="badge badge-pill badge-'.($i === $this->page ? 'primary' : 'secondary').' mx-2">'.$i.'</span></a> ';
+            $render .= '<a href="/trick/ajax/commentsPagination/'.$this->id.'/'.$i.'"><span class="badge badge-pill badge-'.($i === $this->page ? 'primary' : 'secondary').' mx-2">'.$i.'</span></a> ';
         }
-        return '<p class="text-center mt-4"><a href="#">'.$render.'</p>';
+        return '<p class="text-center mt-4 pagination">'.$render.'</p>';
     }
 }
