@@ -32,4 +32,22 @@ class EmailerService
 
         $this->mailer->send($email);
     }
+
+    /**
+     * @throws \Symfony\Component\Mailer\Exception\TransportExceptionInterface
+     */
+    public function sendEmailRegistration(User $user)
+    {
+        $email = (new Email())
+            ->from('ghastine@gmail.com')
+            ->to($user->getEmail())
+            //->cc('cc@example.com')
+            //->bcc('bcc@example.com')
+            //->replyTo('fabien@example.com')
+            //->priority(Email::PRIORITY_HIGH)
+            ->subject('SnowTricks : Validation de votre inscription')
+            ->text('Cliquez sur le lien pour Valider votre inscription : https://127.0.0.1:8000/validate_registration?email='.$user->getEmail().'&token='.$user->getToken());
+
+        $this->mailer->send($email);
+    }
 }

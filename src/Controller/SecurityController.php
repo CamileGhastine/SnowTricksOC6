@@ -16,6 +16,7 @@ use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Component\Security\Core\Encoder\UserPasswordEncoderInterface;
+use Symfony\Component\Security\Csrf\TokenGenerator\TokenGeneratorInterface;
 use Symfony\Component\Security\Guard\GuardAuthenticatorHandler;
 use Symfony\Component\Security\Http\Authentication\AuthenticationUtils;
 
@@ -51,7 +52,7 @@ class SecurityController extends AbstractController
      *
      * @return \Symfony\Component\HttpFoundation\RedirectResponse|\Symfony\Component\HttpFoundation\Response
      */
-    public function registration(Request $request, EntityManagerInterface $em, UserPasswordEncoderInterface $passwordEncoder, UploaderService $uploader)
+    public function registration(Request $request, EntityManagerInterface $em, UserPasswordEncoderInterface $passwordEncoder, UploaderService $uploader, EmailerService $emailer, TokenGeneratorInterface $token)
     {
         $user = new User();
 
@@ -66,6 +67,7 @@ class SecurityController extends AbstractController
 
         $user->setPassword($passwordEncoder->encodePassword($user, $user->getPassword()))
             ->setAvatar('images/users/nobody.jpg')
+            ->setToken($token->generateToken())
         ;
 
         if ($form->getData()->getFile()) {
@@ -76,9 +78,37 @@ class SecurityController extends AbstractController
         $em->persist($user);
         $em->flush();
 
+        $emailer->sendEmailRegistration($user);
+
         $this->addFlash('success', 'Votre inscription a été réalisée avec succès. Consultez votre boite mail pour valider votre inscription.');
 
         return $this->redirectToRoute('security_registration');
+    }
+
+    /**
+     * @Route("/validate_registration", name="validate_registration")
+     */
+    public function validateRegistration(Request $request, UserRepository $repo, EntityManagerInterface $em)
+    {
+        $user = $repo->findOneBy(['email' => $request->query->get('email')]);
+
+        if($request->query->get('validate')) {
+
+            $user->setValidate(true);
+            $em->flush();
+
+            $this->addFlash('success', 'Votre inscription est validée. Cliquez sur l\'onglet connexion du menu pour vous connecter.');
+
+            return $this->redirectToRoute('home');
+        }
+
+        if (!$user OR $user->getToken() !== $request->query->get('token')) {
+            $this->addFlash('danger', 'Votre lien n\'est pas valide. Merci d\'en générer un nouveau.');
+
+            return $this->render('Security/validateRegistration.html.twig');
+        }
+
+        return $this->render('Security/validateRegistration.html.twig', ['user' => $user]);
     }
 
     /**
@@ -124,17 +154,12 @@ class SecurityController extends AbstractController
     {
         $user = $repo->findOneBy(['email' => $request->query->get('email')]);
 
-        if (!$user) {
+        if (!$user OR $user->getToken() !== $request->query->get('token')) {
             $this->addFlash('danger', 'Votre lien n\'est pas valide. Merci d\'en générer un nouveau.');
 
-            return $this->redirectToRoute('home');
-        }
-
-        if (!$user->getToken() == $request->query->get('token')) {
-            $this->addFlash('danger', 'Votre lien n\'est pas valide. Merci d\'en générer un nouveau.');
-
-            return $this->redirectToRoute('home');
-        }
+            return $this->render('/security/reset_pasword.html.twig', [
+                'form' => $form->createView(),
+            ]);        }
 
         $form = $this->createForm(ResetPasswordType::class);
         $form->handleRequest($request);

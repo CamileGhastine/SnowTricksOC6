@@ -31,6 +31,7 @@ class AppFixtures extends Fixture
             ->setPassword($password)
             ->setAvatar('images/users/camile.jpg')
             ->setRole('ROLE_ADMIN')
+            ->setValidate(true)
             ->setToken($this->token->generateToken())
         ;
 

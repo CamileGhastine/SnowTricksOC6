@@ -72,8 +72,8 @@ class FormAuthenticator extends AbstractFormLoginAuthenticator implements Passwo
             throw new CustomUserMessageAuthenticationException('Username could not be found.');
         }
 
-        if (!$user->getToken()) {
-            throw new CustomUserMessageAuthenticationException('Vous n\'avez pas encore Validé l\'inscription qui vous a été envoyé par mail.');
+        if (!$user->getValidate()) {
+            throw new CustomUserMessageAuthenticationException('Vous n\'avez pas encore Validée l\'inscription qui vous a été envoyé par mail.');
         }
 
         return $user;

@@ -34,6 +34,7 @@ class UserFixtures extends Fixture
                 ->setEmail($username.'@'.$username.'.fr')
                 ->setPassword($password)
                 ->setAvatar('images/users/nobody.jpg')
+                ->setValidate(true)
                 ->setToken($this->token->generateToken())
             ;
 

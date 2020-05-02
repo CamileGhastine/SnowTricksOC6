@@ -1,0 +1,23 @@
+{% extends 'base.html.twig' %}
+{% block title %} Validation de l'inscription{% endblock %}
+
+{% block body %}
+    <div class="container">
+
+        {% for message in app.flashes('danger') %}
+            <div class="alert alert-danger text-center mt-5">
+                {{ message }}
+            </div>
+        {% else %}
+            <h3 class="my-5">Valider votre inscription</h3>
+            <form method="post">
+                <p>Cliquez sur ce bouton pour valider votre inscription <a href="{{ path('validate_registration', {'email': user.email,'validate' : true}) }}" class="btn-sm btn-secondary">Valider</a></p>
+
+            </form>
+        {% endfor %}
+
+    </div>
+{% endblock %}
+
+
+
