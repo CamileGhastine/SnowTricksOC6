@@ -160,7 +160,7 @@
                         {% for comment in comments %}
                             <div class="row">
                                 <div class="d-flex align-items-start">
-                                    <img class="rounded-circle col-1 avatar" src="{{ asset(comment.user.avatar) }}" alt=" user.username "/>
+                                    <img class="rounded-circle col-1 avatar" src="{{ asset(comment.user.avatar) }}" alt="{{ comment.user.username }} "/>
                                 </div>
                                 <div class="col-3">
                                     <B>{{ comment.user.username }}</B><br/>

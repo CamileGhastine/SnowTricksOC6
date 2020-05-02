@@ -2,10 +2,8 @@
 
 namespace App\Entity;
 
-use App\Kernel;
 use Doctrine\ORM\Mapping as ORM;
 use Symfony\Component\HttpFoundation\File\UploadedFile;
-use Symfony\Component\String\Slugger\SluggerInterface;
 use Symfony\Component\Validator\Constraints as Assert;
 
 /**
@@ -51,18 +49,6 @@ class Image
      * )
      */
     private $file;
-
-    public function upload(SluggerInterface $slugger)
-    {
-        $OriginalName = pathinfo($this->file->getClientOriginalName(), PATHINFO_FILENAME);
-        $name = $slugger->slug($OriginalName).'-'.uniqid().'.'.pathinfo($this->file->getClientOriginalName(), PATHINFO_EXTENSION);
-
-        $this->file->move(Kernel::getProjectDir().'/public/images/tricks', $name);
-
-        $this->setUrl('images/tricks/'.$name);
-        $this->setAlt($name);
-        $this->setPoster(0);
-    }
 
     /**
      * @return mixed

@@ -10,8 +10,17 @@
         {{ form_row(form.email) }}
         {{ form_row(form.password) }}
         {{ form_row(form.confirm_password) }}
+        {{ form_row(form.file) }}
         <button type="submit" class="btn btn-secondary">Inscription</button>
         {{ form_end(form) }}
     </div>
-
+    <script>
+        // display uploaded file
+        $('.custom-file-input').on('change', function(event) {
+            var inputFile = event.currentTarget;
+            $(inputFile).parent()
+                .find('.custom-file-label')
+                .html(inputFile.files[0].name);
+        });
+    </script>
 {% endblock %}

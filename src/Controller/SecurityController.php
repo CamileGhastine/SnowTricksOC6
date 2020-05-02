@@ -8,6 +8,7 @@ use App\Form\RegistrationType;
 use App\Form\ResetPasswordType;
 use App\Repository\UserRepository;
 use App\Service\EmailerService;
+use App\Service\UploaderService;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
@@ -22,7 +23,7 @@ class SecurityController extends AbstractController
      *
      * @return \Symfony\Component\HttpFoundation\RedirectResponse|\Symfony\Component\HttpFoundation\Response
      */
-    public function registration(Request $request, EntityManagerInterface $em, UserPasswordEncoderInterface $passwordEncoder)
+    public function registration(Request $request, EntityManagerInterface $em, UserPasswordEncoderInterface $passwordEncoder, UploaderService $uploader)
     {
         $user = new User();
 
@@ -38,6 +39,11 @@ class SecurityController extends AbstractController
         $user->setPassword($passwordEncoder->encodePassword($user, $user->getPassword()))
             ->setAvatar('images/users/nobody.jpg')
         ;
+
+        if ($form->getData()->getFile()) {
+            $url = $uploader->uploadAvatar($form->getData()->getFile());
+            $user->setAvatar($url);
+        }
 
         $em->persist($user);
         $em->flush();

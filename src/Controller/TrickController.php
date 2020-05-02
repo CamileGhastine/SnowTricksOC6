@@ -17,12 +17,12 @@ use App\Kernel;
 use App\Repository\CategoryRepository;
 use App\Repository\TrickRepository;
 use App\Service\PaginatorService;
+use App\Service\UploaderService;
 use DateTime;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\Routing\Annotation\Route;
-use Symfony\Component\String\Slugger\SluggerInterface;
 
 class TrickController extends AbstractController
 {
@@ -127,7 +127,7 @@ class TrickController extends AbstractController
      *
      * @return \Symfony\Component\HttpFoundation\RedirectResponse|\Symfony\Component\HttpFoundation\Response
      */
-    public function create(Request $request, EntityManagerInterface $em, SluggerInterface $slugger)
+    public function create(Request $request, EntityManagerInterface $em, UploaderService $uploader)
     {
         $category = new Category();
         $formCategory = $this->createForm(CategoryType::class, $category);
@@ -153,7 +153,7 @@ class TrickController extends AbstractController
 
         /** @var Image $image */
         foreach ($form->getData()->getImages() as $key => $image) {
-            $image->upload($slugger);
+            $uploader->upload($image);
             0 === $key ? $image->setPoster(true) : null;
         }
 
@@ -196,7 +196,7 @@ class TrickController extends AbstractController
      *
      * @return \Symfony\Component\HttpFoundation\RedirectResponse|\Symfony\Component\HttpFoundation\Response
      */
-    public function edit(Request $request, EntityManagerInterface $em, Trick $trick, SluggerInterface $slugger)
+    public function edit(Request $request, EntityManagerInterface $em, Trick $trick, UploaderService $uploader)
     {
         $formTrick = $this->createForm(EditTrickType::class, $trick);
         $formTrick->handleRequest($request);
@@ -230,7 +230,7 @@ class TrickController extends AbstractController
         $formImage->handleRequest($request);
 
         if ($formImage->isSubmitted() && $formImage->isValid()) {
-            $image->upload($slugger);
+            $uploader->upload($image);
             $image->setTrick($trick);
 
             if (0 === count($trick->getImages())) {
