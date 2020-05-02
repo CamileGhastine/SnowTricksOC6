@@ -66,6 +66,11 @@ class User implements UserInterface
     private $confirm_password;
 
     /**
+     * @ORM\Column(type="string", unique=true, nullable=true)
+     */
+    private $apiToken;
+
+    /**
      * @ORM\Column(type="string", length=255)
      * @Assert\Url
      */
@@ -91,6 +96,8 @@ class User implements UserInterface
      */
     private $tricks;
 
+
+
     /**
      * @var UploadedFile
      * @Assert\File(
@@ -100,6 +107,29 @@ class User implements UserInterface
      * )
      */
     private $file;
+
+    public function __construct()
+    {
+        $this->comments = new ArrayCollection();
+        $this->tricks = new ArrayCollection();
+        $this->setRegisteredAt(new DateTime());
+    }
+
+    /**
+     * @return mixed
+     */
+    public function getApiToken()
+    {
+        return $this->apiToken;
+    }
+
+    /**
+     * @param mixed $apiToken
+     */
+    public function setApiToken($apiToken)
+    {
+        $this->apiToken = $apiToken;
+    }
 
     /**
      * @return mixed
@@ -115,13 +145,6 @@ class User implements UserInterface
     public function setFile($file): void
     {
         $this->file = $file;
-    }
-
-    public function __construct()
-    {
-        $this->comments = new ArrayCollection();
-        $this->tricks = new ArrayCollection();
-        $this->setRegisteredAt(new DateTime());
     }
 
     public function getId(): ?int

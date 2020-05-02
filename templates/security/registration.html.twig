@@ -11,8 +11,12 @@
         {{ form_row(form.password) }}
         {{ form_row(form.confirm_password) }}
         {{ form_row(form.file) }}
-        <button type="submit" class="btn btn-secondary">Inscription</button>
+        <div class="offset-2">
+            <button type="submit" class="btn btn-secondary">Inscription</button>
+        </div>
         {{ form_end(form) }}
+        <p class="offset-2 mt-4">Déjà inscrit : <a href="{{ path('security_login') }}">Connectez-vous</a>
+
     </div>
     <script>
         // display uploaded file
