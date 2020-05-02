@@ -67,16 +67,15 @@ class FormAuthenticator extends AbstractFormLoginAuthenticator implements Passwo
 
         $user = $this->entityManager->getRepository(User::class)->findOneBy(['username' => $credentials['username']]);
 
-
-
         if (!$user) {
             // fail authentication with a custom error
             throw new CustomUserMessageAuthenticationException('Username could not be found.');
         }
 
-        if (!$user->getApiToken()) {
+        if (!$user->getToken()) {
             throw new CustomUserMessageAuthenticationException('Vous n\'avez pas encore Validé l\'inscription qui vous a été envoyé par mail.');
         }
+
         return $user;
     }
 
@@ -87,6 +86,8 @@ class FormAuthenticator extends AbstractFormLoginAuthenticator implements Passwo
 
     /**
      * Used to upgrade (rehash) the user's password automatically over time.
+     *
+     * @param $credentials
      */
     public function getPassword($credentials): ?string
     {

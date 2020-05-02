@@ -68,7 +68,7 @@ class User implements UserInterface
     /**
      * @ORM\Column(type="string", unique=true, nullable=true)
      */
-    private $apiToken;
+    private $token;
 
     /**
      * @ORM\Column(type="string", length=255)
@@ -97,7 +97,6 @@ class User implements UserInterface
     private $tricks;
 
 
-
     /**
      * @var UploadedFile
      * @Assert\File(
@@ -118,17 +117,17 @@ class User implements UserInterface
     /**
      * @return mixed
      */
-    public function getApiToken()
+    public function getToken()
     {
-        return $this->apiToken;
+        return $this->token;
     }
 
     /**
-     * @param mixed $apiToken
+     * @param mixed $token
      */
-    public function setApiToken($apiToken)
+    public function setToken($token)
     {
-        $this->apiToken = $apiToken;
+        $this->token = $token;
     }
 
     /**

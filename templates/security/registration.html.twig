@@ -3,28 +3,32 @@
 
 {% block body %}
 
-    <div class="container mt-5">
-        <h1 class="mb-5">Enregistrement</h1>
-        {{ form_start(form) }}
-        {{ form_row(form.username) }}
-        {{ form_row(form.email) }}
-        {{ form_row(form.password) }}
-        {{ form_row(form.confirm_password) }}
-        {{ form_row(form.file) }}
-        <div class="offset-2">
-            <button type="submit" class="btn btn-secondary">Inscription</button>
-        </div>
-        {{ form_end(form) }}
-        <p class="offset-2 mt-4">Déjà inscrit : <a href="{{ path('security_login') }}">Connectez-vous</a>
+    <div class="container">
 
+        {% for message in app.flashes('success') %}
+            <div class="alert alert-success text-center mt-5">
+                {{ message }}
+            </div>
+        {% else %}
+            <div class="container mt-5">
+                <h1 class="mb-5">Enregistrement</h1>
+                {{ form_start(form) }}
+                {{ form_row(form.username) }}
+                {{ form_row(form.email) }}
+                {{ form_row(form.password) }}
+                {{ form_row(form.confirm_password) }}
+                {{ form_row(form.file) }}
+                <div class="offset-2">
+                    <button type="submit" class="btn btn-secondary">Inscription</button>
+                </div>
+                {{ form_end(form) }}
+                <p class="offset-2 mt-4">Déjà inscrit : <a href="{{ path('security_login') }}">Connectez-vous</a>
+            </div>
+        {% endfor %}
     </div>
-    <script>
-        // display uploaded file
-        $('.custom-file-input').on('change', function(event) {
-            var inputFile = event.currentTarget;
-            $(inputFile).parent()
-                .find('.custom-file-label')
-                .html(inputFile.files[0].name);
-        });
-    </script>
+{% endblock %}
+
+{% block javascripts %}
+    <script src="{{ asset('js/registration.js') }}"></script>
+
 {% endblock %}

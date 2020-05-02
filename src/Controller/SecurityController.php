@@ -7,6 +7,7 @@ use App\Form\ForgottenPasswordType;
 use App\Form\RegistrationType;
 use App\Form\ResetPasswordType;
 use App\Repository\UserRepository;
+use App\Security\FormAuthenticator;
 use App\Service\EmailerService;
 use App\Service\UploaderService;
 use Doctrine\ORM\EntityManagerInterface;
@@ -15,6 +16,7 @@ use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Component\Security\Core\Encoder\UserPasswordEncoderInterface;
+use Symfony\Component\Security\Guard\GuardAuthenticatorHandler;
 use Symfony\Component\Security\Http\Authentication\AuthenticationUtils;
 
 class SecurityController extends AbstractController
@@ -74,9 +76,9 @@ class SecurityController extends AbstractController
         $em->persist($user);
         $em->flush();
 
-        $this->addFlash('success', 'Votre inscription a été réalisée avec succès. Connectez vous pour profiter de toutes les fonctionnalités de SnowTricks.');
+        $this->addFlash('success', 'Votre inscription a été réalisée avec succès. Consultez votre boite mail pour valider votre inscription.');
 
-        return $this->redirectToRoute('security_login');
+        return $this->redirectToRoute('security_registration');
     }
 
     /**
@@ -118,7 +120,7 @@ class SecurityController extends AbstractController
      *
      * @return \Symfony\Component\HttpFoundation\RedirectResponse|\Symfony\Component\HttpFoundation\Response
      */
-    public function resetPassword(UserRepository $repo, Request $request, UserPasswordEncoderInterface $passwordEncoder, EntityManagerInterface $em)
+    public function resetPassword(UserRepository $repo, Request $request, UserPasswordEncoderInterface $passwordEncoder, EntityManagerInterface $em, FormAuthenticator $authenticator, GuardAuthenticatorHandler $guardHandler)
     {
         $user = $repo->findOneBy(['email' => $request->query->get('email')]);
 
@@ -128,7 +130,7 @@ class SecurityController extends AbstractController
             return $this->redirectToRoute('home');
         }
 
-        if (!password_verify('forgotten_password'.$user->getId().$user->getEmail(), $request->query->get('token'))) {
+        if (!$user->getToken() == $request->query->get('token')) {
             $this->addFlash('danger', 'Votre lien n\'est pas valide. Merci d\'en générer un nouveau.');
 
             return $this->redirectToRoute('home');
@@ -146,8 +148,13 @@ class SecurityController extends AbstractController
         $user->setPassword($passwordEncoder->encodePassword($user, $form->getData()->getPassword()));
         $em->flush();
 
-        $this->addFlash('success', 'Connectez-vous avec votre nouveau mot de passe.');
+        $this->addFlash('success', 'Vous êtes connecté avec votre nouveau mot de passe.');
 
-        return $this->redirectToRoute('security_login');
+        return $guardHandler->authenticateUserAndHandleSuccess(
+            $user,          // the User object you just created
+            $request,
+            $authenticator, // authenticator whose onAuthenticationSuccess you want to use
+            'main'          // the name of your firewall in security.yaml
+        );
     }
 }

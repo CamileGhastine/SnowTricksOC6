@@ -31,7 +31,7 @@ class AppFixtures extends Fixture
             ->setPassword($password)
             ->setAvatar('images/users/camile.jpg')
             ->setRole('ROLE_ADMIN')
-            ->setApiToken($this->token->generateToken())
+            ->setToken($this->token->generateToken())
         ;
 
         $this->addReference('user0', $user);
