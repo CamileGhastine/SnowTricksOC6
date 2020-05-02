@@ -20,7 +20,7 @@ class Video
     /**
      * @ORM\Column(type="string", length=255)
      * @Assert\Regex(
-         *     pattern = "/^(<iframe\s).*src=.*(<\/iframe>)$/i",
+     *     pattern = "/^(<iframe\s).*src=.*(<\/iframe>)$/i",
      *     message = "La valeur entrée n'est pas un format iframe valide"
      * )
      */
@@ -32,44 +32,44 @@ class Video
     private $trick;
 
     /**
-     * Refactor the iframe paste by user
+     * Refactor the iframe paste by user.
      */
     public function refactorIframe()
     {
         $array = explode(' ', $this->iframe);
         foreach ($array as $value) {
-            if ( strstr($value, 'src="')) {
+            if (strstr($value, 'src="')) {
                 $this->iframe = '<iframe '.$value.'></iframe>';
             }
         }
     }
 
-public function getId(): ?int
-{
-    return $this->id;
-}
+    public function getId(): ?int
+    {
+        return $this->id;
+    }
 
-public function getIframe(): ?string
-{
-    return $this->iframe;
-}
+    public function getIframe(): ?string
+    {
+        return $this->iframe;
+    }
 
-public function setIframe(string $iframe): self
-{
-    $this->iframe = $iframe;
+    public function setIframe(string $iframe): self
+    {
+        $this->iframe = $iframe;
 
-    return $this;
-}
+        return $this;
+    }
 
-public function getTrick(): ?Trick
-{
-    return $this->trick;
-}
+    public function getTrick(): ?Trick
+    {
+        return $this->trick;
+    }
 
-public function setTrick(?Trick $trick): self
-{
-    $this->trick = $trick;
+    public function setTrick(?Trick $trick): self
+    {
+        $this->trick = $trick;
 
-    return $this;
-}
+        return $this;
+    }
 }

@@ -3,7 +3,6 @@
 namespace App\DataFixtures;
 
 use App\Entity\User;
-use DateTime;
 use Doctrine\Bundle\FixturesBundle\Fixture;
 use Doctrine\Common\Persistence\ObjectManager;
 use Symfony\Component\Security\Core\Encoder\UserPasswordEncoderInterface;
@@ -34,7 +33,6 @@ class AppFixtures extends Fixture
         $this->addReference('user0', $user);
 
         $manager->persist($user);
-
 
         $manager->flush();
     }

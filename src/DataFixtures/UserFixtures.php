@@ -3,7 +3,6 @@
 namespace App\DataFixtures;
 
 use App\Entity\User;
-use DateTime;
 use Doctrine\Bundle\FixturesBundle\Fixture;
 use Doctrine\Persistence\ObjectManager;
 use Faker\Factory;
@@ -22,8 +21,7 @@ class UserFixtures extends Fixture
     {
         $faker = Factory::create('fr_FR');
 
-
-        for ($i=1; $i<=3; $i++) {
+        for ($i = 1; $i <= 3; ++$i) {
             $user = new User();
 
             $username = $faker->firstName;

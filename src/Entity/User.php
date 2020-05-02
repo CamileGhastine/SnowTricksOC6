@@ -78,7 +78,7 @@ class User implements UserInterface
     /**
      * @ORM\Column(type="string", length=255)
      */
-    private $role='ROLE_USER';
+    private $role = 'ROLE_USER';
 
     /**
      * @ORM\OneToMany(targetEntity="App\Entity\Comment", mappedBy="user", orphanRemoval=true)
@@ -177,22 +177,21 @@ class User implements UserInterface
 
         return $this;
     }
+
     /**
      * @return string[] The user roles
      */
     public function getRoles()
     {
-        return [$this->role] ;
+        return [$this->role];
     }
 
     public function getSalt()
     {
-
     }
 
     public function eraseCredentials()
     {
-
     }
 
     public function getRole(): ?string

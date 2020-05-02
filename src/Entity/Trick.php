@@ -87,7 +87,6 @@ class Trick
      */
     private $videos;
 
-
     public function __construct(UserInterface $user)
     {
         $this->comments = new ArrayCollection();
@@ -97,7 +96,6 @@ class Trick
         $this->images = new ArrayCollection();
         $this->videos = new ArrayCollection();
     }
-
 
     public function getId(): ?int
     {

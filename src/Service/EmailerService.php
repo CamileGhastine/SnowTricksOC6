@@ -5,7 +5,6 @@ namespace App\Service;
 use App\Entity\User;
 use Symfony\Component\Mailer\MailerInterface;
 use Symfony\Component\Mime\Email;
-use Symfony\Component\Security\Csrf\TokenGenerator\TokenGeneratorInterface;
 
 class EmailerService
 {
@@ -17,7 +16,6 @@ class EmailerService
     }
 
     /**
-     * @param User $user
      * @throws \Symfony\Component\Mailer\Exception\TransportExceptionInterface
      */
     public function sendEmailForgotten(User $user)

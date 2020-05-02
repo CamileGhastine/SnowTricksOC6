@@ -8,7 +8,6 @@ use Symfony\Component\HttpFoundation\File\UploadedFile;
 use Symfony\Component\String\Slugger\SluggerInterface;
 use Symfony\Component\Validator\Constraints as Assert;
 
-
 /**
  * @ORM\Entity(repositoryClass="App\Repository\ImageRepository")
  */
@@ -32,7 +31,8 @@ class Image
     private $alt;
 
     /**
-     * if $poster=1 the image is the first image
+     * if $poster=1 the image is the first image.
+     *
      * @ORM\Column(type="boolean")
      */
     private $poster;
@@ -52,9 +52,6 @@ class Image
      */
     private $file;
 
-    /**
-     * @param SluggerInterface $slugger
-     */
     public function upload(SluggerInterface $slugger)
     {
         $OriginalName = pathinfo($this->file->getClientOriginalName(), PATHINFO_FILENAME);

@@ -23,6 +23,7 @@ class CommentRepository extends ServiceEntityRepository
      * @param $id
      * @param null $maxResult
      * @param null $firstResult
+     *
      * @return int|mixed|string
      */
     public function findCommentsWithUser($id, $maxResult = null, $firstResult = null)

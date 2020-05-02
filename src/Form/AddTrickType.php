@@ -19,21 +19,21 @@ class AddTrickType extends AbstractType
             ->add('description')
             ->add('categories',
                 EntityType::class,
-                [ 'class' => Category::class,
+                ['class' => Category::class,
                     'choice_label' => 'title',
-                    'multiple' =>true,
+                    'multiple' => true,
                     'expanded' => true,
                     'by_reference' => false,
             ])
-            ->add('images', CollectionType::class,[
+            ->add('images', CollectionType::class, [
                 'entry_type' => ImageType::class,
                 'allow_add' => true,
-                'by_reference' => false
+                'by_reference' => false,
             ])
-            ->add('videos', CollectionType::class,[
+            ->add('videos', CollectionType::class, [
                 'entry_type' => VideoType::class,
                 'allow_add' => true,
-                'by_reference' => false
+                'by_reference' => false,
             ])
         ;
     }

@@ -10,8 +10,7 @@ class ImageFixtures extends Fixture
 {
     public function load(ObjectManager $manager)
     {
-        for ($i=0; $i<=29; $i++) {
-
+        for ($i = 0; $i <= 29; ++$i) {
             $name = 'image'.$i;
 
             $image = new Image();

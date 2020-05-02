@@ -2,7 +2,6 @@
 
 namespace App\Repository;
 
-
 use App\Entity\Trick;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
 use Doctrine\Common\Persistence\ManagerRegistry;
@@ -23,6 +22,7 @@ class TrickRepository extends ServiceEntityRepository
     /**
      * @param null $maxResult
      * @param null $firstResult
+     *
      * @return int|mixed|string
      */
     public function findAllWithPoster($maxResult = null, $firstResult = null)
@@ -44,6 +44,7 @@ class TrickRepository extends ServiceEntityRepository
      * @param $id
      * @param null $maxResult
      * @param null $firstResult
+     *
      * @return int|mixed|string
      */
     public function findByCategoryWithPoster($id, $maxResult = null, $firstResult = null)
@@ -65,7 +66,9 @@ class TrickRepository extends ServiceEntityRepository
 
     /**
      * @param $id
+     *
      * @return int|mixed|string|null
+     *
      * @throws \Doctrine\ORM\NonUniqueResultException
      */
     public function findTrickWithCategoriesImagesVideosComments($id)
@@ -88,7 +91,9 @@ class TrickRepository extends ServiceEntityRepository
 
     /**
      * @param $id
+     *
      * @return int|mixed|string|null
+     *
      * @throws \Doctrine\ORM\NonUniqueResultException
      */
     public function findWithPoster($id)

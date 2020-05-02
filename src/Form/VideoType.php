@@ -13,8 +13,8 @@ class VideoType extends AbstractType
     public function buildForm(FormBuilderInterface $builder, array $options)
     {
         $builder
-            ->add('iframe', TextareaType::class,[
-                'label' => false
+            ->add('iframe', TextareaType::class, [
+                'label' => false,
             ])
         ;
     }

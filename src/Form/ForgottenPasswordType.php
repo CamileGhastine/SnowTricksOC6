@@ -14,9 +14,9 @@ class ForgottenPasswordType extends AbstractType
     public function buildForm(FormBuilderInterface $builder, array $options)
     {
         $builder
-            ->add('email', EmailType::class, [ 'label' => 'Saisir votre adresse courriel :' ])
-            ->add('password', HiddenType::class, [ 'required' => false, 'empty_data' => 'Password123456789'])
-            ->add('confirm_password', HiddenType::class, [ 'required' => false, 'empty_data' => 'Password123456789'])
+            ->add('email', EmailType::class, ['label' => 'Saisir votre adresse courriel :'])
+            ->add('password', HiddenType::class, ['required' => false, 'empty_data' => 'Password123456789'])
+            ->add('confirm_password', HiddenType::class, ['required' => false, 'empty_data' => 'Password123456789'])
         ;
     }
 

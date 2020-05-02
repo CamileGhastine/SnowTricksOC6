@@ -2,17 +2,14 @@
 
 namespace App\Entity;
 
-use Symfony\Bridge\Doctrine\Validator\Constraints\UniqueEntity;
 use Symfony\Component\Validator\Constraints as Assert;
 
 /**
  * class use for forgotten password and for reset password
- * Class UserProto
- * @package App\Entity
+ * Class UserProto.
  */
 class UserProto
 {
-
     private $id;
 
     /**
@@ -54,7 +51,7 @@ class UserProto
      */
     private $avatar;
 
-    private $role='ROLE_USER';
+    private $role = 'ROLE_USER';
 
     public function getId(): ?int
     {
@@ -130,7 +127,7 @@ class UserProto
      */
     public function getRoles()
     {
-        return [$this->role] ;
+        return [$this->role];
     }
 
     public function getRole(): ?string

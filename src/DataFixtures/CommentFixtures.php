@@ -3,7 +3,6 @@
 namespace App\DataFixtures;
 
 use App\Entity\Comment;
-use DateTime;
 use Doctrine\Bundle\FixturesBundle\Fixture;
 use Doctrine\Common\DataFixtures\DependentFixtureInterface;
 use Doctrine\Persistence\ObjectManager;
@@ -16,12 +15,12 @@ class CommentFixtures extends Fixture implements dependentFixtureInterface
         $faker = Factory::create('fr_FR');
 
         $users = [];
-        for ($i=0; $i<=3; $i++) {
-            $users[]='user'.$i;
+        for ($i = 0; $i <= 3; ++$i) {
+            $users[] = 'user'.$i;
         }
 
-        for ($j=1; $j<=10; $j++) {
-            for ($i=1; $i<rand(-5, 15); $i++) {
+        for ($j = 1; $j <= 10; ++$j) {
+            for ($i = 1; $i < rand(-5, 15); ++$i) {
                 $user = $users[array_rand($users)];
 
                 $comment = new Comment($this->getReference('trick'.$j), $this->getReference($user));
@@ -36,8 +35,8 @@ class CommentFixtures extends Fixture implements dependentFixtureInterface
 
     public function getDependencies()
     {
-        return array (
+        return [
             TrickFixtures::class,
-        );
+        ];
     }
 }

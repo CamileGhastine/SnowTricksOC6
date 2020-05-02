@@ -8,7 +8,6 @@ use Doctrine\ORM\Mapping as ORM;
 use Symfony\Component\Security\Core\User\UserInterface;
 use Symfony\Component\Validator\Constraints as Assert;
 
-
 /**
  * @ORM\Entity(repositoryClass="App\Repository\CommentRepository")
  */
@@ -43,7 +42,6 @@ class Comment
      * @ORM\JoinColumn(nullable=false)
      */
     private $user;
-
 
     public function __construct(Trick $trick, UserInterface $user)
     {

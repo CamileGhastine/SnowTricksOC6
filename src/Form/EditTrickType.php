@@ -6,7 +6,6 @@ use App\Entity\Category;
 use App\Entity\Trick;
 use Symfony\Bridge\Doctrine\Form\Type\EntityType;
 use Symfony\Component\Form\AbstractType;
-use Symfony\Component\Form\Extension\Core\Type\CollectionType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolver;
 
@@ -19,9 +18,9 @@ class EditTrickType extends AbstractType
             ->add('description')
             ->add('categories',
                 EntityType::class,
-                [ 'class' => Category::class,
+                ['class' => Category::class,
                     'choice_label' => 'title',
-                    'multiple' =>true,
+                    'multiple' => true,
                     'expanded' => true,
                     'by_reference' => false,
             ])
