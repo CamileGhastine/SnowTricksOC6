@@ -173,13 +173,20 @@ class SecurityController extends AbstractController
         $user->setPassword($passwordEncoder->encodePassword($user, $form->getData()->getPassword()));
         $em->flush();
 
-        $this->addFlash('success', 'Vous êtes connecté avec votre nouveau mot de passe.');
 
-        return $guardHandler->authenticateUserAndHandleSuccess(
-            $user,          // the User object you just created
-            $request,
-            $authenticator, // authenticator whose onAuthenticationSuccess you want to use
-            'main'          // the name of your firewall in security.yaml
-        );
+        if (!$request->query->get('account')) {
+            $this->addFlash('success', 'Vous êtes connecté avec votre nouveau mot de passe.');
+
+            return $guardHandler->authenticateUserAndHandleSuccess(
+                $user,          // the User object you just created
+                $request,
+                $authenticator, // authenticator whose onAuthenticationSuccess you want to use
+                'main'          // the name of your firewall in security.yaml
+            );
+        }
+
+        $this->addFlash('success', 'Votre mot de passe a été modifié avec susccès.');
+
+        return $this->redirectToRoute('user_account');
     }
 }

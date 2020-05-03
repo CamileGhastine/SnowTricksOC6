@@ -7,6 +7,12 @@
 
         <h1 class="mt-5">Tableau de bord</h1>
 
+        {% for message in app.flashes('success') %}
+            <div class="alert alert-success text-center mb-5" id="alert">
+                {{ message }}
+            </div>
+        {% endfor %}
+
         <div class="row mt-5">
             <div class="col-4 text-center">
                 <div class="row ">
@@ -48,28 +54,15 @@
             </div>
             <div class="col-8 align-self-center">
                 <p>Nom d'utilisateur : {{ app.user.username }}</p>
-                <p>Mot de passe : ********** (<a href="#">Modifier</a>)</p>
+                <p>Mot de passe : <B>**********</B> (<a href="{{ path('reset_password', {'email' : app.user.email, 'token' : app.user.token, 'account' : true}) }}">Modifier</a>)</p>
                 <p>Date d'inscription : {{ app.user.registeredAt | date('d/m/y') }}</p>
             </div>
         </div>
 
     </div>
 
-    <script>
-        // Show form on click
-        $('.form').hide();
-        $('.upload').click(function(e){
-            e.preventDefault();
-            $('.form').show();
+{% endblock %}
 
-        })
-
-        // display uploaded file
-        $('.custom-file-input').on('change', function(event) {
-            var inputFile = event.currentTarget;
-            $(inputFile).parent()
-                .find('.custom-file-label')
-                .html(inputFile.files[0].name);
-        });
-    </script>
+{% block javascripts %}
+    <script src="{{ asset('js/user_account.js') }}"></script>
 {% endblock %}
