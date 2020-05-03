@@ -104,6 +104,7 @@
 
         $('form[name="category"]').submit(function(e){
             e.preventDefault();
+            $('.error-alert').hide();
             $.post('{{ path('ajax_add_category')}}',
                 $(this).serialize(),
                 function($data){

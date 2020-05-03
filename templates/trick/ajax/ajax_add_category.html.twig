@@ -1,5 +1,14 @@
-<div class="form-check col-6">
-    <input type="checkbox" id="add_trick_categories_{{ category.id }}" name="add_trick[categories][]" class="form-check-input" value="{{ category.id }}" checked>
-    <label class="form-check-label" for="add_trick_categories_{{ category.id }}">{{ category.title }}</label>
-</div>
+{% if category is defined and category %}
+    <div class="form-check col-6">
+        <input type="checkbox" id="add_trick_categories_{{ category.id }}" name="add_trick[categories][]" class="form-check-input" value="{{ category.id }}" checked>
+        <label class="form-check-label" for="add_trick_categories_{{ category.id }}">{{ category.title }}</label>
+    </div>
+{% endif %}
 
+{% if errors is defined and errors %}
+    {% for message in errors %}
+        <div class="mt-3 error-alert">
+            <span class="badge badge-pill badge-danger">ERREUR</span> {{ errors.title }}
+        </div>
+    {% endfor %}
+{% endif %}

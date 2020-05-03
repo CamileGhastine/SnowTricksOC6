@@ -179,14 +179,34 @@ class TrickController extends AbstractController
         $formCategory = $this->createForm(CategoryType::class, $category);
         $formCategory->handleRequest($request);
 
-        if ($formCategory->isSubmitted() && $formCategory->isValid()) {
-            $em->persist($category);
-            $em->flush();
-
+        if (!$formCategory->isSubmitted() OR !$formCategory->isValid()) {
             return $this->render('trick/ajax/ajax_add_category.html.twig', [
-                'category' => $category,
+                'errors' => $this->getErrorMessages($formCategory),
             ]);
         }
+
+        $em->persist($category);
+        $em->flush();
+
+        return $this->render('trick/ajax/ajax_add_category.html.twig', [
+            'category' => $category,
+        ]);
+    }
+
+    /**
+     * get Error Messages From Form.
+     * @return array
+     */
+    private function getErrorMessages($form) {
+        $errors = array();
+        if ($form->count() > 0) {
+            foreach ($form->all() as $child) {
+                if (!$child->isValid()) {
+                    $errors[$child->getName()] = str_replace('ERROR: ', '',(String) $form[$child->getName()]->getErrors());
+                }
+            }
+        }
+        return $errors;
     }
 
     /**

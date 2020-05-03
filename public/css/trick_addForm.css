@@ -10,3 +10,9 @@
     background: none;
     border: none;
 }
+
+.error-alert
+{
+    color: red !important;
+    font-size: 0.8em !important;
+}
