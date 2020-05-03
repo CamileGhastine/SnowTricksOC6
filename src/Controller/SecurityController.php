@@ -27,9 +27,9 @@ class SecurityController extends AbstractController
      */
     public function login(AuthenticationUtils $authenticationUtils): Response
     {
-         if ($this->getUser()) {
-             return $this->redirectToRoute('home');
-         }
+        if ($this->getUser()) {
+            return $this->redirectToRoute('home');
+        }
 
         // get the login error if there is one
         $error = $authenticationUtils->getLastAuthenticationError();
@@ -92,8 +92,7 @@ class SecurityController extends AbstractController
     {
         $user = $repo->findOneBy(['email' => $request->query->get('email')]);
 
-        if($request->query->get('validate')) {
-
+        if ($request->query->get('validate')) {
             $user->setValidate(true);
             $em->flush();
 
@@ -102,7 +101,7 @@ class SecurityController extends AbstractController
             return $this->redirectToRoute('home');
         }
 
-        if (!$user OR $user->getToken() !== $request->query->get('token')) {
+        if (!$user or $user->getToken() !== $request->query->get('token')) {
             $this->addFlash('danger', 'Votre lien n\'est pas valide. Merci d\'en générer un nouveau.');
 
             return $this->render('Security/validateRegistration.html.twig');
@@ -154,12 +153,13 @@ class SecurityController extends AbstractController
     {
         $user = $repo->findOneBy(['email' => $request->query->get('email')]);
 
-        if (!$user OR $user->getToken() !== $request->query->get('token')) {
+        if (!$user or $user->getToken() !== $request->query->get('token')) {
             $this->addFlash('danger', 'Votre lien n\'est pas valide. Merci d\'en générer un nouveau.');
 
             return $this->render('/security/reset_pasword.html.twig', [
                 'form' => $form->createView(),
-            ]);        }
+            ]);
+        }
 
         $form = $this->createForm(ResetPasswordType::class);
         $form->handleRequest($request);
@@ -172,7 +172,6 @@ class SecurityController extends AbstractController
 
         $user->setPassword($passwordEncoder->encodePassword($user, $form->getData()->getPassword()));
         $em->flush();
-
 
         if (!$request->query->get('account')) {
             $this->addFlash('success', 'Vous êtes connecté avec votre nouveau mot de passe.');

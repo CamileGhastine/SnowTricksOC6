@@ -96,7 +96,6 @@ class User implements UserInterface
      */
     private $tricks;
 
-
     /**
      * @var UploadedFile
      * @Assert\File(

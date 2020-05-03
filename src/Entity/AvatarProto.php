@@ -6,7 +6,6 @@ use Symfony\Component\Validator\Constraints as Assert;
 
 class AvatarProto
 {
-
     /**
      * @Assert\NotBlank(message="Aucun fichier n'a été téléversé.")
      * @Assert\File(

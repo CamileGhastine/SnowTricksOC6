@@ -31,11 +31,11 @@ class UserController extends AbstractController
             return $this->redirectToRoute('user_account');
         }
 
-        if($form->isSubmitted() && $form->isValid() ) {
-            $action = $this->getUser()->getAvatar() === 'images/users/nobody.jpg' ? 'create' : 'edit';
+        if ($form->isSubmitted() && $form->isValid()) {
+            $action = 'images/users/nobody.jpg' === $this->getUser()->getAvatar() ? 'create' : 'edit';
             $file = $form->getData()->getFile();
 
-            $avatar->manageAvatar($this->getUser(), $action , $file);
+            $avatar->manageAvatar($this->getUser(), $action, $file);
 
             return $this->redirectToRoute('user_account');
         }

@@ -2,8 +2,6 @@
 
 namespace App\Service;
 
-
-
 use App\Kernel;
 use Doctrine\ORM\EntityManagerInterface;
 
@@ -12,7 +10,7 @@ class AvatarService
     private $uploader;
     private $em;
 
-    public function __construct (UploaderService $uploader, EntityManagerInterface $em)
+    public function __construct(UploaderService $uploader, EntityManagerInterface $em)
     {
         $this->uploader = $uploader;
         $this->em = $em;
@@ -20,14 +18,20 @@ class AvatarService
 
     public function manageAvatar($user, $action, $file)
     {
-        $fileToDelete =$user->getAvatar();
+        $fileToDelete = $user->getAvatar();
 
-        if ($file === null) $user->setAvatar('images/users/nobody.jpg');
-        if ($file !== null) $user->setAvatar($this->uploader->uploadAvatar($file));
+        if (null === $file) {
+            $user->setAvatar('images/users/nobody.jpg');
+        }
+        if (null !== $file) {
+            $user->setAvatar($this->uploader->uploadAvatar($file));
+        }
 
         $this->em->persist($user);
         $this->em->flush();
 
-        if ($fileToDelete !== 'images/users/nobody.jpg') unlink(Kernel::getProjectDir().'/public/'.$fileToDelete);
+        if ('images/users/nobody.jpg' !== $fileToDelete) {
+            unlink(Kernel::getProjectDir().'/public/'.$fileToDelete);
+        }
     }
 }
