@@ -35,7 +35,7 @@ class TrickFixtures extends Fixture implements DependentFixtureInterface
             $date = $faker->dateTimebetween('-7 days');
 
             $trick->setTitle($faker->sentence(3, true))
-                ->setDescription(implode('<br/>', $faker->sentences(4)))
+                ->setDescription(implode("\n", $faker->sentences(4)))
                 ->setCreatedAt($date)
                 ->setUpdatedAt($date)
             ;

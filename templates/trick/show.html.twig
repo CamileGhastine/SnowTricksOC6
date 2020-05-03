@@ -113,7 +113,7 @@
                     </div>
 
                     <h1 class="card-title mt-5">{{ trick.title }}</h1>
-                    <p class="card-text mt-4">{{ trick.description | raw }}</p>
+                    <p class="card-text mt-4">{{ trick.description | nl2br }}</p>
                     <p class="card-text mt-4">
                         {% for category in trick.categories %}
                             <a href="#" class="">
@@ -167,7 +167,7 @@
                                     Le {{ comment.createdAt | date('d/m/y') }} à {{ comment.createdAt | date('H:i') }}
                                 </div>
                                 <div class="col-7 text-justify">
-                                    {{ comment.content | raw }}
+                                    {{ comment.content | nl2br }}
                                 </div>
                                 <div class="col-12 pr-5">
                                     <hr/>

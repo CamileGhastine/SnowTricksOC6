@@ -25,7 +25,7 @@ class CommentFixtures extends Fixture implements dependentFixtureInterface
 
                 $comment = new Comment($this->getReference('trick'.$j), $this->getReference($user));
 
-                $comment->setContent(implode('<br/>', $faker->sentences(4)));
+                $comment->setContent(implode("\n", $faker->sentences(4)));
 
                 $manager->persist($comment);
             }

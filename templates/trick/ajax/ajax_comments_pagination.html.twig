@@ -11,7 +11,7 @@
                     Le {{ comment.createdAt | date('d/m/y') }} à {{ comment.createdAt | date('H:i') }}
                 </div>
                 <div class="col-7 text-justify">
-                    {{ comment.content | raw }}
+                    {{ comment.content | nl2br }}
                 </div>
                 <div class="col-12 pr-5">
                     <hr/>
@@ -20,7 +20,7 @@
         {% endfor %}
 
     </aside>
-    {{ render |raw }}
+    {{ render | raw }}
 </div>
 
 <script>
