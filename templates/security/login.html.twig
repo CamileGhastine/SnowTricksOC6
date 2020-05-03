@@ -1,42 +1,37 @@
 {% extends 'base.html.twig' %}
-{% block title %}SnowTricks : Inscription{% endblock %}
+
+{% block title %}Connexion{% endblock %}
 
 {% block body %}
-
-    <div class="container mt-5">
+    <div class="container">
 
         <h1 class="mb-5">Connexion</h1>
-        {% for message in app.flashes('success') %}
-            <div class="alert alert-success">
-                {{ message }}
-            </div>
-        {% endfor %}
-
-        {% if error %}
-            <Div class="alert alert-danger">
-                Lidentifiant ou le mot de passe est incorrect.
-            </Div>
-        {% endif %}
-
-        <form action="{{ path(('security_login')) }}" method="post">
+        <form method="post">
+            {% if error %}
+                <div class="alert alert-danger">{{ error.messageKey|trans(error.messageData, 'security') }}</div>
+            {% endif %}
 
             <div class="form-group row">
-                <label for="username" class="col-sm-2 col-form-label">Nom d'utilisateur</label>
-                <div class="col-sm-10">
-                    <input type="text" class="form-control" id="username" name="_username" value="{{ lastUsername }}">
-                </div>
-            </div>
-            <div class="form-group row">
-                <label for="password" class="col-sm-2 col-form-label">Mot de passe</label>
-                <div class="col-sm-10">
-                    <input type="password" class="form-control" id="password" name="_password">
+                <label for="inputUsername" class="col-2 col-form-label">Nom d'utilisateur</label>
+                <div class="col-6">
+                    <input type="text" class="form-control" id="inputUsername" name="username" value="{{ last_username }}" required autofocus>
                 </div>
             </div>
 
-            <button type="submit" class="btn btn-secondary">Connexion</button>
+            <div class="form-group row">
+                <label for="inputPassword" class="col-2 col-form-label">Mot de passe</label>
+                <div class="col-sm-6">
+                    <input type="password" class="form-control" id="inputPassword" name="password" required>
+                </div>
+            </div>
+
+            <input type="hidden" name="_csrf_token" value="{{ csrf_token('authenticate') }}">
+
+            <button type="submit" class="offset-2 btn btn-secondary">Connexion</button>
         </form>
-        <p><small><a href="{{ path('security_forgotten') }}">Mot de passe oublié</a></small></p>
+
+        <p class="offset-2 mt-4">Pas encore inscrit : <a href="{{ path('security_registration') }}">s'enregistrer</a>
+        <br/><small><a href="{{ path('security_forgotten') }}">Mot de passe oublié</a></small></p>
 
     </div>
-
 {% endblock %}

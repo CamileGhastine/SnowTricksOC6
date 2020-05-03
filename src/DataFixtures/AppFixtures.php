@@ -6,14 +6,17 @@ use App\Entity\User;
 use Doctrine\Bundle\FixturesBundle\Fixture;
 use Doctrine\Common\Persistence\ObjectManager;
 use Symfony\Component\Security\Core\Encoder\UserPasswordEncoderInterface;
+use Symfony\Component\Security\Csrf\TokenGenerator\TokenGeneratorInterface;
 
 class AppFixtures extends Fixture
 {
     private $passwordEncoder;
+    private $token;
 
-    public function __construct(UserPasswordEncoderInterface $passwordEncoder)
+    public function __construct(UserPasswordEncoderInterface $passwordEncoder, TokenGeneratorInterface $token)
     {
         $this->passwordEncoder = $passwordEncoder;
+        $this->token = $token;
     }
 
     public function load(ObjectManager $manager)
@@ -28,7 +31,9 @@ class AppFixtures extends Fixture
             ->setPassword($password)
             ->setAvatar('images/users/camile.jpg')
             ->setRole('ROLE_ADMIN')
-            ;
+            ->setValidate(true)
+            ->setToken($this->token->generateToken())
+        ;
 
         $this->addReference('user0', $user);
 

@@ -7,14 +7,17 @@ use Doctrine\Bundle\FixturesBundle\Fixture;
 use Doctrine\Persistence\ObjectManager;
 use Faker\Factory;
 use Symfony\Component\Security\Core\Encoder\UserPasswordEncoderInterface;
+use Symfony\Component\Security\Csrf\TokenGenerator\TokenGeneratorInterface;
 
 class UserFixtures extends Fixture
 {
     private $passwordEncoder;
+    private $token;
 
-    public function __construct(UserPasswordEncoderInterface $passwordEncoder)
+    public function __construct(UserPasswordEncoderInterface $passwordEncoder, TokenGeneratorInterface $token)
     {
         $this->passwordEncoder = $passwordEncoder;
+        $this->token = $token;
     }
 
     public function load(ObjectManager $manager)
@@ -31,6 +34,8 @@ class UserFixtures extends Fixture
                 ->setEmail($username.'@'.$username.'.fr')
                 ->setPassword($password)
                 ->setAvatar('images/users/nobody.jpg')
+                ->setValidate(true)
+                ->setToken($this->token->generateToken())
             ;
 
             $this->addReference('user'.$i, $user);

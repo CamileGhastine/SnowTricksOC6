@@ -66,6 +66,11 @@ class User implements UserInterface
     private $confirm_password;
 
     /**
+     * @ORM\Column(type="string", unique=true, nullable=true)
+     */
+    private $token;
+
+    /**
      * @ORM\Column(type="string", length=255)
      * @Assert\Url
      */
@@ -91,6 +96,7 @@ class User implements UserInterface
      */
     private $tricks;
 
+
     /**
      * @var UploadedFile
      * @Assert\File(
@@ -100,6 +106,34 @@ class User implements UserInterface
      * )
      */
     private $file;
+
+    /**
+     * @ORM\Column(type="boolean", nullable=true)
+     */
+    private $validate;
+
+    public function __construct()
+    {
+        $this->comments = new ArrayCollection();
+        $this->tricks = new ArrayCollection();
+        $this->setRegisteredAt(new DateTime());
+    }
+
+    /**
+     * @return mixed
+     */
+    public function getToken()
+    {
+        return $this->token;
+    }
+
+    /**
+     * @param mixed $token
+     */
+    public function setToken($token)
+    {
+        $this->token = $token;
+    }
 
     /**
      * @return mixed
@@ -115,13 +149,6 @@ class User implements UserInterface
     public function setFile($file): void
     {
         $this->file = $file;
-    }
-
-    public function __construct()
-    {
-        $this->comments = new ArrayCollection();
-        $this->tricks = new ArrayCollection();
-        $this->setRegisteredAt(new DateTime());
     }
 
     public function getId(): ?int
@@ -291,6 +318,18 @@ class User implements UserInterface
                 $trick->setUser(null);
             }
         }
+
+        return $this;
+    }
+
+    public function getValidate(): ?bool
+    {
+        return $this->validate;
+    }
+
+    public function setValidate(?bool $validate): self
+    {
+        $this->validate = $validate;
 
         return $this;
     }

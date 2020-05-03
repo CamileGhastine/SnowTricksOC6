@@ -5,16 +5,23 @@
 
 {% block body %}
     <div class="container">
-        <h3 class="my-5">Saisir votre nouveau mot de passe</h3>
-        {{ form_start(form) }}
-        {{ form_row(form.password) }}
-        {{ form_row(form.confirm_password) }}
 
-        <button class="btn btn-secondary">Valider</button>
+        {% for message in app.flashes('danger') %}
+            <div class="alert alert-danger text-center mt-5">
+                {{ message }}
+            </div>
+        {% else %}
+            <h3 class="my-5">Saisir votre nouveau mot de passe</h3>
+            {{ form_start(form) }}
+            {{ form_row(form.password) }}
+            {{ form_row(form.confirm_password) }}
 
-        {{ form_end(form) }}
+            <button class="btn btn-secondary">Valider</button>
+
+            {{ form_end(form) }}
+        {% endfor %}
+
     </div>
-
 {% endblock %}
 
 
