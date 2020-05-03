@@ -65,6 +65,6 @@ class PaginatorService
             $render .= '<a href="/trick/ajax/commentsPagination/'.$this->id.'/'.$i.'"><span class="badge badge-pill badge-'.($i === $this->page ? 'primary' : 'secondary').' mx-2">'.$i.'</span></a> ';
         }
 
-        return '<p class="text-center mt-4 pagination">'.$render.'</p>';
+        return '<p class="mt-4 pagination justify-content-center">'.$render.'</p>';
     }
 }
