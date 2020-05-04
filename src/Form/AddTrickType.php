@@ -27,15 +27,21 @@ class AddTrickType extends AbstractType
             ])
             ->add('images', CollectionType::class, [
                 'entry_type' => ImageType::class,
+//                'entry_options' => [
+//                    'error_bubbling' => false,
+//                ],
                 'allow_add' => true,
                 'by_reference' => false,
-                'error_bubbling' => false
+//                'error_bubbling' =>true
             ])
             ->add('videos', CollectionType::class, [
                 'entry_type' => VideoType::class,
+//                'entry_options' => [
+//                    'error_bubbling' => false,
+//                ],
                 'allow_add' => true,
                 'by_reference' => false,
-                'error_bubbling' => false
+//                'error_bubbling' => true
             ])
         ;
     }

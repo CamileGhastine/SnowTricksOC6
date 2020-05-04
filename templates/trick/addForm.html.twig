@@ -30,12 +30,16 @@
                 <div class="row my-5 text-center">
                     <div class="col-6">
                         <h5>Ajouter une photo</h5>
+                        {{ form_errors(form.images) }}
+
                         <div class="images text-left" data-prototype="{{ form_widget(form.images.vars.prototype)|e('html_attr') }}">
                             {{ form_row(form.images) }}
                         </div>
                     </div>
                     <div class="col-6">
                         <h5>Ajouter une vidéo</h5>
+                        {{ form_errors(form.videos) }}
+
                         <p id="explanation" class="font-weight-light"><small>Coller un iframe dans le cadre ci-dessous</small> <button type="button" class="icone-button" data-toggle="modal" data-target="#explanationModal"><i class="fas fa-question-circle"></i></button></p>
                         <div class="videos text-left" data-prototype="{{ form_widget(form.videos.vars.prototype)|e('html_attr') }}"></div>
                         {{ form_row(form.videos) }}
