@@ -42,11 +42,6 @@ class Image
 
     /**
      * @var UploadedFile
-     * @Assert\File(
-     *     maxSize = "1024k",
-     *     mimeTypes = {"image/jpeg", "image/png"},
-     *     mimeTypesMessage = "L'image doit être au format jpeg ou png"
-     * )
      */
     private $file;
 

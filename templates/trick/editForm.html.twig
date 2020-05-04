@@ -119,7 +119,7 @@
                         {{ form_errors(formImage.file) }}
                         <div class="row form-image-hidden justify-content-center">
                             <div class="col-4 text-left mt-3 mb-2">
-                                {{ form_row(formImage.file) }}
+                                {{ form_widget(formImage.file) }}
                             </div>
                             <div class="col-1 mt-4">
                                 <button type="submit" class="icone-button"><i class="fas fa-download"></i></button>
@@ -148,9 +148,8 @@
                                 <small>(Sélectionner un fichier et cliquer sur l'icone <i class="fas fa-download"></i> pour valider)</small>
                             </p>
                         </div>
-                        {{ form_widget(formVideo) }}
                     </div>
-                    {{ form_end(formImage) }}
+                    {{ form_end(formVideo) }}
                 </div>
 
                 <div class="row">

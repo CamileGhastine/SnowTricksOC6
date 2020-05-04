@@ -93,8 +93,10 @@
 
     <div id="category-form">
         {{ form_start(formCategory) }}
-        {{ form_row(formCategory.title) }}
-        <div class="text-center">
+        <div class="col-8 offset-2">
+            {{ form_widget(formCategory.title) }}
+        </div>
+        <div class="text-center mt-4">
             <button class="btn btn-secondary button-add-category">Ajouter la catégorie</button>
         </div>
         {{ form_end(formCategory) }}
