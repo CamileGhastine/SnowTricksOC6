@@ -66,7 +66,7 @@ class User implements UserInterface
     private $confirm_password;
 
     /**
-     * @ORM\Column(type="string", unique=true, nullable=true)
+     * @ORM\Column(type="string", unique=true)
      */
     private $token;
 
