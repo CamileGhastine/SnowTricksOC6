@@ -179,7 +179,7 @@ class TrickController extends AbstractController
         $formCategory = $this->createForm(CategoryType::class, $category);
         $formCategory->handleRequest($request);
 
-        if (!$formCategory->isSubmitted() OR !$formCategory->isValid()) {
+        if (!$formCategory->isSubmitted() or !$formCategory->isValid()) {
             return $this->render('trick/ajax/ajax_add_category.html.twig', [
                 'errors' => $this->getErrorMessages($formCategory),
             ]);
@@ -195,17 +195,20 @@ class TrickController extends AbstractController
 
     /**
      * get Error Messages From Form.
+     *
      * @return array
      */
-    private function getErrorMessages($form) {
-        $errors = array();
+    private function getErrorMessages($form)
+    {
+        $errors = [];
         if ($form->count() > 0) {
             foreach ($form->all() as $child) {
                 if (!$child->isValid()) {
-                    $errors[$child->getName()] = str_replace('ERROR: ', '',(String) $form[$child->getName()]->getErrors());
+                    $errors[$child->getName()] = str_replace('ERROR: ', '', (string) $form[$child->getName()]->getErrors());
                 }
             }
         }
+
         return $errors;
     }
 
@@ -332,14 +335,12 @@ class TrickController extends AbstractController
             return $this->redirect($this->generateUrl('trick_edit', ['id' => $image->getTrick()->getId()]).'#alert');
         }
 
-        //delete poster => new poster before delete
+        // New poster before delete old poster
         $trick = $image->getTrick();
+        $trick->removeImage($image);
         $images = $trick->getImages();
-        if ($image->getPoster() && count($images) > 1) {
-            if ($images[0] === $image) {
-                $images[1]->setPoster(true);
-            }
-            $images[0]->setPoster(true);
+        if ($image->getPoster() && count($images) > 0) {
+            $images[array_key_first($images->toArray())]->setPoster(true);
         }
 
         $em->remove($image);
