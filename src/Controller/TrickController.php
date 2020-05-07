@@ -201,11 +201,12 @@ class TrickController extends AbstractController
     private function getErrorMessages($form)
     {
         $errors = [];
-        if ($form->count() > 0) {
-            foreach ($form->all() as $child) {
-                if (!$child->isValid()) {
-                    $errors[$child->getName()] = str_replace('ERROR: ', '', (string) $form[$child->getName()]->getErrors());
-                }
+
+        if ($form->count() == 0) return $errors;
+
+        foreach ($form->all() as $child) {
+            if (!$child->isValid()) {
+                $errors[$child->getName()] = str_replace('ERROR: ', '', (string) $form[$child->getName()]->getErrors());
             }
         }
 
