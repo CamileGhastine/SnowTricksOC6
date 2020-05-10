@@ -26,7 +26,7 @@ class UserController extends AbstractController
         $formDeleteAvatar->handleRequest($request);
 
         if ($formDeleteAvatar->isSubmitted()) {
-            $avatar->manageAvatar($this->getUser(), 'delete', null);
+            $avatar->manageAvatar($this->getUser(), null);
 
             return $this->redirectToRoute('user_account');
         }
@@ -35,7 +35,7 @@ class UserController extends AbstractController
             $action = 'images/users/nobody.jpg' === $this->getUser()->getAvatar() ? 'create' : 'edit';
             $file = $form->getData()->getFile();
 
-            $avatar->manageAvatar($this->getUser(), $action, $file);
+            $avatar->manageAvatar($this->getUser(), $file);
 
             return $this->redirectToRoute('user_account');
         }

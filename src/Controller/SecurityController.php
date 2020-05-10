@@ -153,6 +153,9 @@ class SecurityController extends AbstractController
     {
         $user = $repo->findOneBy(['email' => $request->query->get('email')]);
 
+        $form = $this->createForm(ResetPasswordType::class);
+        $form->handleRequest($request);
+
         if (!$user or $user->getToken() !== $request->query->get('token')) {
             $this->addFlash('danger', 'Votre lien n\'est pas valide. Merci d\'en générer un nouveau.');
 
@@ -160,9 +163,6 @@ class SecurityController extends AbstractController
                 'form' => $form->createView(),
             ]);
         }
-
-        $form = $this->createForm(ResetPasswordType::class);
-        $form->handleRequest($request);
 
         if (!$form->isSubmitted() or !$form->isValid()) {
             return $this->render('/security/reset_pasword.html.twig', [

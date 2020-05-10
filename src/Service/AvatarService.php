@@ -16,7 +16,7 @@ class AvatarService
         $this->em = $em;
     }
 
-    public function manageAvatar($user, $action, $file)
+    public function manageAvatar($user, $file)
     {
         $fileToDelete = $user->getAvatar();
 

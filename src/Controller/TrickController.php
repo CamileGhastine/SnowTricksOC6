@@ -202,7 +202,9 @@ class TrickController extends AbstractController
     {
         $errors = [];
 
-        if ($form->count() == 0) return $errors;
+        if (0 == $form->count()) {
+            return $errors;
+        }
 
         foreach ($form->all() as $child) {
             if (!$child->isValid()) {
