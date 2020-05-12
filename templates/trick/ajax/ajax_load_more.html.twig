@@ -3,58 +3,57 @@
     {% set poster = (trick.images | first) ? (trick.images | first).url : 'images/tricks/noImage.jpg' %}
     {% set alt = (trick.images | first) ? (trick.images | first).alt : 'no image' %}
 
-    <article class="col-10 col-sm-6 col-md-4 col-lg-3 my-2">
+    <article class="col-10 col-sm-6 col-md-4 col-lg-3">
 
-        <a href="{{ path('trick_show', {id: trick.id}) }}">
-            <img id="trick-img" src="{{ asset(poster) }}" alt="{{ alt }}">
-        </a>
-
-        <div class="row mx-1">
-
-            <div class="col-8 text-center">
-                <a href="{{ path('trick_show', {id: trick.id}) }}">
-                    <h3 class="text-break">{{ trick.title }}</h3>
+        <div class="my-3 trick text-center">
+            <div class="img">
+                <a href="{{ path('trick_show', {id: trick.id}) }}" class="trick-img-link">
+                    <img class="trick-img" src="{{ asset(poster) }}" alt="{{ alt }}">
                 </a>
             </div>
 
-            {%  if app.user %}
-                <div class="col-1 text-center">
-                    <a href="{{ path('trick_edit', {id: trick.id}) }}">
-                        <i class="fas fa-pencil-alt"></i>
-                    </a>
-                </div>
-                <div class="col-1 text-center">
-                    <a type="button" href="#" data-toggle="modal" data-target="#deleteTrickModal">
-                        <i class="fas fa-trash-alt"></i>
+            <div class="title-trick d-flex align-items-center flex-column mt-2 text-center mx-2">
+                <div>
+                    <a href="{{ path('trick_show', {id: trick.id}) }}" class="title-link">
+                        <h3 class="text-break">{{ trick.title }}</h3>
                     </a>
                 </div>
 
-                <!-- Modal -->
-                <div class="modal fade" id="deleteTrickModal" tabindex="-1" role="dialog" aria-labelledby="deleteTrickModalLabel" aria-hidden="true">
-                    <div class="modal-dialog" role="document">
-                        <div class="modal-content">
-                            <div class="modal-header">
-                                <h5 class="modal-title " id="deleteTrickModalLabel">{{ trick.title }}</h5>
+                {%  if app.user %}
+                    <div class="ml-auto mt-auto ">
+                        <a href="{{ path('trick_edit', {id: trick.id}) }}">
+                            <i class="fas fa-pencil-alt"></i>
+                        </a>
+                        <a type="button" href="#" data-toggle="modal" data-target="#deleteTrickModal-{{ trick.id }}">
+                            <i class="fas fa-trash-alt"></i>
+                        </a>
+                    </div>
+                {% endif %}
+            </div>
+
+            <!-- Modal -->
+            <div class="modal fade" id="deleteTrickModal-{{ trick.id }}" tabindex="-1" role="dialog" aria-labelledby="deleteTrickModalLabel" aria-hidden="true">
+                <div class="modal-dialog" role="document">
+                    <div class="modal-content">
+                        <div class="modal-header">
+                            <h5 class="modal-title " id="deleteTrickModalLabel">{{ trick.title }}</h5>
+                        </div>
+                        <div class="modal-body">
+                            <p>Etes-vous sur de vouloir supprimer cette figure ?</p>
+                            <div class="row px-5">
+                                <img src="{{asset(poster) }}" alt="{{ alt }}">
                             </div>
-                            <div class="modal-body">
-                                <p>Etes-vous sur de vouloir supprimer cette figure ?</p>
-                                <div class="row px-5">
-                                    <img src="{{asset(poster) }}" alt="{{ alt }}">
-                                </div>
-                            </div>
-                            <div class="modal-footer">
-                                <button type="button" class="btn btn-secondary" data-dismiss="modal">Annuler</button>
-                                <form action="{{ path('trick_delete', {id: trick.id}) }}" method="post">
-                                    <input type="hidden" name="_token" value="{{ csrf_token('delete'~trick.id) }}">
-                                    <button type="submit" class="btn btn-danger">Supprimer</button>
-                                </form>
-                            </div>
+                        </div>
+                        <div class="modal-footer">
+                            <button type="button" class="btn btn-secondary" data-dismiss="modal">Annuler</button>
+                            <form action="{{ path('trick_delete', {id: trick.id}) }}" method="post">
+                                <input type="hidden" name="_token" value="{{ csrf_token('delete'~trick.id) }}">
+                                <button type="submit" class="btn btn-danger">Supprimer</button>
+                            </form>
                         </div>
                     </div>
                 </div>
-
-            {% endif %}
-
+            </div>
         </div>
 
     </article>

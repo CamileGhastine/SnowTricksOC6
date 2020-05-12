@@ -1,6 +1,10 @@
+
+
 #title-img
  {
-     background-color: #999999;
+    font-family: 'MedievalSharp', cursive;
+    color: #185099;
+     background-color: #dceaef;
      opacity: 50%;
      font-size: 1.8em;
  }

@@ -1,0 +1,44 @@
+body
+{
+    background-color: #dceaef;
+    font-family: 'Open Sans', sans-serif;
+}
+
+.navbar-brand
+{
+    font-family: 'MedievalSharp', cursive;
+    color: #185099;
+    text-shadow: 1px 1px 5px #a8608b;
+}
+
+.nav-link
+{
+    font-family: 'MedievalSharp', cursive;
+    color: #185099;
+}
+
+a
+{
+    text-decoration: none !important;
+}
+
+i
+{
+    color: #185099;
+}
+
+i :hover
+{
+    color: #a8608b;
+}
+
+.copyright
+{
+    color: #96b0b6;
+}
+
+#caret2
+{
+    margin-top: -50px;
+    margin-right: 30px;
+}
