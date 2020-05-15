@@ -150,12 +150,12 @@
 
                 {%  if app.user %}
 
-                    <div class="row mt-5 justify-content-center">
-                        <div class="col-8">
+                    <div class="row mt-5 justify-content-center mx-3 mx-md-0">
+                        <div class="col-12 col-md-8 ">
                             {{ form_start(form) }}
                             {{ form_row(form.content, {label: false}) }}
                         </div>
-                        <div class="col-3 d-flex align-items-center">
+                        <div class="col-12 col-md-3 d-flex align-items-center justify-content-center justify-content-md-start">
                             <button type="submit" class="btn btn-blue mb-2">Commenter</button>
                             {{ form_end(form) }}
                         </div>
@@ -173,18 +173,18 @@
                     <aside class="ml-5 mt-5">
 
                         {% for comment in comments %}
-                            <div class="row">
-                                <div class="d-flex align-items-start">
-                                    <img class="rounded-circle col-1 avatar" src="{{ asset(comment.user.avatar) }}" alt="{{ comment.user.username }} "/>
+                            <div class="row text-center text-md-left mr-3 mr-md-0">
+                                <div class="d-flex align-items-md-start align-items-md-center col-3 col-md-1">
+                                    <img class="rounded-circle avatar" src="{{ asset(comment.user.avatar) }}" alt="{{ comment.user.username }} "/>
                                 </div>
-                                <div class="col-3">
+                                <div class="col-9 col-md-3 mb-3">
                                     <B>{{ comment.user.username }}</B><br/>
                                     Le {{ comment.createdAt | date('d/m/y') }} à {{ comment.createdAt | date('H:i') }}
                                 </div>
-                                <div class="col-7 text-justify">
+                                <div class="col-12 col-md-7 text-justify">
                                     {{ comment.content | nl2br }}
                                 </div>
-                                <div class="col-12 pr-5">
+                                <div class="col-12 pr-4 pr-md-5">
                                     <hr/>
                                 </div>
                             </div>
