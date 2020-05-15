@@ -66,3 +66,16 @@ i :hover
     color: #a8608b;
     border-radius: .25rem;
 }
+
+.btn-blue
+{
+    background-color: #185099;
+    color: #dceaef !important;
+}
+
+.btn-danger
+{
+    background-color: #a8608b !important ;
+    color: #dceaef !important;
+    border : none !important;
+}

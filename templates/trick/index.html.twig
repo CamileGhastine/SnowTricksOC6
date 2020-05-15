@@ -23,7 +23,7 @@
 
     <div class="container">
         <div class="row">
-            <div class="col-12 justify-content-center">
+            <div class="col-12 justify-content-center my-5">
                 {% for message in app.flashes('success') %}
                     <div class="alert alert-success text-center">
                         {{ message }}
@@ -37,7 +37,7 @@
             </div>
 
             <div class="col-12">
-                <div class="mt-4 text-center mt-5 mb-4" id="tricks">
+                <div class="text-center mb-4" id="tricks">
                     <a href="{{ path('home') }}" class="">
                         <span class="badge badge-pill badge-{{ categoryId is null ? 'activate' : 'blue' }} mx-3 ">Tous les tricks</span>
                     </a>
@@ -97,11 +97,11 @@
                                     <div class="modal-body">
                                         <p>Etes-vous sur de vouloir supprimer cette figure ?</p>
                                         <div class="row px-5">
-                                            <img src="{{asset(poster) }}" alt="{{ alt }}">
+                                            <img class="img-modal" src="{{asset(poster) }}" alt="{{ alt }}">
                                         </div>
                                     </div>
                                     <div class="modal-footer">
-                                        <button type="button" class="btn btn-secondary" data-dismiss="modal">Annuler</button>
+                                        <button type="button" class="btn btn-blue" data-dismiss="modal">Annuler</button>
                                         <form action="{{ path('trick_delete', {id: trick.id}) }}" method="post">
                                             <input type="hidden" name="_token" value="{{ csrf_token('delete'~trick.id) }}">
                                             <button type="submit" class="btn btn-danger">Supprimer</button>

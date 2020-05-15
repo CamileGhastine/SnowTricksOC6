@@ -125,3 +125,28 @@ a :hover
     text-shadow: 3px 3px 10px #555555;
 }
 
+/*modal*/
+.modal-content
+{
+    background-color: #dceaef;
+    border: 2px solid #a8608b;
+}
+
+.modal-header
+{
+    font-family: 'MedievalSharp', cursive;
+    color: #185099;
+    text-shadow: 3px 3px 10px #a8608b;
+    border-bottom: 1px solid #a8608b;
+}
+
+.modal-footer
+{
+    border-top: 1px solid #a8608b;
+}
+
+.img-modal
+{
+    border: 1px solid #a8608b;
+    box-shadow: 3px 3px 10px #555555;
+}

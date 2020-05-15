@@ -67,11 +67,11 @@
                             <div class="modal-body">
                                 <p>Etes-vous sur de vouloir supprimer cette figure ?</p>
                                 <div class="row px-5">
-                                    <img src="{{asset(poster.url) }}" alt="{{ poster.alt }}">
+                                    <img class="img-modal" src="{{asset(poster.url) }}" alt="{{ poster.alt }}">
                                 </div>
                             </div>
                             <div class="modal-footer">
-                                <button type="button" class="btn btn-secondary" data-dismiss="modal">Annuler</button>
+                                <button type="button" class="btn btn-blue" data-dismiss="modal">Annuler</button>
                                 <form action="{{ path('trick_delete', {id: trick.id}) }}" method="post">
                                     <input type="hidden" name="_token" value="{{ csrf_token('delete'~trick.id) }}">
                                     <button type="submit" class="btn btn-danger">Supprimer</button>
@@ -156,7 +156,7 @@
                             {{ form_row(form.content, {label: false}) }}
                         </div>
                         <div class="col-3 d-flex align-items-center">
-                            <button type="submit" class="btn btn-comment mb-2">Commenter</button>
+                            <button type="submit" class="btn btn-blue mb-2">Commenter</button>
                             {{ form_end(form) }}
                         </div>
                     </div>
