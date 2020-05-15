@@ -99,9 +99,9 @@
                                 <div class="row carousel-indicator mt-3">
                                     {% for image in trick.images %}
                                         <div class="col-3 mb-3">
-                                            <a data-target="#carouselExampleIndicators" data-slide-to="{{ loop.index }}" href="">
+                                            <div data-target="#carouselExampleIndicators" data-slide-to="{{ loop.index -1 }}" class="{{ image.poster == 0 ? "" :"active" }}">
                                                 <img class="card-img mini-media-trick" src="{{ asset(image.url) }}" alt="{{ image.alt }}">
-                                            </a>
+                                            </div>
                                         </div>
                                     {% endfor %}
                                 </div>
