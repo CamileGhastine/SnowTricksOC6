@@ -4,6 +4,12 @@ body
     font-family: 'Open Sans', sans-serif;
 }
 
+nav
+{
+    box-shadow: 0px 0px 50px -8px rgba(0,0,0,0.75);
+
+}
+
 .navbar-brand
 {
     font-family: 'MedievalSharp', cursive;
@@ -41,4 +47,22 @@ i :hover
 {
     margin-top: -50px;
     margin-right: 30px;
+}
+
+.alert-danger
+{
+    background-color: #a8608b !important;
+    opacity: 80%;
+    border: 1px solid #185099 !important;
+    color: #185099;
+    border-radius: .25rem;
+}
+
+.alert-success
+{
+    background-color: #185099 !important;
+    opacity: 80%;
+    border: 1px solid #a8608b !important;
+    color: #a8608b;
+    border-radius: .25rem;
 }

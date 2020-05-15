@@ -1,13 +1,91 @@
-
+.card-trick
+{
+    border: 1px solid #a8608b;
+    box-shadow: 3px 3px 10px #555555;
+    background-color: #dceaef
+}
 
 #title-img
- {
+{
+    font-family: 'MedievalSharp', cursive;
+    color: #dceaef;
+    margin-top: 80px !important;
+    background-color: #185099;
+    opacity: 50%;
+    font-size: 1.8em;
+}
+
+.card-header-trick
+{
+    background-image: url("../images/header-show2.jpg");
+    background-size: cover;
+    border: 1px solid #a8608b;
+    box-shadow: 3px 3px 10px #555555;
+}
+
+.no-image
+{
+    height: 400px;
+}
+.carousel-inner
+{
+}
+
+.carousel-card-img
+{
+}
+
+.trick-medias
+{
+    border: 1px solid #a8608b;
+    box-shadow: 3px 3px 10px #555555;
+}
+
+.mini-media-trick
+{
+    border: 1px solid #a8608b;
+    box-shadow: 3px 3px 10px #555555;
+}
+
+iframe
+{
+    border: 1px solid #a8608b;
+    box-shadow: 3px 3px 10px #555555;
+    width: 100%;
+}
+
+h1
+{
     font-family: 'MedievalSharp', cursive;
     color: #185099;
-     background-color: #dceaef;
-     opacity: 50%;
-     font-size: 1.8em;
- }
+    text-shadow: 3px 3px 10px #a8608b;
+}
+
+.description
+{
+    border: 1px solid #a8608b;
+    box-shadow: 3px 3px 10px #555555;
+}
+
+.badge-category
+{
+    background-color: #185099;
+    color: #dceaef !important;
+}
+
+.card-comments
+{
+    border: 1px solid #a8608b;
+    box-shadow: 3px 3px 10px #555555;
+    background-color: #dceaef
+}
+
+.card-header-comments
+{
+    background-color: #185099;
+    color: #dceaef !important;
+    font-family: 'MedievalSharp', cursive;
+}
 
 .avatar
 {
@@ -16,9 +94,31 @@
     height: 30px;
 }
 
-iframe
+.badge-comments
 {
-    width: 100%;
+    background-color: #dceaef;
+    color: #185099;
 }
 
+.btn-comment
+{
+    background-color: #185099;
+    color: #dceaef !important;
+}
 
+.badge-page
+{
+    background-color: #185099;
+    color: #dceaef !important;
+}
+
+.badge-page-activate
+{
+    background-color: #a8608b;
+    color: #dceaef !important;
+}
+
+hr
+{
+    background-color: #a8608b;
+}
