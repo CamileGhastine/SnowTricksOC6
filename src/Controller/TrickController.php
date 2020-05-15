@@ -257,6 +257,8 @@ class TrickController extends AbstractController
 
         if ($formImage->isSubmitted() && $formImage->isValid()) {
             $uploader->upload($image);
+
+            $trick->setUpdatedAt(new DateTime());
             $image->setTrick($trick);
 
             if (0 === count($trick->getImages())) {
@@ -276,6 +278,7 @@ class TrickController extends AbstractController
         $formVideo->handleRequest($request);
 
         if ($formVideo->isSubmitted() && $formVideo->isValid()) {
+            $trick->setUpdatedAt(new DateTime());
             $video->setTrick($trick);
             $video->refactorIframe();
 
@@ -365,9 +368,13 @@ class TrickController extends AbstractController
      */
     public function changePoster(EntityManagerInterface $em, Image $newPoster, Image $oldPoster)
     {
+        $trick = $oldPoster->getTrick();
+        $trick->setUpdatedAt(new DateTime());
+
         $oldPoster->setPoster(false);
         $newPoster->setPoster(true);
 
+        $em->persist($trick);
         $em->flush();
 
         return $this->redirectToRoute('trick_edit', ['id' => $newPoster->getTrick()->getId()]);
