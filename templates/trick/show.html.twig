@@ -129,6 +129,14 @@
 
                     <h1 class="card-title my-4">{{ trick.title }}</h1>
                     <p class="card-text mt-4 text-left p-3 description">{{ trick.description | nl2br }}</p>
+                    <p class="text-right mx-4">
+                        <small><em>
+                                Publié le {{ trick.createdAt | date('d/m/y') }}
+                                {% if trick.createdAt != trick.updatedAt %}
+                                    <br/>Modifié le {{ trick.updatedAt | date('d/m/y') }}
+                                {% endif %}
+                            </em></small>
+                    </p>
                     <p class="card-text mt-4">
                         {% for category in trick.categories %}
                             <a href="#" class="">
