@@ -7,14 +7,65 @@
 
         <div class="card card-trick mb-5">
             <section>
-                <div class="card-header card-header-trick text-white mx-4 mt-4">
-                    <div id="carouselExampleIndicators" class="carousel slide" data-ride="carousel">
+                <div class="d-none d-md-block">
+                    <div class="card-header card-header-trick text-white mx-4 mt-4">
+                        <div id="carouselExampleIndicators" class="carousel slide" data-ride="carousel">
+                            <div class="carousel-inner">
+
+                                {% set poster={} %}
+
+                                {% if trick.images | length == 0 %}
+                                    <div class="no-image col-6"></div>
+                                    {% set poster = {'url' : 'images/tricks/noImage.jpg', 'alt' : 'no image'}  %}
+                                {% endif %}
+
+                                {% for image in trick.images %}
+                                    {% if image.poster ==1 %}
+                                        {% set poster = {'url' : image.url, 'alt' : image.alt} %}
+                                    {% endif %}
+                                    <div class="carousel-item {{ image.poster == 1 ? 'active' }}">
+                                        <img class="d-block w-100 card-img col-6 media-trick offset-3 text-center mt-4" src="{{ asset(image.url) }}" alt="slide {{ loop.index }}">
+                                    </div>
+                                {% endfor %}
+
+                                {% if trick.images | length > 1 %}
+                                    <a class="carousel-control-prev" href="#carouselExampleIndicators" role="button" data-slide="prev">
+                                        <span class="carousel-control-prev-icon" aria-hidden="true"></span>
+                                        <span class="sr-only">Suivant</span>
+                                    </a>
+                                    <a class="carousel-control-next" href="#carouselExampleIndicators" role="button" data-slide="next">
+                                        <span class="carousel-control-next-icon" aria-hidden="true"></span>
+                                        <span class="sr-only">Précécent</span>
+                                    </a>
+                                {%  endif %}
+
+                            </div>
+                        </div>
+                        <div class="card-img-overlay col-6 text-center ml-5">
+                            <p class="card-title mt-5 text-break " id="title-img">{{ trick.title }}</p>
+                        </div>
+
+                        {%  if app.user %}
+                            <div class="text-right">
+                                <a href="{{ path('trick_edit', {id: trick.id}) }}">
+                                    <i class="fas fa-pencil-alt mr-3"></i>
+                                </a>
+                                <a type="button" href="#" data-toggle="modal" data-target="#deleteTrickModal">
+                                    <i class="fas fa-trash-alt"></i>
+                                </a>
+                            </div>
+                        {% endif %}
+                    </div>
+                </div>
+
+                <!-- mobil card header -->
+                <div class="card-header-trick d-md-none justify-content-center mx-4 mt-4">
+                    <div id="carouselExampleIndicators-sm" class="carousel slide" data-ride="carousel">
                         <div class="carousel-inner">
 
                             {% set poster={} %}
 
                             {% if trick.images | length == 0 %}
-                                {#                                <img class="d-block w-100 card-img col-6 offset-3 text-center mt-4 mt-5" src="{{ asset('images/tricks/noImage.jpg') }}" alt="no image">#}
                                 <div class="no-image col-6"></div>
                                 {% set poster = {'url' : 'images/tricks/noImage.jpg', 'alt' : 'no image'}  %}
                             {% endif %}
@@ -23,38 +74,23 @@
                                 {% if image.poster ==1 %}
                                     {% set poster = {'url' : image.url, 'alt' : image.alt} %}
                                 {% endif %}
-                                <div class="carousel-item {{ image.poster == 1 ? 'active' }}">
-                                    <img class="d-block w-100 card-img col-6 offset-3 text-center mt-4" src="{{ asset(image.url) }}" alt="slide {{ loop.index }}">
+                                <div class="carousel-item {{ image.poster == 1 ? 'active' }} mb-4">
+                                    <img class="d-block w-100 card-img col-8 offset-2 media-trick text-center mt-4" src="{{ asset(image.url) }}" alt="slide {{ loop.index }}">
                                 </div>
                             {% endfor %}
 
                             {% if trick.images | length > 1 %}
-                                <a class="carousel-control-prev" href="#carouselExampleIndicators" role="button" data-slide="prev">
+                                <a class="carousel-control-prev" href="#carouselExampleIndicators-sm" role="button" data-slide="prev">
                                     <span class="carousel-control-prev-icon" aria-hidden="true"></span>
                                     <span class="sr-only">Suivant</span>
                                 </a>
-                                <a class="carousel-control-next" href="#carouselExampleIndicators" role="button" data-slide="next">
+                                <a class="carousel-control-next" href="#carouselExampleIndicators-sm" role="button" data-slide="next">
                                     <span class="carousel-control-next-icon" aria-hidden="true"></span>
                                     <span class="sr-only">Précécent</span>
                                 </a>
                             {%  endif %}
-
                         </div>
                     </div>
-                    <div class="card-img-overlay col-6 text-center ml-5">
-                        <p class="card-title mt-5 text-break " id="title-img">{{ trick.title }}</p>
-                    </div>
-
-                    {%  if app.user %}
-                        <div class="text-right">
-                            <a href="{{ path('trick_edit', {id: trick.id}) }}">
-                                <i class="fas fa-pencil-alt mr-3"></i>
-                            </a>
-                            <a type="button" href="#" data-toggle="modal" data-target="#deleteTrickModal">
-                                <i class="fas fa-trash-alt"></i>
-                            </a>
-                        </div>
-                    {% endif %}
                 </div>
 
                 <!-- Modal -->
@@ -89,47 +125,98 @@
                         </div>
                     {% endfor %}
 
-                    <div class="row mx-3 my-4">
-                        <div class="col-6 trick-medias">
-                            {% if trick.images | length == 0 %}
-                                <div class="m-3">
-                                    <p>Aucune image</p>
-                                </div>
-                            {% else %}
-                                <div class="row carousel-indicator mt-3">
-                                    {% for image in trick.images %}
-                                        <div class="col-3 mb-3">
-                                            <div data-target="#carouselExampleIndicators" data-slide-to="{{ loop.index -1 }}" class="{{ image.poster == 0 ? "" :"active" }}">
-                                                <img class="card-img mini-media-trick" src="{{ asset(image.url) }}" alt="{{ image.alt }}">
+                    <div class="d-none d-md-block">
+                        <div class="row mx-3 my-4">
+                            <div class="col-6 trick-medias">
+                                {% if trick.images | length == 0 %}
+                                    <div class="m-3">
+                                        <p>Aucune image</p>
+                                    </div>
+                                {% else %}
+                                    <div class="row carousel-indicator mt-3">
+                                        {% for image in trick.images %}
+                                            <div class="col-3 mb-3">
+                                                <div data-target="#carouselExampleIndicators" data-slide-to="{{ loop.index -1 }}" class="{{ image.poster == 0 ? "" :"active" }}">
+                                                    <img class="card-img media-trick" src="{{ asset(image.url) }}" alt="{{ image.alt }}">
+                                                </div>
                                             </div>
-                                        </div>
-                                    {% endfor %}
-                                </div>
-                            {% endif %}
+                                        {% endfor %}
+                                    </div>
+                                {% endif %}
+                            </div>
+
+                            <div class="offset-1 col-5 trick-medias">
+                                {% if trick.videos | length == 0 %}
+                                    <div class="m-3">
+                                        <p>Aucune video</p>
+                                    </div>
+                                {% else %}
+                                    <div class="row mt-3">
+                                        {% for video in trick.videos %}
+                                            <div class="col-4">
+                                                {{ video.iframe | raw }}
+                                            </div>
+                                        {% endfor %}
+                                    </div>
+                                {% endif %}
+                            </div>
                         </div>
-
-                        <div class="offset-1 col-5 trick-medias">
-                            {% if trick.videos | length == 0 %}
-                                <div class="m-3">
-                                    <p>Aucune video</p>
-                                </div>
-                            {% else %}
-                                <div class="row mt-3">
-                                    {% for video in trick.videos %}
-                                        <div class="col-4">
-                                            {{ video.iframe | raw }}
-                                        </div>
-                                    {% endfor %}
-                                </div>
-                            {% endif %}
-
-                        </div>
-
                     </div>
 
                     <h1 class="card-title my-4">{{ trick.title }}</h1>
+                    <!-- mobil medias -->
+                    <div class="d-block d-md-none justify-content-center">
+                        <p>
+                            <button class="btn btn-sm btn-blue" type="button" data-toggle="collapse" data-target="#collapseImage" aria-expanded="false" aria-controls="collapseImage">
+                                Photos
+                            </button>
+                            <button class="btn btn-sm btn-blue" type="button" data-toggle="collapse" data-target="#collapseVideo" aria-expanded="false" aria-controls="collapseVideo">
+                                Videos
+                            </button>
+                        </p>
+                        <div class="card card-body collapse" id="collapseImage">
+                            <div class="row  justify-content-center">
+                                <div class="col-10 trick-medias">
+                                    {% if trick.images | length == 0 %}
+                                        <div class="m-3">
+                                            <p>Aucune image</p>
+                                        </div>
+                                    {% else %}
+                                        <div class="row carousel-indicator mt-3 text-center">
+                                            {% for image in trick.images %}
+                                                <div class="col-3 mb-3">
+                                                    <div data-target="#carouselExampleIndicators-sm" data-slide-to="{{ loop.index -1 }}" class="{{ image.poster == 0 ? "" :"active" }}">
+                                                        <img class="card-img media-trick" src="{{ asset(image.url) }}" alt="{{ image.alt }}">
+                                                    </div>
+                                                </div>
+                                            {% endfor %}
+                                        </div>
+                                    {% endif %}
+                                </div>
+                            </div>
+                        </div>
+                        <div class="card card-body collapse" id="collapseVideo">
+                            <div class="row justify-content-center">
+                                <div class="col-10 trick-medias">
+                                    {% if trick.videos | length == 0 %}
+                                        <div class="m-3">
+                                            <p>Aucune video</p>
+                                        </div>
+                                    {% else %}
+                                        <div class="row mt-3">
+                                            {% for video in trick.videos %}
+                                                <div class="col-6">
+                                                    {{ video.iframe | raw }}
+                                                </div>
+                                            {% endfor %}
+                                        </div>
+                                    {% endif %}
+                                </div>
+                            </div>
+                        </div>
+                    </div>
                     <p class="card-text mt-4 text-left p-3 description">{{ trick.description | nl2br }}</p>
-                    <p class="text-right mx-4">
+                    <p class="text-center text-md-right mx-4">
                         <small><em>
                                 Publié le {{ trick.createdAt | date('d/m/y') }}
                                 {% if trick.createdAt != trick.updatedAt %}

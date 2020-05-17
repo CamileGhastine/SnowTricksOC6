@@ -79,3 +79,9 @@ i :hover
     color: #dceaef !important;
     border : none !important;
 }
+
+.card-body
+{
+    background-color: #dceaef !important ;
+    border : none !important;
+}

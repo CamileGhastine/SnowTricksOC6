@@ -18,21 +18,16 @@
 .card-header-trick
 {
     background-image: url("../images/header-show2.jpg");
-    background-size: cover;
+    background-size: 100% 100%;
+
     border: 1px solid #a8608b;
     box-shadow: 3px 3px 10px #555555;
 }
 
 .no-image
 {
-    height: 400px;
-}
-.carousel-inner
-{
-}
+    height: 300px;
 
-.carousel-card-img
-{
 }
 
 .trick-medias
@@ -41,10 +36,12 @@
     box-shadow: 3px 3px 10px #555555;
 }
 
-.mini-media-trick
+.media-trick
 {
     border: 1px solid #a8608b;
     box-shadow: 3px 3px 10px #555555;
+    padding-right: 0 !important;
+    padding-left: 0 !important;
 }
 
 iframe
@@ -143,4 +140,18 @@ hr
 {
     border: 1px solid #a8608b;
     box-shadow: 3px 3px 10px #555555;
+}
+
+.div-poster-sm
+{
+    background-image: url("../images/header-show2.jpg");
+    background-size: cover;
+    border: 1px solid #a8608b;
+    box-shadow: 3px 3px 10px #555555;
+}
+.poster-sm
+{
+    border: 1px solid #a8608b;
+    box-shadow: 3px 3px 10px #555555;
+    max-width: 80%;
 }
