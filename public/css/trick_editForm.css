@@ -101,3 +101,9 @@ h1
     border: 1px solid #a8608b;
     box-shadow: 3px 3px 10px #555555;
 }
+
+@media only screen and (max-device-width:760px) {
+    .add-media {
+        font-size: 1em;
+    }
+}
