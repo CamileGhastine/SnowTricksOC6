@@ -24,7 +24,7 @@
                                         {% set poster = {'url' : image.url, 'alt' : image.alt} %}
                                     {% endif %}
                                     <div class="carousel-item {{ image.poster == 1 ? 'active' }}">
-                                        <img class="d-block w-100 card-img col-6 media-trick offset-3 text-center mt-4" src="{{ asset(image.url) }}" alt="slide {{ loop.index }}">
+                                        <img class="d-block w-100 card-img media-trick col-6 offset-3 text-center mt-4" src="{{ asset(image.url) }}" alt="slide {{ loop.index }}">
                                     </div>
                                 {% endfor %}
 

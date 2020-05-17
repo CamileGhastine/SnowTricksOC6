@@ -3,7 +3,7 @@
 {% block stylesheets %}<link rel="stylesheet" href="{{ asset("css/trick_editForm.css") }}">{% endblock %}
 
 {% block body %}
-    <div class="container">
+    <div class="container mt-5">
 
         {% set poster="" %}
         {% for image in trick.images %}
@@ -13,12 +13,12 @@
         {% endfor %}
 
 
-        <div class="card mb-5">
-            <div class="card-header bg-dark text-white">
+        <div class="card card-trick mb-5">
+            <div class="card-header card-header-trick text-white mx-4 mt-4">
                 {% if trick.images | length == 0 %}
-                    <img src="{{ asset('images/tricks/noImage.jpg') }}" class="card-img col-6 offset-3 text-center mt-4" alt="no image">
+                    <img src="{{ asset('images/tricks/noImage.jpg') }}" class="card-img no-image col-6 offset-3 text-center mt-4" alt="no image">
                 {% else %}
-                    <img src="{{ asset(poster.url) }}" class="card-img col-6 offset-3 text-center mt-4" alt="{{ poster.alt }}">
+                    <img src="{{ asset(poster.url) }}" class="card-img media-trick col-6 offset-3 text-center mt-4" alt="{{ poster.alt }}">
                 {% endif %}
                 <div class="text-center">
                     {% if poster !="" %}
@@ -31,7 +31,7 @@
                             </a>
                         </div>
                     {% endif %}
-                    <div class="card-img-overlay col-6">
+                    <div class="card-img-overlay col-6 ml-5">
                         <p class="card-title mt-5 text-break" id="title-img">{{ trick.title }}</p>
                     </div>
                 </div>
@@ -48,9 +48,9 @@
                         {{ message }}
                     </div>
                 {% endfor %}
-                <div class="row my-5">
-                    <div class="col-8 d-flex " id="tricks-img">
-                        <div class="row">
+                <div class="row my-5 mx-3">
+                    <div class="col-7 trick-medias" id="tricks-img">
+                        <div class="row my-3">
                             {% for image in trick.images %}
                                 <div class="col-2 text-center">
                                     <img class="card-img" src="{{ asset(image.url) }}" alt="{{ image.alt }}">
@@ -68,6 +68,26 @@
                                     </a>
                                 </div>
                             {% endfor %}
+                        </div>
+                        <div class="row text-center mb-3">
+                            <div class="col-12">
+                                <h5>Ajouter une photo</h5>
+                                {{ form_start(formImage) }}
+                                <a class="add-image-form mb-4" role="button"><i class="fas fa-plus-circle"></i></a>
+                                {{ form_errors(formImage.file) }}
+                                <div class="row form-image-hidden justify-content-center">
+                                    <div class="col-4 text-left mt-3 mb-2">
+                                        {{ form_widget(formImage.file) }}
+                                    </div>
+                                    <div class="col-1 mt-4">
+                                        <button type="submit" class="icone-button"><i class="fas fa-download"></i></button>
+                                    </div>
+                                    <p class="col-12 font-weight-light">
+                                        <small>(Sélectionner un fichier et cliquer sur l'icone <i class="fas fa-download"></i> pour valider)</small>
+                                    </p>
+                                </div>
+                                {{ form_end(formImage) }}
+                            </div>
                         </div>
                     </div>
 
@@ -97,63 +117,45 @@
                         </div>
                     </div>
 
-                    <div class="col-4" id="tricks-video">
-                        <div class="row">
+                    <div class="offset-1 col-4 trick-medias" id="tricks-video">
+                        <div class="row my-3">
                             {% for video in trick.videos %}
                                 <div class="col-4 text-center">
                                     {{ video.iframe | raw }}
                                     <a href="{{ path('video_delete', { 'id' : video.id, 'csrf_token' : csrf_token('delete'~video.id)}) }}">
-                                        <i class="fas fa-trash-alt"></i>
+                                        <i class="fas fa-trash-alt mb-1"></i>
                                     </a>
                                 </div>
                             {% endfor %}
                         </div>
+                        <div class="row mb-3">
+                            <div class="col-12 text-center">
+                                <h5>Ajouter une vidéo</h5>
+                                {{ form_start(formVideo) }}
+                                <a class="add-video-form mb-4" role="button"><i class="fas fa-plus-circle"></i></a>
+                                {{ form_errors(formVideo.iframe) }}
+                                <div class="row form-video-hidden justify-content-center">
+                                    <p id="explanation" class="font-weight-light"><small>Coller un iframe dans le cadre ci-dessous</small> <button type="button" class="icone-button" data-toggle="modal" data-target="#explanationModal"><i class="fas fa-question-circle"></i></button></p>
+                                    <div class="col-8 text-left mt-3 mb-2">
+                                        {{ form_widget(formVideo.iframe) }}
+                                    </div>
+                                    <div class="col-1 mt-4">
+                                        <button type="submit" class="icone-button"><i class="fas fa-download"></i></button>
+                                    </div>
+                                    <p class="col-12 font-weight-light">
+                                        <small>(Sélectionner un fichier et cliquer sur l'icone <i class="fas fa-download"></i> pour valider)</small>
+                                    </p>
+                                </div>
+                                {{ form_end(formVideo) }}
+
+                            </div>
+                        </div>
+
                     </div>
                 </div>
 
-                <div class="row my-5 text-center">
-                    <div class="col-8">
-                        <h5>Ajouter une photo</h5>
-                        {{ form_start(formImage) }}
-                        <a class="add-image-form mb-4" role="button"><i class="fas fa-plus-circle"></i></a>
-                        {{ form_errors(formImage.file) }}
-                        <div class="row form-image-hidden justify-content-center">
-                            <div class="col-4 text-left mt-3 mb-2">
-                                {{ form_widget(formImage.file) }}
-                            </div>
-                            <div class="col-1 mt-4">
-                                <button type="submit" class="icone-button"><i class="fas fa-download"></i></button>
-                            </div>
-                            <p class="col-12 font-weight-light">
-                                <small>(Sélectionner un fichier et cliquer sur l'icone <i class="fas fa-download"></i> pour valider)</small>
-                            </p>
-                        </div>
-                        {{ form_end(formImage) }}
-                    </div>
-
-                    <div class="col-4">
-                        <h5>Ajouter une vidéo</h5>
-                        {{ form_start(formVideo) }}
-                        <a class="add-video-form mb-4" role="button"><i class="fas fa-plus-circle"></i></a>
-                        {{ form_errors(formVideo.iframe) }}
-                        <div class="row form-video-hidden justify-content-center">
-                            <p id="explanation" class="font-weight-light"><small>Coller un iframe dans le cadre ci-dessous</small> <button type="button" class="icone-button" data-toggle="modal" data-target="#explanationModal"><i class="fas fa-question-circle"></i></button></p>
-                            <div class="col-8 text-left mt-3 mb-2">
-                                {{ form_widget(formVideo.iframe) }}
-                            </div>
-                            <div class="col-1 mt-4">
-                                <button type="submit" class="icone-button"><i class="fas fa-download"></i></button>
-                            </div>
-                            <p class="col-12 font-weight-light">
-                                <small>(Sélectionner un fichier et cliquer sur l'icone <i class="fas fa-download"></i> pour valider)</small>
-                            </p>
-                        </div>
-                    </div>
-                    {{ form_end(formVideo) }}
-                </div>
-
-                <div class="row">
-                    <div class="col-8">
+                <div class="row trick-medias mx-4 mb-4">
+                    <div class="col-8 mt-4 pl-5">
                         {{ form_start(formTrick) }}
                         {{ form_row(formTrick.title) }}
                         {{ form_row(formTrick.description) }}
@@ -170,17 +172,15 @@
                             </div>
                         </div>
 
-                        <div class="text-center offset-7 mt-5">
-                            <a href="{{ path('trick_show', {'id' : trick.id}) }}" class="btn btn-secondary">
-                                <i class="fas fa-eye"></i>
+                        <div class="text-center offset-7 mt-5 mb-4">
+                            <a href="{{ path('trick_show', {'id' : trick.id}) }}" class="btn btn-blue">
+                                <i class="fas fa-eye i-btn"></i>
                             </a>
-                            <button type="submit" class="btn btn-secondary">Modifier la figure</button>
+                            <button type="submit" class="btn btn-blue">Modifier la figure</button>
                             {{ form_end(formTrick) }}
-
                             <button type="button" class="btn btn-danger" data-toggle="modal" data-target="#deleteTrickModal">
-                                <i class="fas fa-trash-alt"></i>
+                                <i class="fas fa-trash-alt i-btn"></i>
                             </button>
-
                         </div>
 
                     </div>
