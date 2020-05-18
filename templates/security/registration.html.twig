@@ -1,30 +1,34 @@
 {% extends 'base.html.twig' %}
 {% block title %}SnowTricks : Inscription{% endblock %}
+{% block stylesheets %}<link rel="stylesheet" href="{{ asset("css/account_user.css") }}">{% endblock %}
 
 {% block body %}
 
     <div class="container">
-
-        {% for message in app.flashes('success') %}
-            <div class="alert alert-success text-center mt-5">
-                {{ message }}
+        <div class="media-trick my-5">
+            <div class="my-5 mx-2 mx-md-5">
+                {% for message in app.flashes('success') %}
+                    <div class="alert alert-success text-center mt-5">
+                        {{ message }}
+                    </div>
+                {% else %}
+                    <div class="container mt-5">
+                        <h1 class="mb-5">Enregistrement</h1>
+                        {{ form_start(form) }}
+                        {{ form_row(form.username) }}
+                        {{ form_row(form.email) }}
+                        {{ form_row(form.password) }}
+                        {{ form_row(form.confirm_password) }}
+                        {{ form_row(form.file) }}
+                        <div class="offset-2">
+                            <button type="submit" class="btn btn-blue">Inscription</button>
+                        </div>
+                        {{ form_end(form) }}
+                        <p class="offset-2 mt-4">Déjà inscrit : <a href="{{ path('security_login') }}">Connectez-vous</a>
+                    </div>
+                {% endfor %}
             </div>
-        {% else %}
-            <div class="container mt-5">
-                <h1 class="mb-5">Enregistrement</h1>
-                {{ form_start(form) }}
-                {{ form_row(form.username) }}
-                {{ form_row(form.email) }}
-                {{ form_row(form.password) }}
-                {{ form_row(form.confirm_password) }}
-                {{ form_row(form.file) }}
-                <div class="offset-2">
-                    <button type="submit" class="btn btn-secondary">Inscription</button>
-                </div>
-                {{ form_end(form) }}
-                <p class="offset-2 mt-4">Déjà inscrit : <a href="{{ path('security_login') }}">Connectez-vous</a>
-            </div>
-        {% endfor %}
+        </div>
     </div>
 {% endblock %}
 

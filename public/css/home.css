@@ -23,7 +23,8 @@ h1
     text-shadow: 3px 3px 10px #a8608b;
 }
 
-@media only screen and (max-device-width:480px) {
+@media only screen and (max-device-width:480px)
+{
     header
     {
         background-image: url("../images/header-sm.jpg");

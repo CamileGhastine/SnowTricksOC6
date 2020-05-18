@@ -4,6 +4,11 @@
     border: none;
 }
 
+.container
+{
+    min-height: 90vh;
+}
+
 .media-trick
 {
     border: 1px solid #a8608b;
@@ -17,4 +22,12 @@ h1
     font-family: 'MedievalSharp', cursive;
     color: #185099;
     text-shadow: 3px 3px 10px #a8608b;
+}
+
+@media only screen and (max-device-width:480px)
+{
+    h1
+    {
+        font-size: 2em;
+    }
 }
