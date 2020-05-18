@@ -1,6 +1,9 @@
 // Arrange display categories form
 var $formLabel = $('legend.col-form-label');
 $formLabel.removeClass('col-sm-2');
+var $formLabel2 = $('.col-form-label');
+$formLabel2.removeClass('col-sm-2');
+$formLabel2.addClass('col-12');
 
 var $categoriesFieldset =  $('.categories > fieldset > div > div')
 var $categoriesFieldsetLegend = $('.categories > fieldset > div > legend');

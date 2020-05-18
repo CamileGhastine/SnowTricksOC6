@@ -2,6 +2,10 @@
 var $formLabel = $('legend.col-form-label');
 $formLabel.removeClass('col-sm-2');
 
+var $formLabel2 = $('.col-form-label');
+$formLabel2.removeClass('col-sm-2');
+$formLabel2.addClass('col-12');
+
 // $('div.formImageHidden').hide();
 $('div.form-image-hidden').hide();
 

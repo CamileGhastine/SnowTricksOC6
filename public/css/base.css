@@ -1,0 +1,87 @@
+body
+{
+    background-color: #dceaef;
+    font-family: 'Open Sans', sans-serif;
+}
+
+nav
+{
+    box-shadow: 0px 0px 50px -8px rgba(0,0,0,0.75);
+
+}
+
+.navbar-brand
+{
+    font-family: 'MedievalSharp', cursive;
+    color: #185099;
+    text-shadow: 1px 1px 5px #a8608b;
+}
+
+.nav-link
+{
+    font-family: 'MedievalSharp', cursive;
+    color: #185099;
+}
+
+a
+{
+    text-decoration: none !important;
+}
+
+i
+{
+    color: #185099;
+}
+
+i :hover
+{
+    color: #a8608b;
+}
+
+.copyright
+{
+    color: #96b0b6;
+}
+
+#caret2
+{
+    margin-top: -50px;
+    margin-right: 30px;
+}
+
+.alert-danger
+{
+    background-color: #a8608b !important;
+    opacity: 80%;
+    border: 1px solid #185099 !important;
+    color: #185099;
+    border-radius: .25rem;
+}
+
+.alert-success
+{
+    background-color: #185099 !important;
+    opacity: 80%;
+    border: 1px solid #a8608b !important;
+    color: #a8608b;
+    border-radius: .25rem;
+}
+
+.btn-blue
+{
+    background-color: #185099;
+    color: #dceaef !important;
+}
+
+.btn-danger
+{
+    background-color: #a8608b !important ;
+    color: #dceaef !important;
+    border : none !important;
+}
+
+.card-body
+{
+    background-color: #dceaef !important ;
+    border : none !important;
+}

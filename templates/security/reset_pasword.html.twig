@@ -2,25 +2,28 @@
 {% block title %}
     Réinitialisation du mot de passe
 {% endblock %}
+{% block stylesheets %}<link rel="stylesheet" href="{{ asset("css/account_user.css") }}">{% endblock %}
 
 {% block body %}
     <div class="container">
+        <div class="media-trick my-5">
 
-        {% for message in app.flashes('danger') %}
-            <div class="alert alert-danger text-center mt-5">
-                {{ message }}
-            </div>
-        {% else %}
-            <h3 class="my-5">Saisir votre nouveau mot de passe</h3>
-            {{ form_start(form) }}
-            {{ form_row(form.password) }}
-            {{ form_row(form.confirm_password) }}
+            {% for message in app.flashes('danger') %}
+                <div class="alert alert-danger text-center mt-5">
+                    {{ message }}
+                </div>
+            {% else %}
+                <h3 class="my-5 ml-5">Saisir votre nouveau mot de passe : </h3>
+                <div class="mx-5">
+                    {{ form_start(form) }}
+                    {{ form_row(form.password) }}
+                    {{ form_row(form.confirm_password) }}
+                </div>
+                <button class="btn btn-blue ml-5 mb-5">Valider</button>
 
-            <button class="btn btn-secondary">Valider</button>
-
-            {{ form_end(form) }}
-        {% endfor %}
-
+                {{ form_end(form) }}
+            {% endfor %}
+        </div>
     </div>
 {% endblock %}
 

@@ -5,41 +5,46 @@
 {% block body %}
     <div class="container mt-5">
 
-        <div class="card mb-5">
+        <div class="card card-trick mb-5">
             <section>
-                <div class="card-header bg-dark text-white">
-                    <div id="carouselExampleIndicators" class="carousel slide" data-ride="carousel">
-                        <div class="carousel-inner">
+                <div class="d-none d-md-block">
+                    <div class="card-header card-header-trick text-white mx-4 mt-4">
+                        <div id="carouselExampleIndicators" class="carousel slide" data-ride="carousel">
+                            <div class="carousel-inner">
 
-                            {% set poster={} %}
+                                {% set poster={} %}
 
-                            {% if trick.images | length == 0 %}
-                                <img class="d-block w-100 card-img col-6 offset-3 text-center mt-4" src="{{ asset('images/tricks/noImage.jpg') }}" alt="no image">
-                                {% set poster = {'url' : 'images/tricks/noImage.jpg', 'alt' : 'no image'}  %}
-                            {% endif %}
-
-                            {% for image in trick.images %}
-                                {% if image.poster ==1 %}
-                                    {% set poster = {'url' : image.url, 'alt' : image.alt} %}
+                                {% if trick.images | length == 0 %}
+                                    <div class="no-image col-6"></div>
+                                    {% set poster = {'url' : 'images/tricks/noImage.jpg', 'alt' : 'no image'}  %}
                                 {% endif %}
-                                <div class="carousel-item {{ image.poster == 1 ? 'active' }}">
-                                    <img class="d-block w-100 card-img col-6 offset-3 text-center mt-4" src="{{ asset(image.url) }}" alt="slide {{ loop.index }}">
-                                </div>
-                            {% endfor %}
 
-                            <a class="carousel-control-prev" href="#carouselExampleIndicators" role="button" data-slide="prev">
-                                <span class="carousel-control-prev-icon" aria-hidden="true"></span>
-                                <span class="sr-only">Suivant</span>
-                            </a>
-                            <a class="carousel-control-next" href="#carouselExampleIndicators" role="button" data-slide="next">
-                                <span class="carousel-control-next-icon" aria-hidden="true"></span>
-                                <span class="sr-only">Précécent</span>
-                            </a>
+                                {% for image in trick.images %}
+                                    {% if image.poster ==1 %}
+                                        {% set poster = {'url' : image.url, 'alt' : image.alt} %}
+                                    {% endif %}
+                                    <div class="carousel-item {{ image.poster == 1 ? 'active' }}">
+                                        <img class="d-block w-100 card-img media-trick col-6 offset-3 text-center mt-4" src="{{ asset(image.url) }}" alt="slide {{ loop.index }}">
+                                    </div>
+                                {% endfor %}
 
+                                {% if trick.images | length > 1 %}
+                                    <a class="carousel-control-prev" href="#carouselExampleIndicators" role="button" data-slide="prev">
+                                        <span class="carousel-control-prev-icon" aria-hidden="true"></span>
+                                        <span class="sr-only">Suivant</span>
+                                    </a>
+                                    <a class="carousel-control-next" href="#carouselExampleIndicators" role="button" data-slide="next">
+                                        <span class="carousel-control-next-icon" aria-hidden="true"></span>
+                                        <span class="sr-only">Précécent</span>
+                                    </a>
+                                {%  endif %}
+
+                            </div>
                         </div>
-                    </div>
+                        <div class="card-img-overlay col-6 text-center ml-5">
+                            <p class="card-title mt-5 text-break " id="title-img">{{ trick.title }}</p>
+                        </div>
 
-                    <div class="text-center">
                         {%  if app.user %}
                             <div class="text-right">
                                 <a href="{{ path('trick_edit', {id: trick.id}) }}">
@@ -50,9 +55,40 @@
                                 </a>
                             </div>
                         {% endif %}
+                    </div>
+                </div>
 
-                        <div class="card-img-overlay col-6">
-                            <p class="card-title mt-5 text-break" id="title-img">{{ trick.title }}</p>
+                <!-- mobil card header -->
+                <div class="card-header-trick d-md-none justify-content-center mx-4 mt-4">
+                    <div id="carouselExampleIndicators-sm" class="carousel slide" data-ride="carousel">
+                        <div class="carousel-inner">
+
+                            {% set poster={} %}
+
+                            {% if trick.images | length == 0 %}
+                                <div class="no-image col-6"></div>
+                                {% set poster = {'url' : 'images/tricks/noImage.jpg', 'alt' : 'no image'}  %}
+                            {% endif %}
+
+                            {% for image in trick.images %}
+                                {% if image.poster ==1 %}
+                                    {% set poster = {'url' : image.url, 'alt' : image.alt} %}
+                                {% endif %}
+                                <div class="carousel-item {{ image.poster == 1 ? 'active' }} mb-4">
+                                    <img class="d-block w-100 card-img col-8 offset-2 media-trick text-center mt-4" src="{{ asset(image.url) }}" alt="slide {{ loop.index }}">
+                                </div>
+                            {% endfor %}
+
+                            {% if trick.images | length > 1 %}
+                                <a class="carousel-control-prev" href="#carouselExampleIndicators-sm" role="button" data-slide="prev">
+                                    <span class="carousel-control-prev-icon" aria-hidden="true"></span>
+                                    <span class="sr-only">Suivant</span>
+                                </a>
+                                <a class="carousel-control-next" href="#carouselExampleIndicators-sm" role="button" data-slide="next">
+                                    <span class="carousel-control-next-icon" aria-hidden="true"></span>
+                                    <span class="sr-only">Précécent</span>
+                                </a>
+                            {%  endif %}
                         </div>
                     </div>
                 </div>
@@ -67,11 +103,11 @@
                             <div class="modal-body">
                                 <p>Etes-vous sur de vouloir supprimer cette figure ?</p>
                                 <div class="row px-5">
-                                    <img src="{{asset(poster.url) }}" alt="{{ poster.alt }}">
+                                    <img class="img-modal" src="{{asset(poster.url) }}" alt="{{ poster.alt }}">
                                 </div>
                             </div>
                             <div class="modal-footer">
-                                <button type="button" class="btn btn-secondary" data-dismiss="modal">Annuler</button>
+                                <button type="button" class="btn btn-blue" data-dismiss="modal">Annuler</button>
                                 <form action="{{ path('trick_delete', {id: trick.id}) }}" method="post">
                                     <input type="hidden" name="_token" value="{{ csrf_token('delete'~trick.id) }}">
                                     <button type="submit" class="btn btn-danger">Supprimer</button>
@@ -89,35 +125,111 @@
                         </div>
                     {% endfor %}
 
-                    <div class="row mt-3">
-                        <div class="col-6 d-flex " id="tricks-img">
-                            <div class="row carousel-indicator">
-                                {% for image in trick.images %}
-                                    <a class="col-3 mb-3" data-target="#carouselExampleIndicators" data-slide-to="{{ loop.index }}" href="">
-                                        <img class="card-img" src="{{ asset(image.url) }}" alt="{{ image.alt }}">
-                                    </a>
-                                {% endfor %}
-                            </div>
-                        </div>
-
-                        <div class="col-6" id="tricks-video">
-                            <div class="row">
-                                {% for video in trick.videos %}
-                                    <div class="col-4">
-                                        {{ video.iframe | raw }}
+                    <div class="d-none d-md-block">
+                        <div class="row mx-3 my-4">
+                            <div class="col-6 trick-medias">
+                                {% if trick.images | length == 0 %}
+                                    <div class="m-3">
+                                        <p>Aucune image</p>
                                     </div>
-                                {% endfor %}
+                                {% else %}
+                                    <div class="row carousel-indicator mt-3">
+                                        {% for image in trick.images %}
+                                            <div class="col-3 mb-3">
+                                                <div data-target="#carouselExampleIndicators" data-slide-to="{{ loop.index -1 }}" class="{{ image.poster == 0 ? "" :"active" }}">
+                                                    <img class="card-img media-trick" src="{{ asset(image.url) }}" alt="{{ image.alt }}">
+                                                </div>
+                                            </div>
+                                        {% endfor %}
+                                    </div>
+                                {% endif %}
+                            </div>
+
+                            <div class="offset-1 col-5 trick-medias">
+                                {% if trick.videos | length == 0 %}
+                                    <div class="m-3">
+                                        <p>Aucune video</p>
+                                    </div>
+                                {% else %}
+                                    <div class="row mt-3">
+                                        {% for video in trick.videos %}
+                                            <div class="col-4">
+                                                {{ video.iframe | raw }}
+                                            </div>
+                                        {% endfor %}
+                                    </div>
+                                {% endif %}
                             </div>
                         </div>
-
                     </div>
 
-                    <h1 class="card-title mt-5">{{ trick.title }}</h1>
-                    <p class="card-text mt-4">{{ trick.description | nl2br }}</p>
+                    <h1 class="card-title my-4">{{ trick.title }}</h1>
+
+                    <!-- mobil medias -->
+                    <div class="d-block d-md-none justify-content-center">
+                        <p>
+                            <button class="btn btn-sm btn-blue" type="button" data-toggle="collapse" data-target="#collapseImage" aria-expanded="false" aria-controls="collapseImage">
+                                Photos
+                            </button>
+                            <button class="btn btn-sm btn-blue" type="button" data-toggle="collapse" data-target="#collapseVideo" aria-expanded="false" aria-controls="collapseVideo">
+                                Videos
+                            </button>
+                        </p>
+                        <div class="card card-body collapse" id="collapseImage">
+                            <div class="row  justify-content-center">
+                                <div class="col-10 trick-medias">
+                                    {% if trick.images | length == 0 %}
+                                        <div class="m-3">
+                                            <p>Aucune image</p>
+                                        </div>
+                                    {% else %}
+                                        <div class="row carousel-indicator mt-3 text-center">
+                                            {% for image in trick.images %}
+                                                <div class="col-3 mb-3">
+                                                    <div data-target="#carouselExampleIndicators-sm" data-slide-to="{{ loop.index -1 }}" class="{{ image.poster == 0 ? "" :"active" }}">
+                                                        <img class="card-img media-trick" src="{{ asset(image.url) }}" alt="{{ image.alt }}">
+                                                    </div>
+                                                </div>
+                                            {% endfor %}
+                                        </div>
+                                    {% endif %}
+                                </div>
+                            </div>
+                        </div>
+                        <div class="card card-body collapse" id="collapseVideo">
+                            <div class="row justify-content-center">
+                                <div class="col-10 trick-medias">
+                                    {% if trick.videos | length == 0 %}
+                                        <div class="m-3">
+                                            <p>Aucune video</p>
+                                        </div>
+                                    {% else %}
+                                        <div class="row mt-3">
+                                            {% for video in trick.videos %}
+                                                <div class="col-6">
+                                                    {{ video.iframe | raw }}
+                                                </div>
+                                            {% endfor %}
+                                        </div>
+                                    {% endif %}
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <p class="card-text mt-4 text-left p-3 description">{{ trick.description | nl2br }}</p>
+                    <p class="text-center text-md-right mx-4">
+                        <small><em>
+                                Publié le {{ trick.createdAt | date('d/m/y') }}
+                                {% if trick.createdAt != trick.updatedAt %}
+                                    <br/>Modifié le {{ trick.updatedAt | date('d/m/y') }}
+                                {% endif %}
+                            </em></small>
+                    </p>
                     <p class="card-text mt-4">
                         {% for category in trick.categories %}
                             <a href="#" class="">
-                                <span class="badge badge-pill badge-secondary mx-3">{{ category.title }}</span>
+                                <span class="badge badge-pill badge-category mx-3">{{ category.title }}</span>
                             </a>
                         {% endfor %}
                     </p>
@@ -127,21 +239,21 @@
 
         <section>
 
-            <div class="card mb-5">
+            <div class="card card-comments mb-5">
 
-                <h2 class="card-header bg-dark text-white text-center" id="comments">
-                    Commentaires <span class="badge badge-pill badge-secondary mx-3">{{ trick.comments |length }}</span>
+                <h2 class="card-header card-header-comments text-white text-center" id="comments">
+                    Commentaires <span class="badge badge-pill badge-comments mx-3">{{ trick.comments |length }}</span>
                 </h2>
 
                 {%  if app.user %}
 
-                    <div class="row mt-5">
-                        <div class="col-8">
+                    <div class="row mt-5 justify-content-center mx-3 mx-md-0">
+                        <div class="col-12 col-md-8 ">
                             {{ form_start(form) }}
                             {{ form_row(form.content, {label: false}) }}
                         </div>
-                        <div class="col-3">
-                            <button type="submit" class="btn btn-secondary mb-2">Commenter</button>
+                        <div class="col-12 col-md-3 d-flex align-items-center justify-content-center justify-content-md-start">
+                            <button type="submit" class="btn btn-blue mb-2">Commenter</button>
                             {{ form_end(form) }}
                         </div>
                     </div>
@@ -158,18 +270,18 @@
                     <aside class="ml-5 mt-5">
 
                         {% for comment in comments %}
-                            <div class="row">
-                                <div class="d-flex align-items-start">
-                                    <img class="rounded-circle col-1 avatar" src="{{ asset(comment.user.avatar) }}" alt="{{ comment.user.username }} "/>
+                            <div class="row text-center text-md-left mr-3 mr-md-0">
+                                <div class="d-flex align-items-md-start align-items-md-center col-3 col-md-1">
+                                    <img class="rounded-circle avatar" src="{{ asset(comment.user.avatar) }}" alt="{{ comment.user.username }} "/>
                                 </div>
-                                <div class="col-3">
+                                <div class="col-9 col-md-3 mb-3">
                                     <B>{{ comment.user.username }}</B><br/>
                                     Le {{ comment.createdAt | date('d/m/y') }} à {{ comment.createdAt | date('H:i') }}
                                 </div>
-                                <div class="col-7 text-justify">
+                                <div class="col-12 col-md-7 text-justify">
                                     {{ comment.content | nl2br }}
                                 </div>
-                                <div class="col-12 pr-5">
+                                <div class="col-12 pr-4 pr-md-5">
                                     <hr/>
                                 </div>
                             </div>
