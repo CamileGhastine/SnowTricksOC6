@@ -21,6 +21,8 @@ class AppFixtures extends Fixture
 
     public function load(ObjectManager $manager)
     {
+        $date = new \DateTime();
+
         $user = new User();
 
         $username = 'camile';
@@ -31,6 +33,7 @@ class AppFixtures extends Fixture
             ->setPassword($password)
             ->setAvatar('images/users/camile.jpg')
             ->setRole('ROLE_ADMIN')
+            ->setRegisteredAt($date->setDate(2020, 04, 01))
             ->setValidate(true)
             ->setToken($this->token->generateToken())
         ;

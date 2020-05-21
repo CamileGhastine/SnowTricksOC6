@@ -35,6 +35,7 @@ class UserFixtures extends Fixture
                 ->setPassword($password)
                 ->setAvatar('images/users/nobody.jpg')
                 ->setValidate(true)
+                ->setRegisteredAt($faker->dateTimebetween('-7 days'))
                 ->setToken($this->token->generateToken())
             ;
 

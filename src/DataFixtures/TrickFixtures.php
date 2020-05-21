@@ -24,9 +24,14 @@ class TrickFixtures extends Fixture implements DependentFixtureInterface
             $images[] = 'image'.$i;
         }
 
-        for ($j = 1; $j <= 10; ++$j) {
+        $videos=[];
+        for ($i = 0; $i <= 14; ++$i) {
+            $videos[] = 'video'.$i;
+        }
+
+        for ($j = 1; $j <= 13; ++$j) {
             $categories = [];
-            for ($i = 1; $i <= 5; ++$i) {
+            for ($i = 0; $i <= 3; ++$i) {
                 $categories[] = 'category'.$i;
             }
 
@@ -34,7 +39,7 @@ class TrickFixtures extends Fixture implements DependentFixtureInterface
 
             $date = $faker->dateTimebetween('-7 days');
 
-            $trick->setTitle($faker->sentence(3, true))
+            $trick->setTitle(substr($faker->sentence(3, true), 0, 29))
                 ->setDescription(implode("\n", $faker->sentences(4)))
                 ->setCreatedAt($date)
                 ->setUpdatedAt($date)
@@ -59,6 +64,14 @@ class TrickFixtures extends Fixture implements DependentFixtureInterface
                 }
             }
 
+            if(rand(1,2)>1 ) {
+                for ($i = 1; $i <= rand(1, 2); ++$i) {
+                    $key = array_rand($videos);
+                    $video = $this->getReference($videos[$key]);
+                    $trick->addVideo($video);
+                }
+            }
+
             $this->addReference('trick'.$j, $trick);
 
             $manager->persist($trick);
@@ -72,6 +85,7 @@ class TrickFixtures extends Fixture implements DependentFixtureInterface
             CategoryFixtures::class,
             UserFixtures::class,
             ImageFixtures::class,
+            VideoFixtures::class,
         ];
     }
 }

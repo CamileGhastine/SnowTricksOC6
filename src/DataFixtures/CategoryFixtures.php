@@ -9,14 +9,16 @@ use Faker\Factory;
 
 class CategoryFixtures extends Fixture
 {
+    private $categories = ['grabs', 'rotations', 'slides', 'flips' ];
+
     public function load(ObjectManager $manager)
     {
         $faker = Factory::create('fr_FR');
 
-        for ($i = 1; $i <= 5; ++$i) {
+        for ($i = 0; $i < count($this->categories); ++$i) {
             $category = new Category();
 
-            $category->setTitle($faker->word)
+            $category->setTitle($this->categories[$i])
             ;
 
             $this->addReference('category'.$i, $category);

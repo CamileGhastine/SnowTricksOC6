@@ -6,7 +6,7 @@ use App\Repository\CommentRepository;
 
 class PaginatorService
 {
-    const MAX_RESULTS = 3;
+    const MAX_RESULTS = 5;
     private $repo;
     private $id;
     private $allComments;
