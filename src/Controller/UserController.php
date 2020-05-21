@@ -5,17 +5,16 @@ namespace App\Controller;
 use App\Entity\AvatarProto;
 use App\Form\AvatarType;
 use App\Service\AvatarService;
+use Sensio\Bundle\FrameworkExtraBundle\Configuration\IsGranted;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\Routing\Annotation\Route;
-use Sensio\Bundle\FrameworkExtraBundle\Configuration\IsGranted;
 
 class UserController extends AbstractController
 {
     /**
      * @Route("/user", name="user_account")
      * @isGranted("ROLE_USER", message="Vous devez être connecté pour accéder à votre compte ! ")
-     *
      */
     public function account(Request $request, AvatarService $avatar)
     {
