@@ -62,7 +62,7 @@ class PaginatorService
     {
         $render = '';
         for ($i = 1; $i <= $this->numberPages; ++$i) {
-            $render .= '<a href="/trick/ajax/commentsPagination/'.$this->id.'/'.$i.'"><span class="badge badge-pill badge-'.($i === $this->page ? 'page-activate' : 'page').' mx-2">'.$i.'</span></a> ';
+            $render .= '<a href="/trick/'.$this->id.'/ajax-commentsPagination/'.$i.'"><span class="badge badge-pill badge-'.($i === $this->page ? 'page-activate' : 'page').' mx-2">'.$i.'</span></a> ';
         }
 
         return '<p class="mt-4 pagination justify-content-center">'.$render.'</p>';

@@ -101,6 +101,12 @@ h1
     box-shadow: 3px 3px 10px #555555;
 }
 
+hr
+{
+    background-color: #a8608b;
+    box-shadow: 3px 3px 10px #555555;
+}
+
 @media only screen and (max-device-width:760px) {
     .add-media {
         font-size: 1em;

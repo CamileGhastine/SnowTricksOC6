@@ -65,12 +65,13 @@
                             <div class="row my-3">
                                 {% for image in trick.images %}
                                     <div class="col-2 text-center">
-                                        <img class="card-img" src="{{ asset(image.url) }}" alt="{{ image.alt }}">
                                         {% if image.poster == 0 %}
+                                            <img class="card-img" src="{{ asset(image.url) }}" alt="{{ image.alt }}">
                                             <a href="{{ path('image_poster_change', {'newPoster' : image.id, 'oldPoster' : poster.id}) }}">
                                                 <i class="far fa-images"></i>
                                             </a>
                                         {% else %}
+                                            <img class="card-img media-trick" src="{{ asset(image.url) }}" alt="{{ image.alt }}">
                                             <a href="#" data-toggle="modal" data-target="#changePosterModal">
                                                 <i class="fas fa-recycle"></i>
                                             </a>
@@ -105,12 +106,13 @@
                             <div class="row my-3">
                                 {% for image in trick.images %}
                                     <div class="col-2 text-center">
-                                        <img class="card-img" src="{{ asset(image.url) }}" alt="{{ image.alt }}">
                                         {% if image.poster == 0 %}
+                                            <img class="card-img" src="{{ asset(image.url) }}" alt="{{ image.alt }}">
                                             <a href="{{ path('image_poster_change', {'newPoster' : image.id, 'oldPoster' : poster.id}) }}">
                                                 <i class="far fa-images"></i>
                                             </a>
                                         {% else %}
+                                            <img class="card-img media-trick" src="{{ asset(image.url) }}" alt="{{ image.alt }}">
                                             <a href="#" data-toggle="modal" data-target="#changePosterModal">
                                                 <i class="fas fa-recycle"></i>
                                             </a>
@@ -157,13 +159,16 @@
                                             <div class="col-3 mb-3">
                                                 <a href="{{ path('image_poster_change', {'newPoster' : image.id, 'oldPoster' : poster.id}) }}">
                                                     <img class="img-modal" src="{{ asset(image.url) }}" alt="{{ image.alt }}">
+                                                    {% if image.poster %}
+                                                        <hr/>
+                                                    {% endif %}
                                                 </a>
                                             </div>
                                         {% endfor %}
                                     </div>
                                 </div>
                                 <div class="modal-footer">
-                                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Annuler</button>
+                                    <button type="button" class="btn btn-blue" data-dismiss="modal">Annuler</button>
 
                                 </div>
                             </div>
@@ -257,7 +262,7 @@
                             <div id="category-form" class="col-12 mt-4">
                                 {{ form_row(formCategory.title) }}
                                 <div class="text-center">
-                                    <button class="btn btn-sm btn-secondary button-add-category">Ajouter la catégorie</button>
+                                    <button class="btn btn-sm btn-blue button-add-category">Ajouter la catégorie</button>
                                 </div>
                                 {{ form_end(formCategory) }}
                             </div>
@@ -280,7 +285,7 @@
                                 </div>
                             </div>
                             <div class="modal-footer">
-                                <button type="button" class="btn btn-secondary" data-dismiss="modal">Annuler</button>
+                                <button type="button" class="btn btn-blue" data-dismiss="modal">Annuler</button>
                                 <form action="{{ path('trick_delete', {id: trick.id}) }}" method="post">
                                     <input type="hidden" name="_token" value="{{ csrf_token('delete'~trick.id) }}">
                                     <button type="submit" class="btn btn-danger">Supprimer</button>

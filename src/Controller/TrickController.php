@@ -20,6 +20,7 @@ use App\Service\PaginatorService;
 use App\Service\UploaderService;
 use DateTime;
 use Doctrine\ORM\EntityManagerInterface;
+use Sensio\Bundle\FrameworkExtraBundle\Configuration\IsGranted;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\Routing\Annotation\Route;
@@ -30,7 +31,7 @@ class TrickController extends AbstractController
 
     /**
      * @Route("/", name="home")
-     * @Route("/trick/{id<[0-9]+>}/category", name="trick_category")
+     * @Route("/trick/category/{id<[0-9]+>}", name="trick_category")
      *
      * @param null $id
      *
@@ -48,7 +49,7 @@ class TrickController extends AbstractController
     /**
      * Load More trick button in homme page.
      *
-     * @Route("/trick/ajax/loadMore", name="ajax_load_more")
+     * @Route("/trick/ajax-loadMore", name="ajax_load_more")
      *
      * @return \Symfony\Component\HttpFoundation\Response
      */
@@ -103,7 +104,7 @@ class TrickController extends AbstractController
     /**
      * Paginate comments.
      *
-     * @Route("/trick/ajax/commentsPagination/{id<[0-9]+>}/{page<[0-9]+>}", name="ajax_comments_pagination")
+     * @Route("/trick/{id<[0-9]+>}/ajax-commentsPagination/{page<[0-9]+>}", name="ajax_comments_pagination")
      *
      * @param $id
      * @param $page
@@ -123,7 +124,8 @@ class TrickController extends AbstractController
     /**
      * Create new trick.
      *
-     * @Route("/trick/edit/new", name="trick_new")
+     * @Route("/trick/new", name="trick_new")
+     * @isGranted("ROLE_USER", message="Vous devez être connecté pour créer un trick ! ")
      *
      * @return \Symfony\Component\HttpFoundation\RedirectResponse|\Symfony\Component\HttpFoundation\Response
      */
@@ -168,7 +170,7 @@ class TrickController extends AbstractController
     /**
      * Create new category in add trick form.
      *
-     * @Route("/trick/ajax/addCategory", name="ajax_add_category")
+     * @Route("/trick/ajax-addCategory", name="ajax_add_category")
      *
      * @return \Symfony\Component\HttpFoundation\Response
      */
@@ -218,7 +220,8 @@ class TrickController extends AbstractController
     /**
      * Edit a trick.
      *
-     * @Route("/trick/edit/{id<[0-9]+>}/update", name="trick_edit")
+     * @Route("/trick/{id<[0-9]+>}/update", name="trick_edit")
+     * @isGranted("ROLE_USER", message="Vous devez être connecté pour modifier un trick ! ")
      *
      * @return \Symfony\Component\HttpFoundation\RedirectResponse|\Symfony\Component\HttpFoundation\Response
      */
@@ -302,11 +305,12 @@ class TrickController extends AbstractController
     /**
      * Delete a trick.
      *
-     * @Route("trick/edit/{id<[0-9]+>}/delete", name="trick_delete")
+     * @Route("trick/{id<[0-9]+>}/delete", name="trick_delete")
+     * @isGranted("ROLE_USER", message="Vous devez être connecté pour supprimer un trick ! ")
      *
      * @return \Symfony\Component\HttpFoundation\RedirectResponse
      */
-    public function delete(Trick $trick, EntityManagerInterface $em, Request $request, TrickRepository $repoTrick)
+    public function delete(Trick $trick, EntityManagerInterface $em, Request $request)
     {
         if (!$request->request->get('_token') || !$this->isCsrfTokenValid('delete'.$trick->getId(), $request->request->get('_token'))) {
             $this->addFlash('danger', 'La figure n\'a pas pu être supprimée');
@@ -329,7 +333,7 @@ class TrickController extends AbstractController
     /**
      * Delete image in edit trick page.
      *
-     * @Route("trick/edit/image/{id<[0-9]+>}/delete", name="image_delete")
+     * @Route("trick/image/{id<[0-9]+>}/delete", name="image_delete")
      *
      * @return \Symfony\Component\HttpFoundation\RedirectResponse
      */
@@ -362,7 +366,8 @@ class TrickController extends AbstractController
     /**
      * Changer the poster in edit trick page.
      *
-     * @Route("trick/edit/image/{newPoster}/poster/{oldPoster}", name="image_poster_change")
+     * @Route("trick/image/{oldPoster}/poster/{newPoster}", name="image_poster_change")
+     * @isGranted("ROLE_USER", message="Vous devez être connecté pour supprimer une image ! ")
      *
      * @return \Symfony\Component\HttpFoundation\RedirectResponse
      */
@@ -383,7 +388,8 @@ class TrickController extends AbstractController
     /**
      * Delete video in edit trick page.
      *
-     * @Route("trick/edit/video/{id<[0-9]+>}/delete", name="video_delete")
+     * @Route("trick/video/{id<[0-9]+>}/delete", name="video_delete")
+     * @isGranted("ROLE_USER", message="Vous devez être connecté pour supprimer une vidéo ! ")
      *
      * @return \Symfony\Component\HttpFoundation\RedirectResponse
      */
