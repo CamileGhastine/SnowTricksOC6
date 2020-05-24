@@ -11,17 +11,14 @@ use App\Form\AddTrickType;
 use App\Form\CategoryType;
 use App\Form\CommentType;
 use App\Form\EditTrickType;
-use App\Kernel;
 use App\Repository\CategoryRepository;
 use App\Repository\TrickRepository;
 use App\Service\HandlerService;
 use App\Service\PaginatorService;
 use App\Service\UploaderService;
 use DateTime;
-use Doctrine\ORM\EntityManagerInterface;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\IsGranted;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
-use Symfony\Component\Form\Form;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\Routing\Annotation\Route;
 
@@ -262,7 +259,7 @@ class TrickController extends AbstractController
      *
      * @return \Symfony\Component\HttpFoundation\RedirectResponse
      */
-    public function delete(Trick $trick, EntityManagerInterface $em, Request $request)
+    public function delete(Trick $trick, HandlerService $handler, Request $request)
     {
         if (!$request->request->get('_token') || !$this->isCsrfTokenValid('delete'.$trick->getId(), $request->request->get('_token'))) {
             $this->addFlash('danger', 'La figure n\'a pas pu être supprimée');
@@ -270,12 +267,7 @@ class TrickController extends AbstractController
             return $this->redirectToRoute('home');
         }
 
-        foreach ($trick->getImages() as $image) {
-            unlink(Kernel::getProjectDir().'/public/'.$image->getUrl());
-        }
-
-        $em->remove($trick);
-        $em->flush();
+        $handler->handleDeleteTrick($trick);
 
         $this->addFlash('success', 'la figure a été supprimée avec succès !');
 
@@ -289,7 +281,7 @@ class TrickController extends AbstractController
      *
      * @return \Symfony\Component\HttpFoundation\RedirectResponse
      */
-    public function deleteImage(Image $image, EntityManagerInterface $em, Request $request)
+    public function deleteImage(Image $image, HandlerService $handler, Request $request)
     {
         if (!$request->query->get('csrf_token') || !$this->isCsrfTokenValid('delete'.$image->getId(), $request->query->get('csrf_token'))) {
             $this->addFlash('danger', 'L\'image n\'a pas pu être supprimée');
@@ -297,18 +289,9 @@ class TrickController extends AbstractController
             return $this->redirect($this->generateUrl('trick_edit', ['id' => $image->getTrick()->getId()]).'#alert');
         }
 
-        // New poster before delete old poster
         $trick = $image->getTrick();
-        $trick->removeImage($image);
-        $images = $trick->getImages();
-        if ($image->getPoster() && count($images) > 0) {
-            $images[array_key_first($images->toArray())]->setPoster(true);
-        }
 
-        $em->remove($image);
-        $em->flush();
-
-        unlink(Kernel::getProjectDir().'/public/'.$image->getUrl());
+        $handler->handlerDeleteImage($image);
 
         $this->addFlash('success', 'La photo a été supprimée avec succès !');
 
@@ -325,13 +308,7 @@ class TrickController extends AbstractController
      */
     public function changePoster(HandlerService $handler, Image $newPoster, Image $oldPoster)
     {
-        $trick = $oldPoster->getTrick();
-        $trick->setUpdatedAt(new DateTime());
-
-        $oldPoster->setPoster(false);
-        $newPoster->setPoster(true);
-
-        $handler->flush($trick);
+        $handler->handleChangePoster($newPoster, $oldPoster);
 
         return $this->redirectToRoute('trick_edit', ['id' => $newPoster->getTrick()->getId()]);
     }
@@ -344,7 +321,7 @@ class TrickController extends AbstractController
      *
      * @return \Symfony\Component\HttpFoundation\RedirectResponse
      */
-    public function deleteVideo(Video $video, EntityManagerInterface $em, Request $request)
+    public function deleteVideo(Video $video, HandlerService $handler, Request $request)
     {
         if (!$request->query->get('csrf_token') || !$this->isCsrfTokenValid('delete'.$video->getId(), $request->query->get('csrf_token'))) {
             $this->addFlash('danger', 'La vidéo n\'a pas pu être supprimée.');
@@ -352,8 +329,7 @@ class TrickController extends AbstractController
             return $this->redirect($this->generateUrl('trick_edit', ['id' => $video->getTrick()->getId()]).'#alert');
         }
 
-        $em->remove($video);
-        $em->flush();
+        $handler->flush($video, 'remove');
 
         $this->addFlash('success', 'La vidéo a été supprimée avec succès !');
 

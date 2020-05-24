@@ -6,6 +6,8 @@ use App\Entity\Category;
 use App\Entity\Image;
 use App\Entity\Trick;
 use App\Entity\Video;
+use App\Kernel;
+use DateTime;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Component\HttpFoundation\RequestStack;
 
@@ -99,9 +101,44 @@ class HandlerService
         return false;
     }
 
-    public function flush($object)
+    public function handleDeleteTrick(Trick $trick)
     {
-        $this->em->persist($object);
+        foreach ($trick->getImages() as $image) {
+            unlink(Kernel::getProjectDir().'/public/'.$image->getUrl());
+        }
+
+        $this->flush($trick, 'remove');
+    }
+
+    public function handlerDeleteImage(Image $image)
+    {
+        // New poster before delete old poster
+        $trick = $image->getTrick();
+        $trick->removeImage($image);
+        $images = $trick->getImages();
+        if ($image->getPoster() && count($images) > 0) {
+            $images[array_key_first($images->toArray())]->setPoster(true);
+        }
+
+        $this->flush($image, 'remove');
+
+        unlink(Kernel::getProjectDir().'/public/'.$image->getUrl());
+    }
+
+    public function handleChangePoster (Image $newPoster, Image $oldPoster)
+    {
+        $trick = $oldPoster->getTrick();
+        $trick->setUpdatedAt(new DateTime());
+
+        $oldPoster->setPoster(false);
+        $newPoster->setPoster(true);
+
+        $this->flush($trick);
+    }
+
+    public function flush($object, $action = 'persist')
+    {
+        $this->em->$action($object);
         $this->em->flush();
     }
 }
