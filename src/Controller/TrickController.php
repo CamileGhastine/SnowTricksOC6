@@ -11,8 +11,6 @@ use App\Form\AddTrickType;
 use App\Form\CategoryType;
 use App\Form\CommentType;
 use App\Form\EditTrickType;
-use App\Form\ImageType;
-use App\Form\VideoType;
 use App\Kernel;
 use App\Repository\CategoryRepository;
 use App\Repository\TrickRepository;
@@ -23,6 +21,7 @@ use DateTime;
 use Doctrine\ORM\EntityManagerInterface;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\IsGranted;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
+use Symfony\Component\Form\Form;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\Routing\Annotation\Route;
 
@@ -206,72 +205,28 @@ class TrickController extends AbstractController
      *
      * @return \Symfony\Component\HttpFoundation\RedirectResponse|\Symfony\Component\HttpFoundation\Response
      */
-    public function edit(Request $request, EntityManagerInterface $em, Trick $trick, UploaderService $uploader)
+    public function edit(Trick $trick, UploaderService $uploader, HandlerService $handler)
     {
         $formTrick = $this->createForm(EditTrickType::class, $trick);
-        $formTrick->handleRequest($request);
 
-        if ($formTrick->isSubmitted() && $formTrick->isValid()) {
-            $trick->setUpdatedAt(new DateTime());
+        $trick->setUpdatedAt(new DateTime());
 
-            $em->persist($trick);
-            $em->flush();
-
+        if ($handler->handle($formTrick, $trick)) {
             $this->addFlash('success', 'La figure a été modifiée avec succès !');
 
             return $this->redirectToRoute('trick_show', ['id' => $trick->getId()]);
         }
 
-        $category = new Category();
-        $formCategory = $this->createForm(CategoryType::class, $category);
-        $formCategory->handleRequest($request);
+        // add a category, an image or a video
+        $entities = ['Category' => 'catégorie', 'Image' => 'photo', 'Video' => 'video'];
+        foreach ($entities as $entity => $flash) {
+            $form = 'form'.$entity;
+            $$form = $this->addEntity($entity, $trick, $handler);
+            if (!$$form) {
+                $this->addFlash('success', 'La '.$flash.' a été ajoutée avec succès !');
 
-        if ($formCategory->isSubmitted() && $formCategory->isValid()) {
-            $em->persist($category);
-            $em->flush();
-
-            $this->addFlash('success', 'La catégorie a été ajoutée avec succès !');
-
-            return $this->redirect($this->generateUrl('trick_edit', ['id' => $trick->getId()]).'#alert');
-        }
-
-        $image = new Image();
-        $formImage = $this->createForm(ImageType::class, $image);
-        $formImage->handleRequest($request);
-
-        if ($formImage->isSubmitted() && $formImage->isValid()) {
-            $uploader->upload($image);
-
-            $trick->setUpdatedAt(new DateTime());
-            $image->setTrick($trick);
-
-            if (0 === count($trick->getImages())) {
-                $image->setPoster(1);
+                return $this->redirect($this->generateUrl('trick_edit', ['id' => $trick->getId()]).'#alert');
             }
-
-            $em->persist($image);
-            $em->flush();
-
-            $this->addFlash('success', 'La photo a été ajoutée avec succès !');
-
-            return $this->redirect($this->generateUrl('trick_edit', ['id' => $trick->getId()]).'#alert');
-        }
-
-        $video = new Video();
-        $formVideo = $this->createForm(VideoType::class, $video);
-        $formVideo->handleRequest($request);
-
-        if ($formVideo->isSubmitted() && $formVideo->isValid()) {
-            $trick->setUpdatedAt(new DateTime());
-            $video->setTrick($trick);
-            $video->refactorIframe();
-
-            $em->persist($video);
-            $em->flush();
-
-            $this->addFlash('success', 'La vidéo a été ajoutée avec succès !');
-
-            return $this->redirect($this->generateUrl('trick_edit', ['id' => $trick->getId()]).'#alert');
         }
 
         return $this->render('trick/editForm.html.twig', [
@@ -281,6 +236,22 @@ class TrickController extends AbstractController
             'formCategory' => $formCategory->createView(),
             'trick' => $trick,
         ]);
+    }
+
+    public function addEntity($entity, $trick, $handler)
+    {
+        $entityClass = 'App\Entity\\'.$entity;
+        $typeClass = 'App\Form\\'.$entity.'Type';
+        $object = new $entityClass();
+        $handle = 'handle'.$entity;
+
+        $form = $this->createForm($typeClass, $object);
+
+        if ($handler->$handle($form, $object, $trick)) {
+            return false;
+        }
+
+        return $form;
     }
 
     /**
@@ -352,7 +323,7 @@ class TrickController extends AbstractController
      *
      * @return \Symfony\Component\HttpFoundation\RedirectResponse
      */
-    public function changePoster(EntityManagerInterface $em, Image $newPoster, Image $oldPoster)
+    public function changePoster(HandlerService $handler, Image $newPoster, Image $oldPoster)
     {
         $trick = $oldPoster->getTrick();
         $trick->setUpdatedAt(new DateTime());
@@ -360,8 +331,7 @@ class TrickController extends AbstractController
         $oldPoster->setPoster(false);
         $newPoster->setPoster(true);
 
-        $em->persist($trick);
-        $em->flush();
+        $handler->flush($trick);
 
         return $this->redirectToRoute('trick_edit', ['id' => $newPoster->getTrick()->getId()]);
     }
@@ -376,7 +346,7 @@ class TrickController extends AbstractController
      */
     public function deleteVideo(Video $video, EntityManagerInterface $em, Request $request)
     {
-        if (!$request->query->get('csrf_token') or !$this->isCsrfTokenValid('delete'.$video->getId(), $request->query->get('csrf_token'))) {
+        if (!$request->query->get('csrf_token') || !$this->isCsrfTokenValid('delete'.$video->getId(), $request->query->get('csrf_token'))) {
             $this->addFlash('danger', 'La vidéo n\'a pas pu être supprimée.');
 
             return $this->redirect($this->generateUrl('trick_edit', ['id' => $video->getTrick()->getId()]).'#alert');

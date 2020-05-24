@@ -2,7 +2,9 @@
 
 namespace App\Service;
 
+use App\Entity\Category;
 use App\Entity\Image;
+use App\Entity\Trick;
 use App\Entity\Video;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Component\HttpFoundation\RequestStack;
@@ -49,6 +51,47 @@ class HandlerService
                 0 === $key ? $image->setPoster(true) : null;
             }
             $this->flush($object);
+
+            return true;
+        }
+
+        return false;
+    }
+
+    public function handleCategory($form, Category $category, $trick)
+    {
+        return $this->handle($form, $category);
+    }
+
+    public function handleImage($form, Image $image, Trick $trick)
+    {
+        $form->handleRequest($this->request);
+
+        if ($form->isSubmitted() && $form->isValid()) {
+            $this->uploader->upload($image);
+
+            $image->setTrick($trick);
+
+            if (0 === count($trick->getImages())) {
+                $image->setPoster(1);
+            }
+            $this->flush($image);
+
+            return true;
+        }
+
+        return false;
+    }
+
+    public function handleVideo($form, Video $video, Trick $trick)
+    {
+        $form->handleRequest($this->request);
+
+        if ($form->isSubmitted() && $form->isValid()) {
+            $video->setTrick($trick);
+            $video->refactorIframe();
+
+            $this->flush($video);
 
             return true;
         }
