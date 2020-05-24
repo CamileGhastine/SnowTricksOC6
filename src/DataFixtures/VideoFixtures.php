@@ -8,7 +8,7 @@ use Doctrine\Common\Persistence\ObjectManager;
 
 class VideoFixtures extends Fixture
 {
-    private $videos = [ 'src="https://www.youtube.com/embed/V9xuy-rVj9w"',
+    private $videos = ['src="https://www.youtube.com/embed/V9xuy-rVj9w"',
         'src="https://www.youtube.com/embed/0uGETVnkujA"',
         'src="https://www.youtube.com/embed/Q5691RGDUJ4"',
        'src="https://www.youtube.com/embed/MasvoDXQe3U"',

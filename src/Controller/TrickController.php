@@ -16,6 +16,7 @@ use App\Form\VideoType;
 use App\Kernel;
 use App\Repository\CategoryRepository;
 use App\Repository\TrickRepository;
+use App\Service\HandlerService;
 use App\Service\PaginatorService;
 use App\Service\UploaderService;
 use DateTime;
@@ -55,7 +56,9 @@ class TrickController extends AbstractController
      */
     public function ajaxLoadMore(TrickRepository $repoTrick, Request $request)
     {
+        // Load more trick by category
         $id = $request->request->get('id');
+
         $firstResult = $request->request->get('page') * $this->maxResult;
 
         return $this->render('trick/ajax/ajax_load_more.html.twig', [
@@ -74,22 +77,19 @@ class TrickController extends AbstractController
      *
      * @throws \Doctrine\ORM\NonUniqueResultException
      */
-    public function show($id, Request $request, TrickRepository $repoTrick, PaginatorService $paginator, EntityManagerInterface $em)
+    public function show($id, TrickRepository $repoTrick, PaginatorService $paginator, HandlerService $handler)
     {
         $trick = $repoTrick->findTrickWithCategoriesImagesVideosComments($id);
         $paginatorResponse = $paginator->paginate($id, 1);
 
-        $user = $this->getUser();
-        if ($user) {
+        if ($this->getUser()) {
             $comment = new Comment($trick, $this->getUser());
             $form = $this->createForm(CommentType::class, $comment);
-            $form->handleRequest($request);
 
-            if ($form->isSubmitted() && $form->isValid()) {
-                $em->persist($comment);
-                $em->flush();
-
-                return $this->redirect($this->generateUrl('trick_show', ['id' => $trick->getId()]).'#comments');
+            if ($handler->handle($form, $comment)) {
+                return $this->redirect($this->generateUrl('trick_show', [
+                        'id' => $trick->getId(), ]).'#comments'
+                );
             }
         }
 
@@ -97,7 +97,7 @@ class TrickController extends AbstractController
             'trick' => $trick,
             'comments' => $paginatorResponse['comments'],
             'render' => $paginatorResponse['render'],
-            'form' => $user ? $form->createView() : null,
+            'form' => $this->getUser() ? $form->createView() : null,
         ]);
     }
 
@@ -129,7 +129,7 @@ class TrickController extends AbstractController
      *
      * @return \Symfony\Component\HttpFoundation\RedirectResponse|\Symfony\Component\HttpFoundation\Response
      */
-    public function create(Request $request, EntityManagerInterface $em, UploaderService $uploader)
+    public function create(HandlerService $handler)
     {
         $category = new Category();
         $formCategory = $this->createForm(CategoryType::class, $category);
@@ -137,34 +137,19 @@ class TrickController extends AbstractController
         $trick = new Trick($this->getUser());
 
         $form = $this->createForm(AddTrickType::class, $trick);
-        $form->handleRequest($request);
 
-        if (!$form->isSubmitted() or !$form->isValid()) {
-            return $this->render('trick/addForm.html.twig', [
-                'form' => $form->createView(),
-                'formCategory' => $formCategory->createView(),
-            ]);
+        if ($handler->handleTrick($form, $trick)) {
+            $this->addFlash('success', 'La figure a été ajoutée avec succès !');
+
+            return $this->redirectToRoute('trick_show', [
+                    'id' => $trick->getId(), ]
+            );
         }
 
-        $trick->setUpdatedAt(new DateTime());
-
-        /** @var Video $video */
-        foreach ($form->getData()->getVideos() as $video) {
-            $video->refactorIframe();
-        }
-
-        /** @var Image $image */
-        foreach ($form->getData()->getImages() as $key => $image) {
-            $uploader->upload($image);
-            0 === $key ? $image->setPoster(true) : null;
-        }
-
-        $em->persist($trick);
-        $em->flush();
-
-        $this->addFlash('success', 'La figure a été ajoutée avec succès !');
-
-        return $this->redirectToRoute('trick_show', ['id' => $trick->getId()]);
+        return $this->render('trick/addForm.html.twig', [
+            'form' => $form->createView(),
+            'formCategory' => $formCategory->createView(),
+        ]);
     }
 
     /**
@@ -174,24 +159,20 @@ class TrickController extends AbstractController
      *
      * @return \Symfony\Component\HttpFoundation\Response
      */
-    public function ajaxAddCategory(Request $request, EntityManagerInterface $em)
+    public function ajaxAddCategory(HandlerService $handler)
     {
         $category = new Category();
 
         $formCategory = $this->createForm(CategoryType::class, $category);
-        $formCategory->handleRequest($request);
 
-        if (!$formCategory->isSubmitted() or !$formCategory->isValid()) {
+        if ($handler->handle($formCategory, $category)) {
             return $this->render('trick/ajax/ajax_add_category.html.twig', [
-                'errors' => $this->getErrorMessages($formCategory),
+                'category' => $category,
             ]);
         }
 
-        $em->persist($category);
-        $em->flush();
-
         return $this->render('trick/ajax/ajax_add_category.html.twig', [
-            'category' => $category,
+            'errors' => $this->getErrorMessages($formCategory),
         ]);
     }
 

@@ -24,7 +24,7 @@ class TrickFixtures extends Fixture implements DependentFixtureInterface
             $images[] = 'image'.$i;
         }
 
-        $videos=[];
+        $videos = [];
         for ($i = 0; $i <= 14; ++$i) {
             $videos[] = 'video'.$i;
         }
@@ -64,7 +64,7 @@ class TrickFixtures extends Fixture implements DependentFixtureInterface
                 }
             }
 
-            if(rand(1,2)>1 ) {
+            if (rand(1, 2) > 1) {
                 for ($i = 1; $i <= rand(1, 2); ++$i) {
                     $key = array_rand($videos);
                     $video = $this->getReference($videos[$key]);

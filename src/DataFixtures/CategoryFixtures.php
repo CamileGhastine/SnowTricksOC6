@@ -9,7 +9,7 @@ use Faker\Factory;
 
 class CategoryFixtures extends Fixture
 {
-    private $categories = ['grabs', 'rotations', 'slides', 'flips' ];
+    private $categories = ['grabs', 'rotations', 'slides', 'flips'];
 
     public function load(ObjectManager $manager)
     {
