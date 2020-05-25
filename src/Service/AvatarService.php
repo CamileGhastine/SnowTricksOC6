@@ -2,6 +2,7 @@
 
 namespace App\Service;
 
+use App\Entity\User;
 use App\Kernel;
 use Doctrine\ORM\EntityManagerInterface;
 
@@ -16,7 +17,7 @@ class AvatarService
         $this->em = $em;
     }
 
-    public function manageAvatar($user, $file)
+    public function manageAvatar(User $user, $file)
     {
         $fileToDelete = $user->getAvatar();
 

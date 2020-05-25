@@ -5,6 +5,7 @@ namespace App\Service;
 use App\Entity\Category;
 use App\Entity\Image;
 use App\Entity\Trick;
+use App\Entity\User;
 use App\Entity\Video;
 use App\Kernel;
 use DateTime;
@@ -16,12 +17,14 @@ class HandlerService
     private $em;
     private $request;
     private $uploader;
+    private $avatar;
 
-    public function __construct(EntityManagerInterface $em, RequestStack $request, UploaderService $uploader)
+    public function __construct(EntityManagerInterface $em, RequestStack $request, UploaderService $uploader, AvatarService $avatar)
     {
         $this->em = $em;
         $this->request = $request->getCurrentRequest();
         $this->uploader = $uploader;
+        $this->avatar = $avatar;
     }
 
     public function handle($form, $object)
@@ -147,5 +150,20 @@ class HandlerService
     {
         $this->em->$action($object);
         $this->em->flush();
+    }
+
+    public function handleAvatar($form, User $user)
+    {
+        $form->handleRequest($this->request);
+
+        if ($form->isSubmitted() && $form->isValid()) {
+            $file = $form->getData() ? $form->getData()->getFile() : null;
+
+            $this->avatar->manageAvatar($user, $file);
+
+            return true;
+        }
+
+        return false;
     }
 }
