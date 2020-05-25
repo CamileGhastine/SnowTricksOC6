@@ -13,6 +13,7 @@ use App\Form\CommentType;
 use App\Form\EditTrickType;
 use App\Repository\CategoryRepository;
 use App\Repository\TrickRepository;
+use App\Service\GetErrorsMessageService;
 use App\Service\HandlerService;
 use App\Service\PaginatorService;
 use App\Service\UploaderService;
@@ -52,8 +53,8 @@ class TrickController extends AbstractController
      */
     public function ajaxLoadMore(TrickRepository $repoTrick, Request $request)
     {
-        // Load more trick by category
-        $id = $request->request->get('id');
+
+        $id = $request->request->get('id'); // Load more trick by category
 
         $firstResult = $request->request->get('page') * $this->maxResult;
 
@@ -155,7 +156,7 @@ class TrickController extends AbstractController
      *
      * @return \Symfony\Component\HttpFoundation\Response
      */
-    public function ajaxAddCategory(HandlerService $handler)
+    public function ajaxAddCategory(HandlerService $handler, GetErrorsMessageService $errorsMessage)
     {
         $category = new Category();
 
@@ -168,30 +169,8 @@ class TrickController extends AbstractController
         }
 
         return $this->render('trick/ajax/ajax_add_category.html.twig', [
-            'errors' => $this->getErrorMessages($formCategory),
+            'errors' => $errorsMessage->getMessage($formCategory),
         ]);
-    }
-
-    /**
-     * get Error Messages From Form.
-     *
-     * @return array
-     */
-    private function getErrorMessages($form)
-    {
-        $errors = [];
-
-        if (0 == $form->count()) {
-            return $errors;
-        }
-
-        foreach ($form->all() as $child) {
-            if (!$child->isValid()) {
-                $errors[$child->getName()] = str_replace('ERROR: ', '', (string) $form[$child->getName()]->getErrors());
-            }
-        }
-
-        return $errors;
     }
 
     /**

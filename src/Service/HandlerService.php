@@ -125,7 +125,7 @@ class HandlerService
         unlink(Kernel::getProjectDir().'/public/'.$image->getUrl());
     }
 
-    public function handleChangePoster (Image $newPoster, Image $oldPoster)
+    public function handleChangePoster(Image $newPoster, Image $oldPoster)
     {
         $trick = $oldPoster->getTrick();
         $trick->setUpdatedAt(new DateTime());
