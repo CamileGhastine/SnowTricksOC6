@@ -10,14 +10,12 @@ use App\Entity\Video;
 use App\Form\AddTrickType;
 use App\Form\CategoryType;
 use App\Form\CommentType;
-use App\Form\EditTrickType;
 use App\Repository\CategoryRepository;
 use App\Repository\TrickRepository;
 use App\Service\GetErrorsMessageService;
 use App\Service\HandlerService;
 use App\Service\PaginatorService;
 use App\Service\UploaderService;
-use DateTime;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\IsGranted;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
@@ -53,7 +51,6 @@ class TrickController extends AbstractController
      */
     public function ajaxLoadMore(TrickRepository $repoTrick, Request $request)
     {
-
         $id = $request->request->get('id'); // Load more trick by category
 
         $firstResult = $request->request->get('page') * $this->maxResult;
@@ -135,7 +132,7 @@ class TrickController extends AbstractController
 
         $form = $this->createForm(AddTrickType::class, $trick);
 
-        if ($handler->handleTrick($form, $trick)) {
+        if ($handler->handleAddTrick($form, $trick)) {
             $this->addFlash('success', 'La figure a été ajoutée avec succès !');
 
             return $this->redirectToRoute('trick_show', [
@@ -183,51 +180,29 @@ class TrickController extends AbstractController
      */
     public function edit(Trick $trick, UploaderService $uploader, HandlerService $handler)
     {
-        $formTrick = $this->createForm(EditTrickType::class, $trick);
+        // add a trick, a category, an image or a video
+        $entities = ['Trick' => 'figure', 'Category' => 'catégorie', 'Image' => 'photo', 'Video' => 'video'];
+        $renderParameters = ['trick' => $trick];
 
-        $trick->setUpdatedAt(new DateTime());
-
-        if ($handler->handle($formTrick, $trick)) {
-            $this->addFlash('success', 'La figure a été modifiée avec succès !');
-
-            return $this->redirectToRoute('trick_show', ['id' => $trick->getId()]);
-        }
-
-        // add a category, an image or a video
-        $entities = ['Category' => 'catégorie', 'Image' => 'photo', 'Video' => 'video'];
         foreach ($entities as $entity => $flash) {
             $form = 'form'.$entity;
-            $$form = $this->addEntity($entity, $trick, $handler);
-            if (!$$form) {
-                $this->addFlash('success', 'La '.$flash.' a été ajoutée avec succès !');
+            $entityClass = 'App\Entity\\'.$entity;
+            $typeClass = 'Trick' === $entity ? 'App\Form\EditTrickType' : 'App\Form\\'.$entity.'Type';
+            $handle = 'handle'.$entity;
 
-                return $this->redirect($this->generateUrl('trick_edit', ['id' => $trick->getId()]).'#alert');
+            $object = 'Trick' === $entity ? $trick : new $entityClass();
+
+            $$form = $this->createForm($typeClass, $object);
+
+            if ($handler->$handle($$form, $object, $trick)) {
+                $this->addFlash('success', 'Trick' === $entity ? 'Le trick a été modifiée avec succès !' : 'La '.$flash.' a été ajoutée avec succès !');
+
+                return $this->redirect($this->generateUrl('Trick' === $entity ? 'trick_show' : 'trick_edit', ['id' => $trick->getId()]).'#alert');
             }
+            $renderParameters[$form] = $$form->createView();
         }
 
-        return $this->render('trick/editForm.html.twig', [
-            'formTrick' => $formTrick->createView(),
-            'formImage' => $formImage->createView(),
-            'formVideo' => $formVideo->createView(),
-            'formCategory' => $formCategory->createView(),
-            'trick' => $trick,
-        ]);
-    }
-
-    public function addEntity($entity, $trick, $handler)
-    {
-        $entityClass = 'App\Entity\\'.$entity;
-        $typeClass = 'App\Form\\'.$entity.'Type';
-        $object = new $entityClass();
-        $handle = 'handle'.$entity;
-
-        $form = $this->createForm($typeClass, $object);
-
-        if ($handler->$handle($form, $object, $trick)) {
-            return false;
-        }
-
-        return $form;
+        return $this->render('trick/editForm.html.twig', $renderParameters);
     }
 
     /**

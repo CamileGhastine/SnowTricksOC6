@@ -37,7 +37,7 @@ class HandlerService
         return false;
     }
 
-    public function handleTrick($form, $object)
+    public function handleAddTrick($form, $object)
     {
         $form->handleRequest($this->request);
 
@@ -60,7 +60,14 @@ class HandlerService
         return false;
     }
 
-    public function handleCategory($form, Category $category, $trick)
+    public function handleTrick($form, Trick $trick, $nothing)
+    {
+        $trick->setUpdatedAt(new DateTime());
+
+        return $this->handle($form, $trick);
+    }
+
+    public function handleCategory($form, Category $category, $nothing)
     {
         return $this->handle($form, $category);
     }
