@@ -9,14 +9,13 @@ use App\Form\ResetPasswordType;
 use App\Repository\UserRepository;
 use App\Security\FormAuthenticator;
 use App\Service\EmailerService;
-use App\Service\UploaderService;
+use App\Service\HandlerService;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Component\Security\Core\Encoder\UserPasswordEncoderInterface;
-use Symfony\Component\Security\Csrf\TokenGenerator\TokenGeneratorInterface;
 use Symfony\Component\Security\Guard\GuardAuthenticatorHandler;
 use Symfony\Component\Security\Http\Authentication\AuthenticationUtils;
 
@@ -52,37 +51,21 @@ class SecurityController extends AbstractController
      *
      * @return \Symfony\Component\HttpFoundation\RedirectResponse|\Symfony\Component\HttpFoundation\Response
      */
-    public function registration(Request $request, EntityManagerInterface $em, UserPasswordEncoderInterface $passwordEncoder, UploaderService $uploader, EmailerService $emailer, TokenGeneratorInterface $token)
+    public function registration(HandlerService $handler)
     {
         $user = new User();
 
         $form = $this->createForm(RegistrationType::class, $user);
-        $form->handleRequest($request);
 
-        if (!$form->isSubmitted() or !$form->isValid()) {
-            return $this->render('security/registration.html.twig', [
-                'form' => $form->createView(),
-            ]);
+        if ($handler->handleRegistration($form, $user)) {
+            $this->addFlash('success', 'Votre inscription a été réalisée avec succès. Consultez votre boite mail pour valider votre inscription.');
+
+            return $this->redirectToRoute('security_registration');
         }
 
-        $user->setPassword($passwordEncoder->encodePassword($user, $user->getPassword()))
-            ->setAvatar('images/users/nobody.jpg')
-            ->setToken($token->generateToken())
-        ;
-
-        if ($form->getData()->getFile()) {
-            $url = $uploader->uploadAvatar($form->getData()->getFile());
-            $user->setAvatar($url);
-        }
-
-        $em->persist($user);
-        $em->flush();
-
-        $emailer->sendEmailRegistration($user);
-
-        $this->addFlash('success', 'Votre inscription a été réalisée avec succès. Consultez votre boite mail pour valider votre inscription.');
-
-        return $this->redirectToRoute('security_registration');
+        return $this->render('security/registration.html.twig', [
+            'form' => $form->createView(),
+        ]);
     }
 
     /**
@@ -101,7 +84,7 @@ class SecurityController extends AbstractController
             return $this->redirectToRoute('home');
         }
 
-        if (!$user or $user->getToken() !== $request->query->get('token')) {
+        if (!$user || $user->getToken() !== $request->query->get('token')) {
             $this->addFlash('danger', 'Votre lien n\'est pas valide. Merci d\'en générer un nouveau.');
 
             return $this->render('Security/validateRegistration.html.twig');
@@ -122,7 +105,7 @@ class SecurityController extends AbstractController
         $form = $this->createForm(ForgottenPasswordType::class);
         $form->handleRequest($request);
 
-        if (!$form->isSubmitted() or !$form->isValid()) {
+        if (!$form->isSubmitted() || !$form->isValid()) {
             return $this->render('/security/forgottenPassword.html.twig', [
                 'form' => $form->createView(),
             ]);
@@ -156,7 +139,7 @@ class SecurityController extends AbstractController
         $form = $this->createForm(ResetPasswordType::class);
         $form->handleRequest($request);
 
-        if (!$user or $user->getToken() !== $request->query->get('token')) {
+        if (!$user || $user->getToken() !== $request->query->get('token')) {
             $this->addFlash('danger', 'Votre lien n\'est pas valide. Merci d\'en générer un nouveau.');
 
             return $this->render('/security/reset_pasword.html.twig', [
@@ -164,7 +147,7 @@ class SecurityController extends AbstractController
             ]);
         }
 
-        if (!$form->isSubmitted() or !$form->isValid()) {
+        if (!$form->isSubmitted() || !$form->isValid()) {
             return $this->render('/security/reset_pasword.html.twig', [
                 'form' => $form->createView(),
             ]);

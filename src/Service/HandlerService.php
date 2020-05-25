@@ -7,10 +7,11 @@ use App\Entity\Image;
 use App\Entity\Trick;
 use App\Entity\User;
 use App\Entity\Video;
-use App\Kernel;
 use DateTime;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Component\HttpFoundation\RequestStack;
+use Symfony\Component\Security\Core\Encoder\UserPasswordEncoderInterface;
+use Symfony\Component\Security\Csrf\TokenGenerator\TokenGeneratorInterface;
 
 class HandlerService
 {
@@ -18,13 +19,19 @@ class HandlerService
     private $request;
     private $uploader;
     private $avatar;
+    private $passwordEncoder;
+    private $emailer;
+    private $token;
 
-    public function __construct(EntityManagerInterface $em, RequestStack $request, UploaderService $uploader, AvatarService $avatar)
+    public function __construct(EntityManagerInterface $em, RequestStack $request, UploaderService $uploader, AvatarService $avatar, UserPasswordEncoderInterface $passwordEncoder, EmailerService $emailer, TokenGeneratorInterface $token)
     {
         $this->em = $em;
         $this->request = $request->getCurrentRequest();
         $this->uploader = $uploader;
         $this->avatar = $avatar;
+        $this->passwordEncoder = $passwordEncoder;
+        $this->emailer = $emailer;
+        $this->token = $token;
     }
 
     public function handle($form, $object)
@@ -114,7 +121,7 @@ class HandlerService
     public function handleDeleteTrick(Trick $trick)
     {
         foreach ($trick->getImages() as $image) {
-            unlink(Kernel::getProjectDir().'/public/'.$image->getUrl());
+            unlink((new \App\Kernel)->getProjectDir().'/public/'.$image->getUrl());
         }
 
         $this->flush($trick, 'remove');
@@ -132,7 +139,7 @@ class HandlerService
 
         $this->flush($image, 'remove');
 
-        unlink(Kernel::getProjectDir().'/public/'.$image->getUrl());
+        unlink((new \App\Kernel)->getProjectDir().'/public/'.$image->getUrl());
     }
 
     public function handleChangePoster(Image $newPoster, Image $oldPoster)
@@ -152,6 +159,8 @@ class HandlerService
         $this->em->flush();
     }
 
+    // UserController
+
     public function handleAvatar($form, User $user)
     {
         $form->handleRequest($this->request);
@@ -160,6 +169,32 @@ class HandlerService
             $file = $form->getData() ? $form->getData()->getFile() : null;
 
             $this->avatar->manageAvatar($user, $file);
+
+            return true;
+        }
+
+        return false;
+    }
+
+    //SecurityController
+
+    public function handleRegistration($form, $user)
+    {
+        $form->handleRequest($this->request);
+
+        if ($form->isSubmitted() && $form->isValid()) {
+            $user->setPassword($this->passwordEncoder->encodePassword($user, $user->getPassword()))
+                ->setAvatar('images/users/nobody.jpg')
+                ->setToken($this->token->generateToken());
+
+            if ($form->getData()->getFile()) {
+                $url = $this->uploader->uploadAvatar($form->getData()->getFile());
+                $user->setAvatar($url);
+            }
+
+            $this->flush($user);
+
+            $this->emailer->sendEmailRegistration($user);
 
             return true;
         }
