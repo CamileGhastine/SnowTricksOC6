@@ -2,7 +2,6 @@
 
 namespace App\Service;
 
-use App\Kernel;
 use Symfony\Component\String\Slugger\SluggerInterface;
 
 class UploaderService
@@ -19,7 +18,7 @@ class UploaderService
         $OriginalName = pathinfo($image->getFile()->getClientOriginalName(), PATHINFO_FILENAME);
         $name = $this->slugger->slug($OriginalName).'-'.uniqid().'.'.pathinfo($image->getFile()->getClientOriginalName(), PATHINFO_EXTENSION);
 
-        $image->getFile()->move(Kernel::getProjectDir().'/public/images/tricks', $name);
+        $image->getFile()->move((new \App\Kernel())->getProjectDir().'/public/images/tricks', $name);
 
         $image->setUrl('images/tricks/'.$name);
         $image->setAlt($name);
@@ -31,7 +30,7 @@ class UploaderService
         $OriginalName = pathinfo($file->getClientOriginalName(), PATHINFO_FILENAME);
         $name = $this->slugger->slug($OriginalName).'-'.uniqid().'.'.pathinfo($file->getClientOriginalName(), PATHINFO_EXTENSION);
 
-        $file->move(Kernel::getProjectDir().'/public/images/users', $name);
+        $file->move((new \App\Kernel())->getProjectDir().'/public/images/users', $name);
 
         return 'images/users/'.$name;
     }

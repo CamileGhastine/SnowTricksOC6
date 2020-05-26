@@ -28,12 +28,12 @@ class CommentFixtures extends Fixture implements dependentFixtureInterface
                 /** @var Trick $trick */
                 $trick = $this->getReference('trick'.$j);
 
-                $date = max ( $user->getRegisteredAt(), $trick->getCreatedAt());
+                $date = max($user->getRegisteredAt(), $trick->getCreatedAt());
 
                 $comment = new Comment($trick, $user);
 
                 $comment->setContent(implode("\n", $faker->sentences(4)))
-                    ->setCreatedAt($faker->dateTimeBetween('-'.(new \DateTime)->diff($date)->days.'days'));
+                    ->setCreatedAt($faker->dateTimeBetween('-'.(new \DateTime())->diff($date)->days.'days'));
 
                 $manager->persist($comment);
             }
