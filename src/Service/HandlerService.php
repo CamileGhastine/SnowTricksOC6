@@ -283,6 +283,27 @@ class HandlerService
         return false;
     }
 
+    public function handleValidateRegistration($user)
+    {
+        if ($this->request->query->get('validate')) {
+            $user->setValidate(true);
+            $this->flush($user);
+
+            return true;
+        }
+
+        return false;
+    }
+
+    public function handleTokenNotValidInSecurity($user)
+    {
+        if (!$user || $user->getToken() !== $request->query->get('token')) {
+            return true;
+        }
+
+        return false;
+    }
+
     /**
      * @return bool
      */

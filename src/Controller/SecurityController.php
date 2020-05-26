@@ -86,23 +86,20 @@ class SecurityController extends AbstractController
      *
      * @return \Symfony\Component\HttpFoundation\RedirectResponse|Response
      */
-    public function validateRegistration(Request $request)
+    public function validateRegistration(Request $request, HandlerService $handler)
     {
         $user = $this->repo->findOneBy(['email' => $request->query->get('email')]);
 
-        if ($request->query->get('validate')) {
-            $user->setValidate(true);
-            $this->getDoctrine()->getManager()->flush();
-
-            $this->addFlash('success', 'Votre inscription est validée. Cliquez sur l\'onglet connexion du menu pour vous connecter.');
-
-            return $this->redirectToRoute('home');
-        }
-
-        if (!$user || $user->getToken() !== $request->query->get('token')) {
+        if ($handler->handleTokenNotValidInSecurity($user)) {
             $this->addFlash('danger', 'Votre lien n\'est pas valide. Merci d\'en générer un nouveau.');
 
             return $this->render('Security/validateRegistration.html.twig');
+        }
+
+        if ($handler->handleValidateRegistration($user)) {
+            $this->addFlash('success', 'Votre inscription est validée. Cliquez sur l\'onglet connexion du menu pour vous connecter.');
+
+            return $this->redirectToRoute('home');
         }
 
         return $this->render('Security/validateRegistration.html.twig', ['user' => $user]);
@@ -153,7 +150,7 @@ class SecurityController extends AbstractController
 
         $form = $this->createForm(ResetPasswordType::class);
 
-        if (!$user || $user->getToken() !== $request->query->get('token')) {
+        if ($handler->handleTokenNotValidInSecurity($user)) {
             $this->addFlash('danger', 'Votre lien n\'est pas valide. Merci d\'en générer un nouveau.');
 
             return $this->render('/security/reset_pasword.html.twig', [
