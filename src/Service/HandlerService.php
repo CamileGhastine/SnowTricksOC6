@@ -71,23 +71,23 @@ class HandlerService
     {
         $form->handleRequest($this->request);
 
-        if ($form->isSubmitted() && $form->isValid()) {
-            /** @var Video $video */
-            foreach ($form->getData()->getVideos() as $video) {
-                $video->refactorIframe();
-            }
-
-            /** @var Image $image */
-            foreach ($form->getData()->getImages() as $key => $image) {
-                $this->uploader->upload($image);
-                0 === $key ? $image->setPoster(true) : null;
-            }
-            $this->flush($object);
-
-            return true;
+        if (!$form->isSubmitted() || !$form->isValid()) {
+            return false;
         }
 
-        return false;
+        /** @var Video $video */
+        foreach ($form->getData()->getVideos() as $video) {
+            $video->refactorIframe();
+        }
+
+        /** @var Image $image */
+        foreach ($form->getData()->getImages() as $key => $image) {
+            $this->uploader->upload($image);
+            0 === $key ? $image->setPoster(true) : null;
+        }
+        $this->flush($object);
+
+        return true;
     }
 
     /**
@@ -117,20 +117,20 @@ class HandlerService
     {
         $form->handleRequest($this->request);
 
-        if ($form->isSubmitted() && $form->isValid()) {
-            $this->uploader->upload($image);
-
-            $image->setTrick($trick);
-
-            if (0 === count($trick->getImages())) {
-                $image->setPoster(1);
-            }
-            $this->flush($image);
-
-            return true;
+        if (!$form->isSubmitted() || !$form->isValid()) {
+            return false;
         }
 
-        return false;
+        $this->uploader->upload($image);
+
+        $image->setTrick($trick);
+
+        if (0 === count($trick->getImages())) {
+            $image->setPoster(1);
+        }
+        $this->flush($image);
+
+        return true;
     }
 
     /**
@@ -157,17 +157,17 @@ class HandlerService
      */
     public function handleDeleteTrick(Trick $trick)
     {
-        if ($this->request->request->get('_token') && $this->token->getToken('delete'.$trick->getId())->getValue() === $this->request->request->get('_token')) {
-            foreach ($trick->getImages() as $image) {
-                unlink(Kernel::getProjectDir().'/public/'.$image->getUrl());
-            }
-
-            $this->flush($trick, 'remove');
-
-            return true;
+        if (!$this->request->request->get('_token') || $this->token->getToken('delete'.$trick->getId())->getValue() !== $this->request->request->get('_token')) {
+            return false;
         }
 
-        return false;
+        foreach ($trick->getImages() as $image) {
+            unlink(Kernel::getProjectDir().'/public/'.$image->getUrl());
+        }
+
+        $this->flush($trick, 'remove');
+
+        return true;
     }
 
     /**
@@ -175,24 +175,24 @@ class HandlerService
      */
     public function handlerDeleteImage(Image $image)
     {
-        if ($this->request->query->get('csrf_token') && $this->token->getToken('delete'.$image->getId())->getValue() === $this->request->query->get('csrf_token')) {
-            // New poster before delete old poster
-            $trick = $image->getTrick();
-            $trick->removeImage($image);
-            $images = $trick->getImages();
-
-            if ($image->getPoster() && count($images) > 0) {
-                $images[array_key_first($images->toArray())]->setPoster(true);
-            }
-
-            $this->flush($image, 'remove');
-
-            unlink(Kernel::getProjectDir().'/public/'.$image->getUrl());
-
-            return true;
+        if (!$this->request->query->get('csrf_token') || !$this->token->getToken('delete'.$image->getId())->getValue() === $this->request->query->get('csrf_token')) {
+            return false;
         }
 
-        return false;
+        // New poster before delete old poster
+        $trick = $image->getTrick();
+        $trick->removeImage($image);
+        $images = $trick->getImages();
+
+        if ($image->getPoster() && count($images) > 0) {
+            $images[array_key_first($images->toArray())]->setPoster(true);
+        }
+
+        $this->flush($image, 'remove');
+
+        unlink(Kernel::getProjectDir().'/public/'.$image->getUrl());
+
+        return true;
     }
 
     /**
@@ -263,24 +263,24 @@ class HandlerService
     {
         $form->handleRequest($this->request);
 
-        if ($form->isSubmitted() && $form->isValid()) {
-            $user->setPassword($this->passwordEncoder->encodePassword($user, $user->getPassword()))
-                ->setAvatar('images/users/nobody.jpg')
-                ->setToken($this->token->generateToken());
-
-            if ($form->getData()->getFile()) {
-                $url = $this->uploader->uploadAvatar($form->getData()->getFile());
-                $user->setAvatar($url);
-            }
-
-            $this->flush($user);
-
-            $this->emailer->sendEmailRegistration($user);
-
-            return true;
+        if (!$form->isSubmitted() || !$form->isValid()) {
+            return false;
         }
 
-        return false;
+        $user->setPassword($this->passwordEncoder->encodePassword($user, $user->getPassword()))
+            ->setAvatar('images/users/nobody.jpg')
+            ->setToken($this->token->generateToken());
+
+        if ($form->getData()->getFile()) {
+            $url = $this->uploader->uploadAvatar($form->getData()->getFile());
+            $user->setAvatar($url);
+        }
+
+        $this->flush($user);
+
+        $this->emailer->sendEmailRegistration($user);
+
+        return true;
     }
 
     public function handleValidateRegistration($user)
