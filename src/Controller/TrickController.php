@@ -138,8 +138,6 @@ class TrickController extends AbstractController
         $form = $this->createForm(AddTrickType::class, $trick);
 
         if ($handler->handleAddTrick($form, $trick)) {
-            $this->addFlash('success', 'La figure a été ajoutée avec succès !');
-
             return $this->redirectToRoute('trick_show', [
                     'id' => $trick->getId(), ]
             );
@@ -224,8 +222,6 @@ class TrickController extends AbstractController
     public function delete(Trick $trick, HandlerService $handler)
     {
         if ($handler->handleDeleteTrick($trick)) {
-            $this->addFlash('success', 'la figure a été supprimée avec succès !');
-
             return $this->redirectToRoute('home');
         }
 
@@ -247,8 +243,6 @@ class TrickController extends AbstractController
         $trick = $image->getTrick();
 
         if ($handler->handlerDeleteImage($image)) {
-            $this->addFlash('success', 'La photo a été supprimée avec succès !');
-
             return $this->redirect($this->generateUrl('trick_edit', ['id' => $trick->getId()]).'#alert');
         }
 
@@ -283,8 +277,6 @@ class TrickController extends AbstractController
     public function deleteVideo(Video $video, HandlerService $handler)
     {
         if ($handler->handleDeleteVideo($video)) {
-            $this->addFlash('success', 'La vidéo a été supprimée avec succès !');
-
             return $this->redirect($this->generateUrl('trick_edit', ['id' => $video->getTrick()->getId()]).'#alert');
         }
         $this->addFlash('danger', 'La vidéo n\'a pas pu être supprimée.');

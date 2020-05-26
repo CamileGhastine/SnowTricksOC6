@@ -11,6 +11,7 @@ use App\Security\FormAuthenticator;
 use App\Service\EmailerService;
 use App\Service\HandlerService;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
+use Symfony\Component\Form\Form;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
@@ -71,8 +72,6 @@ class SecurityController extends AbstractController
         $form = $this->createForm(RegistrationType::class, $user);
 
         if ($handler->handleRegistration($form, $user)) {
-            $this->addFlash('success', 'Votre inscription a été réalisée avec succès. Consultez votre boite mail pour valider votre inscription.');
-
             return $this->redirectToRoute('security_registration');
         }
 
@@ -90,15 +89,11 @@ class SecurityController extends AbstractController
     {
         $user = $this->repo->findOneBy(['email' => $request->query->get('email')]);
 
-        if ($handler->handleTokenNotValidInSecurity($user)) {
-            $this->addFlash('danger', 'Votre lien n\'est pas valide. Merci d\'en générer un nouveau.');
-
+        if ($handler->handleTokenNotValideInSecurity($user)) {
             return $this->render('Security/validateRegistration.html.twig');
         }
 
         if ($handler->handleValidateRegistration($user)) {
-            $this->addFlash('success', 'Votre inscription est validée. Cliquez sur l\'onglet connexion du menu pour vous connecter.');
-
             return $this->redirectToRoute('home');
         }
 
@@ -148,11 +143,10 @@ class SecurityController extends AbstractController
     {
         $user = $this->repo->findOneBy(['email' => $request->query->get('email')]);
 
+        /** @var Form $form */
         $form = $this->createForm(ResetPasswordType::class);
 
-        if ($handler->handleTokenNotValidInSecurity($user)) {
-            $this->addFlash('danger', 'Votre lien n\'est pas valide. Merci d\'en générer un nouveau.');
-
+        if ($handler->handleTokenNotValideInSecurity($user)) {
             return $this->render('/security/reset_pasword.html.twig', [
                 'form' => $form->createView(),
             ]);

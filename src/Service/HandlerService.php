@@ -12,10 +12,11 @@ use DateTime;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Component\Form\Form;
 use Symfony\Component\HttpFoundation\RequestStack;
+use Symfony\Component\HttpFoundation\Session\Flash\FlashBagInterface;
+use Symfony\Component\Mailer\Exception\TransportExceptionInterface;
 use Symfony\Component\Security\Core\Encoder\UserPasswordEncoderInterface;
 use Symfony\Component\Security\Csrf\CsrfTokenManagerInterface;
-
-//use Symfony\Component\Security\Csrf\TokenGenerator\TokenGeneratorInterface;
+use Symfony\Component\Security\Csrf\TokenGenerator\TokenGeneratorInterface;
 
 class HandlerService
 {
@@ -26,6 +27,8 @@ class HandlerService
     private $passwordEncoder;
     private $emailer;
     private $token;
+    private $generateToken;
+    private $flash;
 
     public function __construct(EntityManagerInterface $em,
                                 RequestStack $request,
@@ -33,7 +36,9 @@ class HandlerService
                                 AvatarService $avatar,
                                 UserPasswordEncoderInterface $passwordEncoder,
                                 EmailerService $emailer,
-                                CsrfTokenManagerInterface $token)
+                                CsrfTokenManagerInterface $token,
+                                TokenGeneratorInterface $generateToken,
+                                FlashBagInterface $flash)
     {
         $this->em = $em;
         $this->request = $request->getCurrentRequest();
@@ -42,6 +47,8 @@ class HandlerService
         $this->passwordEncoder = $passwordEncoder;
         $this->emailer = $emailer;
         $this->token = $token;
+        $this->generateToken = $generateToken;
+        $this->flash = $flash;
     }
 
     /**
@@ -86,6 +93,7 @@ class HandlerService
             0 === $key ? $image->setPoster(true) : null;
         }
         $this->flush($object);
+        $this->flash->add('success', 'La figure a été ajoutée avec succès !');
 
         return true;
     }
@@ -166,6 +174,7 @@ class HandlerService
         }
 
         $this->flush($trick, 'remove');
+        $this->flash->add('success', 'la figure a été supprimée avec succès !');
 
         return true;
     }
@@ -189,6 +198,7 @@ class HandlerService
         }
 
         $this->flush($image, 'remove');
+        $this->flash->add('success', 'La photo a été supprimée avec succès !');
 
         unlink(Kernel::getProjectDir().'/public/'.$image->getUrl());
 
@@ -202,6 +212,7 @@ class HandlerService
     {
         if ($this->request->query->get('csrf_token') && $this->token->getToken('delete'.$video->getId())->getValue() === $this->request->query->get('csrf_token')) {
             $this->flush($video, 'remove');
+            $this->flash->add('success', 'La vidéo a été supprimée avec succès !');
 
             return true;
         }
@@ -257,7 +268,7 @@ class HandlerService
      *
      * @return bool
      *
-     * @throws \Symfony\Component\Mailer\Exception\TransportExceptionInterface
+     * @throws TransportExceptionInterface
      */
     public function handleRegistration(Form $form, $user)
     {
@@ -269,7 +280,7 @@ class HandlerService
 
         $user->setPassword($this->passwordEncoder->encodePassword($user, $user->getPassword()))
             ->setAvatar('images/users/nobody.jpg')
-            ->setToken($this->token->generateToken());
+            ->setToken($this->generateToken->generateToken());
 
         if ($form->getData()->getFile()) {
             $url = $this->uploader->uploadAvatar($form->getData()->getFile());
@@ -279,6 +290,7 @@ class HandlerService
         $this->flush($user);
 
         $this->emailer->sendEmailRegistration($user);
+        $this->flash->add('success', 'Votre inscription a été réalisée avec succès. Consultez votre boite mail pour valider votre inscription.');
 
         return true;
     }
@@ -288,6 +300,7 @@ class HandlerService
         if ($this->request->query->get('validate')) {
             $user->setValidate(true);
             $this->flush($user);
+            $this->flash->add('success', 'Votre inscription est validée. Cliquez sur l\'onglet connexion du menu pour vous connecter.');
 
             return true;
         }
@@ -295,9 +308,11 @@ class HandlerService
         return false;
     }
 
-    public function handleTokenNotValidInSecurity($user)
+    public function handleTokenNotValideInSecurity($user)
     {
-        if (!$user || $user->getToken() !== $request->query->get('token')) {
+        if (!$user || $user->getToken() !== $this->request->query->get('token')) {
+            $this->flash->add('danger', 'Votre lien n\'est pas valide. Merci d\'en générer un nouveau.');
+
             return true;
         }
 
