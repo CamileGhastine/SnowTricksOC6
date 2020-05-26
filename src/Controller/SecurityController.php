@@ -10,17 +10,28 @@ use App\Repository\UserRepository;
 use App\Security\FormAuthenticator;
 use App\Service\EmailerService;
 use App\Service\HandlerService;
-use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
-use Symfony\Component\Security\Core\Encoder\UserPasswordEncoderInterface;
 use Symfony\Component\Security\Guard\GuardAuthenticatorHandler;
 use Symfony\Component\Security\Http\Authentication\AuthenticationUtils;
 
 class SecurityController extends AbstractController
 {
+    private $repo;
+    private $authenticator;
+    private $guardHandler;
+
+    public function __construct(UserRepository $repo,
+                                FormAuthenticator $authenticator,
+                                GuardAuthenticatorHandler $guardHandler)
+    {
+        $this->repo = $repo;
+        $this->authenticator = $authenticator;
+        $this->guardHandler = $guardHandler;
+    }
+
     /**
      * @Route("/login", name="security_login")
      */
@@ -71,13 +82,13 @@ class SecurityController extends AbstractController
     /**
      * @Route("/validate_registration", name="validate_registration")
      */
-    public function validateRegistration(Request $request, UserRepository $repo, EntityManagerInterface $em)
+    public function validateRegistration(Request $request)
     {
-        $user = $repo->findOneBy(['email' => $request->query->get('email')]);
+        $user = $this->repo->findOneBy(['email' => $request->query->get('email')]);
 
         if ($request->query->get('validate')) {
             $user->setValidate(true);
-            $em->flush();
+            $this->getDoctrine()->getManager()->flush();
 
             $this->addFlash('success', 'Votre inscription est validée. Cliquez sur l\'onglet connexion du menu pour vous connecter.');
 
@@ -100,7 +111,7 @@ class SecurityController extends AbstractController
      *
      * @throws \Symfony\Component\Mailer\Exception\TransportExceptionInterface
      */
-    public function forgotenPasword(Request $request, UserRepository $repo, EmailerService $emailer)
+    public function forgotenPasword(Request $request, EmailerService $emailer)
     {
         $form = $this->createForm(ForgottenPasswordType::class);
         $form->handleRequest($request);
@@ -111,7 +122,7 @@ class SecurityController extends AbstractController
             ]);
         }
 
-        $user = $repo->findOneBy(['email' => $form->getData()->getEmail()]);
+        $user = $this->repo->findOneBy(['email' => $form->getData()->getEmail()]);
 
         if (!$user) {
             $this->addFlash('danger', 'Cette adresse n\'existe pas.');
@@ -132,12 +143,11 @@ class SecurityController extends AbstractController
      *
      * @return \Symfony\Component\HttpFoundation\RedirectResponse|\Symfony\Component\HttpFoundation\Response
      */
-    public function resetPassword(UserRepository $repo, Request $request, UserPasswordEncoderInterface $passwordEncoder, EntityManagerInterface $em, FormAuthenticator $authenticator, GuardAuthenticatorHandler $guardHandler)
+    public function resetPassword(Request $request, HandlerService $handler)
     {
-        $user = $repo->findOneBy(['email' => $request->query->get('email')]);
+        $user = $this->repo->findOneBy(['email' => $request->query->get('email')]);
 
         $form = $this->createForm(ResetPasswordType::class);
-        $form->handleRequest($request);
 
         if (!$user || $user->getToken() !== $request->query->get('token')) {
             $this->addFlash('danger', 'Votre lien n\'est pas valide. Merci d\'en générer un nouveau.');
@@ -147,28 +157,36 @@ class SecurityController extends AbstractController
             ]);
         }
 
-        if (!$form->isSubmitted() || !$form->isValid()) {
-            return $this->render('/security/reset_pasword.html.twig', [
-                'form' => $form->createView(),
-            ]);
+        if ($handler->handleResetPassword($form, $user)) {
+            return $this->resetPasswordRedirectToRoute($user, $request);
         }
 
-        $user->setPassword($passwordEncoder->encodePassword($user, $form->getData()->getPassword()));
-        $em->flush();
+        return $this->render('/security/reset_pasword.html.twig', [
+            'form' => $form->createView(),
+        ]);
+    }
 
-        if (!$request->query->get('account')) {
-            $this->addFlash('success', 'Vous êtes connecté avec votre nouveau mot de passe.');
+    /**
+     * @param $user
+     * @param $request
+     *
+     * @return \Symfony\Component\HttpFoundation\RedirectResponse|Response|null
+     */
+    private function resetPasswordRedirectToRoute($user, $request)
+    {
+        if ($request->query->get('account')) {
+            $this->addFlash('success', 'Votre mot de passe a été modifié avec susccès.');
 
-            return $guardHandler->authenticateUserAndHandleSuccess(
-                $user,          // the User object you just created
-                $request,
-                $authenticator, // authenticator whose onAuthenticationSuccess you want to use
-                'main'          // the name of your firewall in security.yaml
-            );
+            return $this->redirectToRoute('user_account');
         }
 
-        $this->addFlash('success', 'Votre mot de passe a été modifié avec susccès.');
+        $this->addFlash('success', 'Vous êtes connecté avec votre nouveau mot de passe.');
 
-        return $this->redirectToRoute('user_account');
+        return $this->guardHandler->authenticateUserAndHandleSuccess(
+            $user,          // the User object you just created
+            $request,
+            $this->authenticator, // authenticator whose onAuthenticationSuccess you want to use
+            'main'          // the name of your firewall in security.yaml
+        );
     }
 }

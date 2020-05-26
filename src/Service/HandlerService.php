@@ -23,7 +23,13 @@ class HandlerService
     private $emailer;
     private $token;
 
-    public function __construct(EntityManagerInterface $em, RequestStack $request, UploaderService $uploader, AvatarService $avatar, UserPasswordEncoderInterface $passwordEncoder, EmailerService $emailer, TokenGeneratorInterface $token)
+    public function __construct(EntityManagerInterface $em,
+                                RequestStack $request,
+                                UploaderService $uploader,
+                                AvatarService $avatar,
+                                UserPasswordEncoderInterface $passwordEncoder,
+                                EmailerService $emailer,
+                                TokenGeneratorInterface $token)
     {
         $this->em = $em;
         $this->request = $request->getCurrentRequest();
@@ -195,6 +201,21 @@ class HandlerService
             $this->flush($user);
 
             $this->emailer->sendEmailRegistration($user);
+
+            return true;
+        }
+
+        return false;
+    }
+
+    public function handleResetPassword($form, $user)
+    {
+        $form->handleRequest($this->request);
+
+        if ($form->isSubmitted() && $form->isValid()) {
+            $user->setPassword($this->passwordEncoder->encodePassword($user, $form->getData()->getPassword()));
+
+            $this->flush($user);
 
             return true;
         }
