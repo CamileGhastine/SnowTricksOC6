@@ -60,7 +60,9 @@ class SecurityController extends AbstractController
     /**
      * @Route("/inscription", name="security_registration")
      *
-     * @return \Symfony\Component\HttpFoundation\RedirectResponse|\Symfony\Component\HttpFoundation\Response
+     * @return \Symfony\Component\HttpFoundation\RedirectResponse|Response
+     *
+     * @throws \Symfony\Component\Mailer\Exception\TransportExceptionInterface
      */
     public function registration(HandlerService $handler)
     {
@@ -81,6 +83,8 @@ class SecurityController extends AbstractController
 
     /**
      * @Route("/validate_registration", name="validate_registration")
+     *
+     * @return \Symfony\Component\HttpFoundation\RedirectResponse|Response
      */
     public function validateRegistration(Request $request)
     {
@@ -107,7 +111,7 @@ class SecurityController extends AbstractController
     /**
      * @Route("/forgotten_password", name="security_forgotten")
      *
-     * @return \Symfony\Component\HttpFoundation\RedirectResponse|\Symfony\Component\HttpFoundation\Response
+     * @return \Symfony\Component\HttpFoundation\RedirectResponse|Response
      *
      * @throws \Symfony\Component\Mailer\Exception\TransportExceptionInterface
      */
@@ -141,7 +145,7 @@ class SecurityController extends AbstractController
     /**
      * @Route("/reset_password", name="reset_password")
      *
-     * @return \Symfony\Component\HttpFoundation\RedirectResponse|\Symfony\Component\HttpFoundation\Response
+     * @return \Symfony\Component\HttpFoundation\RedirectResponse|Response|null
      */
     public function resetPassword(Request $request, HandlerService $handler)
     {

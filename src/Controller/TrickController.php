@@ -27,7 +27,6 @@ class TrickController extends AbstractController
 
     /**
      * @Route("/", name="home")
-     * @Route("/trick/category/{id<[0-9]+>}", name="trick_category")
      *
      * @param null $id
      *
@@ -150,6 +149,7 @@ class TrickController extends AbstractController
      * Create new category in add trick form.
      *
      * @Route("/trick/ajax-addCategory", name="ajax_add_category")
+     * @isGranted("ROLE_USER", message="Vous devez être connecté pour créer un trick ! ")
      *
      * @return \Symfony\Component\HttpFoundation\Response
      */
@@ -173,7 +173,7 @@ class TrickController extends AbstractController
     /**
      * Edit a trick.
      *
-     * @Route("/trick/{id<[0-9]+>}/update", name="trick_edit")
+     * @Route("/trick/{id<[0-9]+>}/update", name="trick_edit")@param Trick $trick
      * @isGranted("ROLE_USER", message="Vous devez être connecté pour modifier un trick ! ")
      *
      * @return \Symfony\Component\HttpFoundation\RedirectResponse|\Symfony\Component\HttpFoundation\Response
@@ -209,7 +209,8 @@ class TrickController extends AbstractController
      * Delete a trick.
      *
      * @Route("trick/{id<[0-9]+>}/delete", name="trick_delete")
-     * @isGranted("ROLE_USER", message="Vous devez être connecté pour supprimer un trick ! ")
+     *
+     * @isGranted("ROLE_USER", message="Vous devez être connecté pour supprimer un trick ! ")@param Trick $trick
      *
      * @return \Symfony\Component\HttpFoundation\RedirectResponse
      */
@@ -231,7 +232,8 @@ class TrickController extends AbstractController
     /**
      * Delete image in edit trick page.
      *
-     * @Route("trick/image/{id<[0-9]+>}/delete", name="image_delete")
+     * @Route("trick/image/{id<[0-9]+>}/delete", name="image_delete")@param Image $image
+     * @isGranted("ROLE_USER", message="Vous devez être connecté pour supprimer une image ! ")
      *
      * @return \Symfony\Component\HttpFoundation\RedirectResponse
      */
@@ -256,7 +258,7 @@ class TrickController extends AbstractController
      * Changer the poster in edit trick page.
      *
      * @Route("trick/image/{oldPoster}/poster/{newPoster}", name="image_poster_change")
-     * @isGranted("ROLE_USER", message="Vous devez être connecté pour supprimer une image ! ")
+     * @isGranted("ROLE_USER", message="Vous devez être connecté pour modifier une image ! ")
      *
      * @return \Symfony\Component\HttpFoundation\RedirectResponse
      */

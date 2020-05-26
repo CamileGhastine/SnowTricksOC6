@@ -5,6 +5,7 @@ namespace App\Service;
 use App\Entity\User;
 use App\Kernel;
 use Doctrine\ORM\EntityManagerInterface;
+use Symfony\Component\HttpFoundation\File\UploadedFile;
 
 class AvatarService
 {
@@ -17,7 +18,7 @@ class AvatarService
         $this->em = $em;
     }
 
-    public function manageAvatar(User $user, $file)
+    public function manageAvatar(User $user, UploadedFile $file)
     {
         $fileToDelete = $user->getAvatar();
 

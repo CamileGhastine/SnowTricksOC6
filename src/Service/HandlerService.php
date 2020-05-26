@@ -9,6 +9,7 @@ use App\Entity\User;
 use App\Entity\Video;
 use DateTime;
 use Doctrine\ORM\EntityManagerInterface;
+use Symfony\Component\Form\Form;
 use Symfony\Component\HttpFoundation\RequestStack;
 use Symfony\Component\Security\Core\Encoder\UserPasswordEncoderInterface;
 use Symfony\Component\Security\Csrf\TokenGenerator\TokenGeneratorInterface;
@@ -40,7 +41,12 @@ class HandlerService
         $this->token = $token;
     }
 
-    public function handle($form, $object)
+    /**
+     * @param $object
+     *
+     * @return bool
+     */
+    public function handle(Form $form, $object)
     {
         $form->handleRequest($this->request);
 
@@ -53,7 +59,12 @@ class HandlerService
         return false;
     }
 
-    public function handleAddTrick($form, $object)
+    /**
+     * @param $object
+     *
+     * @return bool
+     */
+    public function handleAddTrick(Form $form, $object)
     {
         $form->handleRequest($this->request);
 
@@ -76,19 +87,30 @@ class HandlerService
         return false;
     }
 
-    public function handleTrick($form, Trick $trick, $nothing)
+    /**
+     * @return bool
+     */
+    public function handleTrick(Form $form, Trick $trick, $nothing)
     {
         $trick->setUpdatedAt(new DateTime());
 
         return $this->handle($form, $trick);
     }
 
-    public function handleCategory($form, Category $category, $nothing)
+    /**
+     * @param $nothing
+     *
+     * @return bool
+     */
+    public function handleCategory(Form $form, Category $category, $nothing)
     {
         return $this->handle($form, $category);
     }
 
-    public function handleImage($form, Image $image, Trick $trick)
+    /**
+     * @return bool
+     */
+    public function handleImage(Form $form, Image $image, Trick $trick)
     {
         $form->handleRequest($this->request);
 
@@ -108,7 +130,10 @@ class HandlerService
         return false;
     }
 
-    public function handleVideo($form, Video $video, Trick $trick)
+    /**
+     * @return bool
+     */
+    public function handleVideo(Form $form, Video $video, Trick $trick)
     {
         $form->handleRequest($this->request);
 
@@ -159,6 +184,10 @@ class HandlerService
         $this->flush($trick);
     }
 
+    /**
+     * @param $object
+     * @param string $action
+     */
     public function flush($object, $action = 'persist')
     {
         $this->em->$action($object);
@@ -167,7 +196,10 @@ class HandlerService
 
     // UserController
 
-    public function handleAvatar($form, User $user)
+    /**
+     * @return bool
+     */
+    public function handleAvatar(Form $form, User $user)
     {
         $form->handleRequest($this->request);
 
@@ -184,7 +216,14 @@ class HandlerService
 
     //SecurityController
 
-    public function handleRegistration($form, $user)
+    /**
+     * @param $user
+     *
+     * @return bool
+     *
+     * @throws \Symfony\Component\Mailer\Exception\TransportExceptionInterface
+     */
+    public function handleRegistration(Form $form, $user)
     {
         $form->handleRequest($this->request);
 
@@ -208,7 +247,10 @@ class HandlerService
         return false;
     }
 
-    public function handleResetPassword($form, $user)
+    /**
+     * @return bool
+     */
+    public function handleResetPassword(Form $form, User $user)
     {
         $form->handleRequest($this->request);
 
