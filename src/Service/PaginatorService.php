@@ -29,8 +29,8 @@ class PaginatorService
         $this->page = $page;
 
         return [
-            'comments' => $this->repo->findCommentsWithUser($id, self::MAX_RESULTS, ($page-1)*self::MAX_RESULTS),
-            'render' => $this->renderPagination()
+            'comments' => $this->repo->findCommentsWithUser($id, self::MAX_RESULTS, ($page - 1) * self::MAX_RESULTS),
+            'render' => $this->renderPagination(),
         ];
     }
 

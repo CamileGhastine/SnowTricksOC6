@@ -121,7 +121,7 @@ class HandlerService
     public function handleDeleteTrick(Trick $trick)
     {
         foreach ($trick->getImages() as $image) {
-            unlink((new \App\Kernel)->getProjectDir().'/public/'.$image->getUrl());
+            unlink((new \App\Kernel())->getProjectDir().'/public/'.$image->getUrl());
         }
 
         $this->flush($trick, 'remove');
@@ -139,7 +139,7 @@ class HandlerService
 
         $this->flush($image, 'remove');
 
-        unlink((new \App\Kernel)->getProjectDir().'/public/'.$image->getUrl());
+        unlink((new \App\Kernel())->getProjectDir().'/public/'.$image->getUrl());
     }
 
     public function handleChangePoster(Image $newPoster, Image $oldPoster)
