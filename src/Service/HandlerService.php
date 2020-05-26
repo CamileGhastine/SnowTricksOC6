@@ -7,12 +7,15 @@ use App\Entity\Image;
 use App\Entity\Trick;
 use App\Entity\User;
 use App\Entity\Video;
+use App\Kernel;
 use DateTime;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Component\Form\Form;
 use Symfony\Component\HttpFoundation\RequestStack;
 use Symfony\Component\Security\Core\Encoder\UserPasswordEncoderInterface;
-use Symfony\Component\Security\Csrf\TokenGenerator\TokenGeneratorInterface;
+use Symfony\Component\Security\Csrf\CsrfTokenManagerInterface;
+
+//use Symfony\Component\Security\Csrf\TokenGenerator\TokenGeneratorInterface;
 
 class HandlerService
 {
@@ -30,7 +33,7 @@ class HandlerService
                                 AvatarService $avatar,
                                 UserPasswordEncoderInterface $passwordEncoder,
                                 EmailerService $emailer,
-                                TokenGeneratorInterface $token)
+                                CsrfTokenManagerInterface $token)
     {
         $this->em = $em;
         $this->request = $request->getCurrentRequest();
@@ -149,28 +152,61 @@ class HandlerService
         return false;
     }
 
+    /**
+     * @return bool
+     */
     public function handleDeleteTrick(Trick $trick)
     {
-        foreach ($trick->getImages() as $image) {
-            unlink((new \App\Kernel())->getProjectDir().'/public/'.$image->getUrl());
+        if ($this->request->request->get('_token') && $this->token->getToken('delete'.$trick->getId())->getValue() === $this->request->request->get('_token')) {
+            foreach ($trick->getImages() as $image) {
+                unlink(Kernel::getProjectDir().'/public/'.$image->getUrl());
+            }
+
+            $this->flush($trick, 'remove');
+
+            return true;
         }
 
-        $this->flush($trick, 'remove');
+        return false;
     }
 
+    /**
+     * @return bool
+     */
     public function handlerDeleteImage(Image $image)
     {
-        // New poster before delete old poster
-        $trick = $image->getTrick();
-        $trick->removeImage($image);
-        $images = $trick->getImages();
-        if ($image->getPoster() && count($images) > 0) {
-            $images[array_key_first($images->toArray())]->setPoster(true);
+        if ($this->request->query->get('csrf_token') && $this->token->getToken('delete'.$image->getId())->getValue() === $this->request->query->get('csrf_token')) {
+            // New poster before delete old poster
+            $trick = $image->getTrick();
+            $trick->removeImage($image);
+            $images = $trick->getImages();
+
+            if ($image->getPoster() && count($images) > 0) {
+                $images[array_key_first($images->toArray())]->setPoster(true);
+            }
+
+            $this->flush($image, 'remove');
+
+            unlink(Kernel::getProjectDir().'/public/'.$image->getUrl());
+
+            return true;
         }
 
-        $this->flush($image, 'remove');
+        return false;
+    }
 
-        unlink((new \App\Kernel())->getProjectDir().'/public/'.$image->getUrl());
+    /**
+     * @return bool
+     */
+    public function handleDeleteVideo(Video $video)
+    {
+        if ($this->request->query->get('csrf_token') && $this->token->getToken('delete'.$video->getId())->getValue() === $this->request->query->get('csrf_token')) {
+            $this->flush($video, 'remove');
+
+            return true;
+        }
+
+        return false;
     }
 
     public function handleChangePoster(Image $newPoster, Image $oldPoster)
