@@ -42,7 +42,7 @@
                         <span class="badge badge-pill badge-{{ categoryId is null ? 'activate' : 'blue' }} mx-3 ">Tous les tricks</span>
                     </a>
                     {% for category in categories %}
-                        <a href="/trick/category/{{category.id}}#tricks" class="">
+                        <a href="{{ path('trick_category',{ id : category.id, '_fragment': 'tricks' }) }}" class="">
                             <span class="badge badge-pill badge-{{ categoryId == category.id ? 'activate' : 'blue' }} mx-3">{{ category.title }}</span>
                         </a>
                     {% endfor %}

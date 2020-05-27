@@ -30,6 +30,7 @@ class TrickController extends AbstractController
 
     /**
      * @Route("/", name="home")
+     * @Route("/trick/category/{id<[0-9]+>}", name="trick_category")
      *
      * @param null $id
      *
