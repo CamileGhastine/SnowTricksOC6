@@ -23,6 +23,21 @@ class VideoFixtures extends Fixture
         'src="https://www.youtube.com/embed/R2Cp1RumorU"',
         'src="https://www.youtube.com/embed/-ClNrBe-fr4"',
         'src="https://www.youtube.com/embed/V9xuy-rVj9w"',
+        'src="https://www.youtube.com/embed/V9xuy-rVj9w"',
+        'src="https://www.youtube.com/embed/0uGETVnkujA"',
+        'src="https://www.youtube.com/embed/Q5691RGDUJ4"',
+        'src="https://www.youtube.com/embed/MasvoDXQe3U"',
+        'src="https://www.youtube.com/embed/R2Cp1RumorU"',
+        'src="https://www.youtube.com/embed/-ClNrBe-fr4"',
+        'src="https://www.youtube.com/embed/0uGETVnkujA"',
+        'src="https://www.youtube.com/embed/Q5691RGDUJ4"',
+        'src="https://www.youtube.com/embed/MasvoDXQe3U"',
+        'src="https://www.youtube.com/embed/R2Cp1RumorU"',
+        'src="https://www.youtube.com/embed/-ClNrBe-fr4"',
+        'src="https://www.youtube.com/embed/V9xuy-rVj9w"',
+        'src="https://www.youtube.com/embed/R2Cp1RumorU"',
+        'src="https://www.youtube.com/embed/-ClNrBe-fr4"',
+        'src="https://www.youtube.com/embed/V9xuy-rVj9w"',
         ];
 
     public function load(ObjectManager $manager)

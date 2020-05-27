@@ -17,8 +17,8 @@ class TrickFixtures extends Fixture implements DependentFixtureInterface
         $faker = Factory::create('fr_FR');
 
         $categories = $this->randomCategories();
-        $images = $this->randomImages();
-        $videos = $this->randomVideos();
+        $images = $this->random('Image',1 , 5);
+        $videos = $this->random('Video', 0, 3);
 
         for ($j = 0; $j < self::NB_TRICKS; ++$j) {
             $trick = new Trick($this->randomUser()[$j]);
@@ -31,22 +31,9 @@ class TrickFixtures extends Fixture implements DependentFixtureInterface
                 ->setUpdatedAt($date)
             ;
 
-            foreach ($categories[$j] as $category) {
-                $trick->addCategory($this->getReference($category));
-            }
-
-            foreach ($images[$j] as $key => $image) {
-                $image = $this->getReference($image);
-                if (0 === $key) {
-                    $image->setPoster(true);
-                }
-                $trick->addImage($image);
-            }
-
-            foreach ($videos[$j] as $video) {
-                $video = $this->getReference($video);
-                $trick->addVideo($video);
-            }
+            $this->add($trick, 'Category', $categories[$j]);
+            $this->add($trick, 'Image', $images[$j]);
+            $this->add($trick, 'Video', $videos[$j]);
 
             $this->addReference('trick'.$j, $trick);
 
@@ -92,42 +79,38 @@ class TrickFixtures extends Fixture implements DependentFixtureInterface
     /**
      * @return mixed
      */
-    private function randomImages()
+    private function random($entity, $min, $max)
     {
-        $listImages = (new ImageFixtures())->getListImages();
+        $class = 'App\DataFixtures\\'.$entity.'Fixtures';
+        $getList = 'getList'.$entity.'s';
+
+        $list = (new $class())->$getList();
         for ($k = 0; $k < self::NB_TRICKS; ++$k) {
-            $trickImages = [];
-            for ($i = 1; $i < rand(1, 5); ++$i) {
-                $key = array_rand($listImages);
-                $trickImages[] = $listImages[$key];
-                unset($listImages[$key]);
+            $trickEntity = [];
+            for ($i = 1; $i < rand($min, $max); ++$i) {
+                $key = array_rand($list);
+                $trickEntity[] = $list[$key];
+                unset($list[$key]);
             }
 
-            $images[] = $trickImages;
+            $entities[] = $trickEntity;
         }
 
-        return $images;
+        return $entities;
     }
 
-    /**
-     * @return mixed
-     */
-    private function randomVideos()
+    private function add ($trick, $name, $entities)
     {
-        $listVideos = (new VideoFixtures())->getListVideos();
-        for ($k = 0; $k < self::NB_TRICKS; ++$k) {
-            $trickVideos = [];
-            for ($i = 0; $i < rand(0, 2); ++$i) {
-                $key = array_rand($listVideos);
-                $trickVideos[] = $listVideos[$key];
-                unset($listVideos[$key]);
+        foreach ($entities as $key => $entity) {
+            $add = 'add'.$name;
+            $entity = $this->getReference($entity);
+            if ($name === 'Image' && $key === 0) {
+                $entity->setPoster(true);
             }
-
-            $videos[] = $trickVideos;
+            $trick->$add($entity);
         }
-
-        return $videos;
     }
+
 
     /**
      * @return string[]
