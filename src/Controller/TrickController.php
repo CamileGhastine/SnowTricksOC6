@@ -215,7 +215,6 @@ class TrickController extends AbstractController
      * Delete a trick.
      *
      * @Route("trick/{id<[0-9]+>}/delete", name="trick_delete")
-     *
      * @isGranted("ROLE_USER", message="Vous devez être connecté pour supprimer un trick ! ")@param Trick $trick
      *
      * @return RedirectResponse
