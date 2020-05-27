@@ -27,4 +27,16 @@ class CategoryFixtures extends Fixture
         }
         $manager->flush();
     }
+
+    /**
+     * @return mixed
+     */
+    public function getListCategories()
+    {
+        for ($j = 0; $j < count($this->categories); ++$j) {
+            $listCategories[] = 'category'.$j;
+        }
+
+        return $listCategories;
+    }
 }

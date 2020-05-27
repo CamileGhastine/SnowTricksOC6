@@ -38,4 +38,16 @@ class VideoFixtures extends Fixture
         }
         $manager->flush();
     }
+
+    /**
+     * @return mixed
+     */
+    public function getListVideos()
+    {
+        for ($j = 0; $j < count($this->videos); ++$j) {
+            $listVideos[] = 'video'.$j;
+        }
+
+        return $listVideos;
+    }
 }

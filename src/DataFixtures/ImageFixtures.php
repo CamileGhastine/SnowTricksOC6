@@ -17,7 +17,7 @@ class ImageFixtures extends Fixture
 
             $image->setUrl('images/tricks/'.$name.'.jpg')
                 ->setAlt($name)
-                ->setPoster(0)
+                ->setPoster(false)
             ;
 
             $this->addReference($name, $image);
@@ -25,5 +25,17 @@ class ImageFixtures extends Fixture
             $manager->persist($image);
         }
         $manager->flush();
+    }
+
+    /**
+     * @return mixed
+     */
+    public function getListImages()
+    {
+        for ($j = 0; $j < 29; ++$j) {
+            $listImages[] = 'image'.$j;
+        }
+
+        return $listImages;
     }
 }

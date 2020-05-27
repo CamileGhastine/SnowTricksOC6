@@ -21,8 +21,8 @@ class CommentFixtures extends Fixture implements dependentFixtureInterface
             $users[] = 'user'.$i;
         }
 
-        for ($j = 1; $j <= 10; ++$j) {
-            for ($i = 1; $i < rand(-5, 15); ++$i) {
+        for ($j = 0; $j < TrickFixtures::NB_TRICKS; ++$j) {
+            for ($i = 1; $i < rand(-5, 20); ++$i) {
                 /** @var User $user */
                 $user = $this->getReference($users[array_rand($users)]);
                 /** @var Trick $trick */
