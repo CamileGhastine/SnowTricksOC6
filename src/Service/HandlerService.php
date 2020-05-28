@@ -30,16 +30,17 @@ class HandlerService
     private $generateToken;
     private $flash;
 
-    public function __construct(EntityManagerInterface $em,
-                                RequestStack $request,
-                                UploaderService $uploader,
-                                AvatarService $avatar,
-                                UserPasswordEncoderInterface $passwordEncoder,
-                                EmailerService $emailer,
-                                CsrfTokenManagerInterface $token,
-                                TokenGeneratorInterface $generateToken,
-                                FlashBagInterface $flash)
-    {
+    public function __construct(
+        EntityManagerInterface $em,
+        RequestStack $request,
+        UploaderService $uploader,
+        AvatarService $avatar,
+        UserPasswordEncoderInterface $passwordEncoder,
+        EmailerService $emailer,
+        CsrfTokenManagerInterface $token,
+        TokenGeneratorInterface $generateToken,
+        FlashBagInterface $flash
+    ) {
         $this->em = $em;
         $this->request = $request->getCurrentRequest();
         $this->uploader = $uploader;
@@ -101,7 +102,7 @@ class HandlerService
     /**
      * @return bool
      */
-    public function handleTrick(Form $form, Trick $trick, $nothing)
+    public function handleTrick(Form $form, Trick $trick)
     {
         $trick->setUpdatedAt(new DateTime());
 
@@ -109,11 +110,9 @@ class HandlerService
     }
 
     /**
-     * @param $nothing
-     *
      * @return bool
      */
-    public function handleCategory(Form $form, Category $category, $nothing)
+    public function handleCategory(Form $form, Category $category)
     {
         return $this->handle($form, $category);
     }
@@ -295,6 +294,11 @@ class HandlerService
         return true;
     }
 
+    /**
+     * @param $user
+     *
+     * @return bool
+     */
     public function handleValidateRegistration($user)
     {
         if ($this->request->query->get('validate')) {
@@ -308,6 +312,11 @@ class HandlerService
         return false;
     }
 
+    /**
+     * @param $user
+     *
+     * @return bool
+     */
     public function handleTokenNotValideInSecurity($user)
     {
         if (!$user || $user->getToken() !== $this->request->query->get('token')) {

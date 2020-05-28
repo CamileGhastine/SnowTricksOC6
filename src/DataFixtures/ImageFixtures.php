@@ -27,9 +27,6 @@ class ImageFixtures extends Fixture
         $manager->flush();
     }
 
-    /**
-     * @return mixed
-     */
     public function getListImages()
     {
         for ($j = 0; $j < 29; ++$j) {

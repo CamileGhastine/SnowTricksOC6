@@ -24,10 +24,11 @@ class SecurityController extends AbstractController
     private $authenticator;
     private $guardHandler;
 
-    public function __construct(UserRepository $repo,
-                                FormAuthenticator $authenticator,
-                                GuardAuthenticatorHandler $guardHandler)
-    {
+    public function __construct(
+        UserRepository $repo,
+        FormAuthenticator $authenticator,
+        GuardAuthenticatorHandler $guardHandler
+    ) {
         $this->repo = $repo;
         $this->authenticator = $authenticator;
         $this->guardHandler = $guardHandler;

@@ -18,6 +18,10 @@ class AvatarService
         $this->em = $em;
     }
 
+    /**
+     * @param User         $user
+     * @param UploadedFile $file
+     */
     public function manageAvatar(User $user, UploadedFile $file)
     {
         $fileToDelete = $user->getAvatar();
@@ -26,19 +30,6 @@ class AvatarService
         if (null !== $file) {
             $user->setAvatar($this->uploader->uploadAvatar($file));
         }
-
-//        if (null === $file) {
-//            $user->setAvatar('images/users/nobody.jpg');
-//        }
-//        if (null !== $file) {
-//            $user->setAvatar($this->uploader->uploadAvatar($file));
-//        }
-//
-//        if (null === $file) {
-//            $user->setAvatar('images/users/nobody.jpg');
-//        } else {
-//            $user->setAvatar($this->uploader->uploadAvatar($file));
-//        }
 
         $this->em->persist($user);
         $this->em->flush();

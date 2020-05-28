@@ -118,33 +118,21 @@ class User implements UserInterface
         $this->setRegisteredAt(new DateTime());
     }
 
-    /**
-     * @return mixed
-     */
     public function getToken()
     {
         return $this->token;
     }
 
-    /**
-     * @param mixed $token
-     */
     public function setToken($token)
     {
         $this->token = $token;
     }
 
-    /**
-     * @return mixed
-     */
     public function getFile()
     {
         return $this->file;
     }
 
-    /**
-     * @param mixed $file
-     */
     public function setFile($file): void
     {
         $this->file = $file;
@@ -191,17 +179,11 @@ class User implements UserInterface
         return $this;
     }
 
-    /**
-     * @return mixed
-     */
     public function getConfirmPassword()
     {
         return $this->confirm_password;
     }
 
-    /**
-     * @param mixed $confirm_password
-     */
     public function setConfirmPassword($confirm_password): void
     {
         $this->confirm_password = $confirm_password;

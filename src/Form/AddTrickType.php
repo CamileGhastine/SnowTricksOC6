@@ -17,14 +17,16 @@ class AddTrickType extends AbstractType
         $builder
             ->add('title')
             ->add('description')
-            ->add('categories',
+            ->add(
+                'categories',
                 EntityType::class,
                 ['class' => Category::class,
                     'choice_label' => 'title',
                     'multiple' => true,
                     'expanded' => true,
                     'by_reference' => false,
-            ])
+                ]
+            )
             ->add('images', CollectionType::class, [
                 'entry_type' => ImageType::class,
 //                'entry_options' => [

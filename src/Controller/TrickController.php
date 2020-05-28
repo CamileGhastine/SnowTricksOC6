@@ -87,8 +87,7 @@ class TrickController extends AbstractController
 
             if ($handler->handle($form, $comment)) {
                 return $this->redirect($this->generateUrl('trick_show', [
-                        'id' => $trick->getId(), ]).'#comments'
-                );
+                        'id' => $trick->getId(), ]).'#comments');
             }
         }
 
@@ -140,8 +139,7 @@ class TrickController extends AbstractController
 
         if ($handler->handleAddTrick($form, $trick)) {
             return $this->redirectToRoute('trick_show', [
-                    'id' => $trick->getId(), ]
-            );
+                    'id' => $trick->getId(), ]);
         }
 
         return $this->render('trick/addForm.html.twig', [
@@ -215,6 +213,7 @@ class TrickController extends AbstractController
      * Delete a trick.
      *
      * @Route("trick/{id<[0-9]+>}/delete", name="trick_delete")
+     *
      * @isGranted("ROLE_USER", message="Vous devez être connecté pour supprimer un trick ! ")@param Trick $trick
      *
      * @return RedirectResponse

@@ -9,8 +9,6 @@ class PaginatorService
     const MAX_RESULTS = 5;
     private $repo;
     private $id;
-    private $allComments;
-    private $numberPages;
     private $page;
 
     public function __construct(CommentRepository $repo)
@@ -23,14 +21,11 @@ class PaginatorService
      *
      * @return array
      */
-    public function paginate($id, int $page)
+    public function paginate(int $id, int $page)
     {
-        $this->id = $id;
-        $this->page = $page;
-
         return [
             'comments' => $this->repo->findCommentsWithUser($id, self::MAX_RESULTS, ($page - 1) * self::MAX_RESULTS),
-            'render' => $this->renderPagination(),
+            'render' => $this->renderPagination($id, $page),
         ];
     }
 
@@ -39,13 +34,13 @@ class PaginatorService
      *
      * @return string
      */
-    private function renderPagination()
+    private function renderPagination(int $id, int $page)
     {
-        $numberPages = ceil(count($this->repo->findCommentsWithUser($this->id)) / self::MAX_RESULTS);
+        $numberPages = ceil(count($this->repo->findCommentsWithUser($id)) / self::MAX_RESULTS);
 
         $render = '';
         for ($i = 1; $i <= $numberPages; ++$i) {
-            $render .= '<a href="/trick/'.$this->id.'/ajax-commentsPagination/'.$i.'"><span class="badge badge-pill badge-'.($i === $this->page ? 'page-activate' : 'page').' mx-2">'.$i.'</span></a> ';
+            $render .= '<a href="/trick/'.$id.'/ajax-commentsPagination/'.$i.'"><span class="badge badge-pill badge-'.($i === $page ? 'page-activate' : 'page').' mx-2">'.$i.'</span></a> ';
         }
 
         return '<p class="mt-4 pagination justify-content-center">'.$render.'</p>';

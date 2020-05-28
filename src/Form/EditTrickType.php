@@ -16,14 +16,16 @@ class EditTrickType extends AbstractType
         $builder
             ->add('title')
             ->add('description')
-            ->add('categories',
+            ->add(
+                'categories',
                 EntityType::class,
                 ['class' => Category::class,
                     'choice_label' => 'title',
                     'multiple' => true,
                     'expanded' => true,
                     'by_reference' => false,
-            ])
+                ]
+            )
         ;
     }
 
