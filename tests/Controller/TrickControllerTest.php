@@ -44,18 +44,18 @@ class TrickControllerTest extends WebTestCase
         $this->assertCount(10, $crawler->filter('article'));
     }
 
-    public function testAddTrickForm()
-    {
-        $client = static::createClient();
-
-        $crawler = $client->request('GET', '/trick/1');
-
-        $trick = [
-            'add_trick[title]' => "new title",
-            'add_trick[description]' => "new description",
-            'add_trick[categories]' => [ 1, 3]
-        ];
-        $form = $crawler->selectButton('submit')->form();
-        $crawler = $client->submitForm('Commenter', ['comment[content]' => 'commentaire test']);
-    }
+//    public function testAddTrickForm()
+//    {
+//        $client = static::createClient();
+//
+//        $crawler = $client->request('GET', '/trick/1');
+//
+//        $trick = [
+//            'add_trick[title]' => "new title",
+//            'add_trick[description]' => "new description",
+//            'add_trick[categories]' => [ 1, 3]
+//        ];
+//        $form = $crawler->selectButton('submit')->form();
+//        $crawler = $client->submitForm('Commenter', ['comment[content]' => 'commentaire test']);
+//    }
 }
