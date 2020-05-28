@@ -94,6 +94,7 @@ class Trick
         $this->comments = new ArrayCollection();
         $this->categories = new ArrayCollection();
         $this->setCreatedAt(new DateTime());
+        $this->setUpdatedAt(new DateTime());
         $this->setUser($user);
         $this->images = new ArrayCollection();
         $this->videos = new ArrayCollection();

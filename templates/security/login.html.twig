@@ -10,7 +10,7 @@
                 <h1 class="mb-5">Connexion</h1>
                 <form method="post">
                     {% if error %}
-                        <div class="alert alert-danger">{{ error.messageKey|trans(error.messageData, 'security') }}</div>
+                        <div class="alert alert-danger text-center">{{ error.messageKey|trans(error.messageData, 'security') }}</div>
                     {% endif %}
 
                     <div class="form-group row">

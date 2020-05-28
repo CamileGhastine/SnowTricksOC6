@@ -2,7 +2,9 @@
 
 namespace App\Service;
 
+use App\Entity\Image;
 use App\Kernel;
+use Symfony\Component\HttpFoundation\File\UploadedFile;
 use Symfony\Component\String\Slugger\SluggerInterface;
 
 class UploaderService
@@ -14,7 +16,7 @@ class UploaderService
         $this->slugger = $slugger;
     }
 
-    public function upload($image)
+    public function upload(Image $image)
     {
         $OriginalName = pathinfo($image->getFile()->getClientOriginalName(), PATHINFO_FILENAME);
         $name = $this->slugger->slug($OriginalName).'-'.uniqid().'.'.pathinfo($image->getFile()->getClientOriginalName(), PATHINFO_EXTENSION);
@@ -26,7 +28,10 @@ class UploaderService
         $image->setPoster(0);
     }
 
-    public function uploadAvatar($file)
+    /**
+     * @return string
+     */
+    public function uploadAvatar(UploadedFile $file)
     {
         $OriginalName = pathinfo($file->getClientOriginalName(), PATHINFO_FILENAME);
         $name = $this->slugger->slug($OriginalName).'-'.uniqid().'.'.pathinfo($file->getClientOriginalName(), PATHINFO_EXTENSION);

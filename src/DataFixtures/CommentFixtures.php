@@ -21,19 +21,19 @@ class CommentFixtures extends Fixture implements dependentFixtureInterface
             $users[] = 'user'.$i;
         }
 
-        for ($j = 1; $j <= 10; ++$j) {
-            for ($i = 1; $i < rand(-5, 15); ++$i) {
+        for ($j = 0; $j < TrickFixtures::NB_TRICKS; ++$j) {
+            for ($i = 1; $i < rand(-5, 20); ++$i) {
                 /** @var User $user */
                 $user = $this->getReference($users[array_rand($users)]);
                 /** @var Trick $trick */
                 $trick = $this->getReference('trick'.$j);
 
-                $date = max ( $user->getRegisteredAt(), $trick->getCreatedAt());
+                $date = max($user->getRegisteredAt(), $trick->getCreatedAt());
 
                 $comment = new Comment($trick, $user);
 
                 $comment->setContent(implode("\n", $faker->sentences(4)))
-                    ->setCreatedAt($faker->dateTimeBetween('-'.(new \DateTime)->diff($date)->days.'days'));
+                    ->setCreatedAt($faker->dateTimeBetween('-'.(new \DateTime())->diff($date)->days.'days'));
 
                 $manager->persist($comment);
             }

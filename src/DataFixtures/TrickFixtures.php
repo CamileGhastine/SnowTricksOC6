@@ -5,37 +5,23 @@ namespace App\DataFixtures;
 use App\Entity\Trick;
 use Doctrine\Bundle\FixturesBundle\Fixture;
 use Doctrine\Common\DataFixtures\DependentFixtureInterface;
-use Doctrine\Common\Persistence\ObjectManager;
+use Doctrine\Persistence\ObjectManager;
 use Faker\Factory;
 
 class TrickFixtures extends Fixture implements DependentFixtureInterface
 {
+    const NB_TRICKS = 13;
+
     public function load(ObjectManager $manager)
     {
         $faker = Factory::create('fr_FR');
 
-        $users = [];
-        for ($i = 0; $i <= 3; ++$i) {
-            $users[] = 'user'.$i;
-        }
-        $user = $users[array_rand($users)];
+        $categories = $this->randomCategories();
+        $images = $this->random('Image',1 , 5);
+        $videos = $this->random('Video', 0, 3);
 
-        for ($i = 0; $i <= 29; ++$i) {
-            $images[] = 'image'.$i;
-        }
-
-        $videos=[];
-        for ($i = 0; $i <= 14; ++$i) {
-            $videos[] = 'video'.$i;
-        }
-
-        for ($j = 1; $j <= 13; ++$j) {
-            $categories = [];
-            for ($i = 0; $i <= 3; ++$i) {
-                $categories[] = 'category'.$i;
-            }
-
-            $trick = new Trick($this->getReference($user));
+        for ($j = 0; $j < self::NB_TRICKS; ++$j) {
+            $trick = new Trick($this->randomUser()[$j]);
 
             $date = $faker->dateTimebetween('-7 days');
 
@@ -45,32 +31,9 @@ class TrickFixtures extends Fixture implements DependentFixtureInterface
                 ->setUpdatedAt($date)
             ;
 
-            for ($i = 1; $i <= rand(1, 3); ++$i) {
-                $key = array_rand($categories);
-                $category = $categories[$key];
-                $trick->addCategory($this->getReference($category));
-                unset($categories[$key]);
-            }
-
-            if (rand(0, 5) > 1) {
-                for ($i = 1; $i <= rand(1, 4); ++$i) {
-                    $key = array_rand($images);
-                    $image = $this->getReference($images[$key]);
-                    if (1 == $i) {
-                        $image->setPoster(1);
-                    }
-                    $trick->addImage($image);
-                    unset($images[$key]);
-                }
-            }
-
-            if(rand(1,2)>1 ) {
-                for ($i = 1; $i <= rand(1, 2); ++$i) {
-                    $key = array_rand($videos);
-                    $video = $this->getReference($videos[$key]);
-                    $trick->addVideo($video);
-                }
-            }
+            $this->add($trick, 'Category', $categories[$j]);
+            $this->add($trick, 'Image', $images[$j]);
+            $this->add($trick, 'Video', $videos[$j]);
 
             $this->addReference('trick'.$j, $trick);
 
@@ -79,6 +42,79 @@ class TrickFixtures extends Fixture implements DependentFixtureInterface
         $manager->flush();
     }
 
+    /**
+     * @return array
+     */
+    private function randomUser()
+    {
+        for ($i = 0; $i < self::NB_TRICKS; ++$i) {
+            $userRef = 'user'.rand(0, UserFixtures::NB_USERS);
+            $users[] = $this->getReference($userRef);
+        }
+
+        return $users;
+    }
+
+    /**
+     * @return mixed
+     */
+    private function randomCategories()
+    {
+        for ($k = 0; $k < self::NB_TRICKS; ++$k) {
+            $listCategories = (new CategoryFixtures())->getListCategories();
+            $trickCategories = [];
+
+            for ($i = 1; $i <= rand(1, 3); ++$i) {
+                $key = array_rand($listCategories);
+                $trickCategories[] = $listCategories[$key];
+                unset($listCategories[$key]);
+            }
+
+            $categories[$k] = $trickCategories;
+        }
+
+        return $categories;
+    }
+
+    /**
+     * @return mixed
+     */
+    private function random($entity, $min, $max)
+    {
+        $class = 'App\DataFixtures\\'.$entity.'Fixtures';
+        $getList = 'getList'.$entity.'s';
+
+        $list = (new $class())->$getList();
+        for ($k = 0; $k < self::NB_TRICKS; ++$k) {
+            $trickEntity = [];
+            for ($i = 1; $i < rand($min, $max); ++$i) {
+                $key = array_rand($list);
+                $trickEntity[] = $list[$key];
+                unset($list[$key]);
+            }
+
+            $entities[] = $trickEntity;
+        }
+
+        return $entities;
+    }
+
+    private function add ($trick, $name, $entities)
+    {
+        foreach ($entities as $key => $entity) {
+            $add = 'add'.$name;
+            $entity = $this->getReference($entity);
+            if ($name === 'Image' && $key === 0) {
+                $entity->setPoster(true);
+            }
+            $trick->$add($entity);
+        }
+    }
+
+
+    /**
+     * @return string[]
+     */
     public function getDependencies()
     {
         return [

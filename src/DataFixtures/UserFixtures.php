@@ -11,6 +11,7 @@ use Symfony\Component\Security\Csrf\TokenGenerator\TokenGeneratorInterface;
 
 class UserFixtures extends Fixture
 {
+    const NB_USERS = 3;
     private $passwordEncoder;
     private $token;
 
@@ -24,7 +25,7 @@ class UserFixtures extends Fixture
     {
         $faker = Factory::create('fr_FR');
 
-        for ($i = 1; $i <= 3; ++$i) {
+        for ($i = 1; $i <= self::NB_USERS; ++$i) {
             $user = new User();
 
             $username = $faker->firstName;

@@ -5,7 +5,7 @@ namespace App\Controller;
 use App\Entity\AvatarProto;
 use App\Form\AvatarType;
 use App\Service\AvatarService;
-use Sensio\Bundle\FrameworkExtraBundle\Configuration\IsGranted;
+use App\Service\HandlerService;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\Routing\Annotation\Route;
@@ -14,36 +14,26 @@ class UserController extends AbstractController
 {
     /**
      * @Route("/user", name="user_account")
-     * @isGranted("ROLE_USER", message="Vous devez être connecté pour accéder à votre compte ! ")
+     *
+     * @return \Symfony\Component\HttpFoundation\RedirectResponse|\Symfony\Component\HttpFoundation\Response
      */
-    public function account(Request $request, AvatarService $avatar)
+    public function account(Request $request, AvatarService $avatar, HandlerService $handler)
     {
         $file = new AvatarProto();
 
-        $form = $this->createForm(AvatarType::class, $file);
-        $form->handleRequest($request);
+        $formChangeAvatar = $this->createForm(AvatarType::class, $file);
 
-        $formDeleteAvatar = $this->createFormBuilder($file)
-                                ->getForm();
-        $formDeleteAvatar->handleRequest($request);
+        $formDeleteAvatar = $this->createFormBuilder()
+            ->getForm();
 
-        if ($formDeleteAvatar->isSubmitted()) {
-            $avatar->manageAvatar($this->getUser(), null);
-
-            return $this->redirectToRoute('user_account');
-        }
-
-        if ($form->isSubmitted() && $form->isValid()) {
-            $action = 'images/users/nobody.jpg' === $this->getUser()->getAvatar() ? 'create' : 'edit';
-            $file = $form->getData()->getFile();
-
-            $avatar->manageAvatar($this->getUser(), $file);
-
-            return $this->redirectToRoute('user_account');
+        foreach ([$formChangeAvatar, $formDeleteAvatar] as $form) {
+            if ($handler->handleAvatar($form, $this->getUser())) {
+                return $this->redirectToRoute('user_account');
+            }
         }
 
         return $this->render('user/account.html.twig', [
-            'form' => $form->createView(),
+            'form' => $formChangeAvatar->createView(),
             'formDeleteAvatar' => $formDeleteAvatar->createView(),
         ]);
     }

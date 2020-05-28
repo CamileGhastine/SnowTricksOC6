@@ -26,28 +26,12 @@ class PaginatorService
     public function paginate($id, int $page)
     {
         $this->id = $id;
-        $this->allComments = $this->repo->findCommentsWithUser($id);
         $this->page = $page;
-        $this->numberPages = ceil(count($this->allComments) / self::MAX_RESULTS);
 
-        return ['comments' => $this->selectComments(), 'render' => $this->renderPagination()];
-    }
-
-    /**
-     * select paginate comments.
-     *
-     * @return array
-     */
-    private function selectComments()
-    {
-        $paginatedComments = [];
-        for ($i = ($this->page - 1) * self::MAX_RESULTS; $i < ($this->page * self::MAX_RESULTS); ++$i) {
-            if (isset($this->allComments[$i])) {
-                $paginatedComments[] = $this->allComments[$i];
-            }
-        }
-
-        return $paginatedComments;
+        return [
+            'comments' => $this->repo->findCommentsWithUser($id, self::MAX_RESULTS, ($page - 1) * self::MAX_RESULTS),
+            'render' => $this->renderPagination(),
+        ];
     }
 
     /**
@@ -57,8 +41,10 @@ class PaginatorService
      */
     private function renderPagination()
     {
+        $numberPages = ceil(count($this->repo->findCommentsWithUser($this->id)) / self::MAX_RESULTS);
+
         $render = '';
-        for ($i = 1; $i <= $this->numberPages; ++$i) {
+        for ($i = 1; $i <= $numberPages; ++$i) {
             $render .= '<a href="/trick/'.$this->id.'/ajax-commentsPagination/'.$i.'"><span class="badge badge-pill badge-'.($i === $this->page ? 'page-activate' : 'page').' mx-2">'.$i.'</span></a> ';
         }
 
