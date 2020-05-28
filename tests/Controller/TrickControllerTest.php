@@ -2,7 +2,11 @@
 
 namespace App\Tests\Controller;
 
+use App\Repository\CategoryRepository;
+use App\Repository\UserRepository;
 use Symfony\Bundle\FrameworkBundle\Test\WebTestCase;
+use Symfony\Component\BrowserKit\Cookie;
+use Symfony\Component\Security\Core\Authentication\Token\UsernamePasswordToken;
 
 class TrickControllerTest extends WebTestCase
 {
@@ -44,18 +48,49 @@ class TrickControllerTest extends WebTestCase
         $this->assertCount(10, $crawler->filter('article'));
     }
 
+    public function testRedirectToLogin()
+    {
+        $client = static::createClient();
+
+        $client->request('GET', '/trick/new');
+        $this->assertResponseRedirects('/login');
+
+        $client->request('GET', '/trick/ajax-addCategory');
+        $this->assertResponseRedirects('/login');
+
+        $client->request('GET', '/trick/1/update');
+        $this->assertResponseRedirects('/login');
+
+        $client->request('GET', '/trick/1/delete');
+        $this->assertResponseRedirects('/login');
+    }
+
+
 //    public function testAddTrickForm()
 //    {
 //        $client = static::createClient();
 //
-//        $crawler = $client->request('GET', '/trick/1');
+////        Connected user
+//        self::bootKernel();
+//        $user = self::$container->get(UserRepository::class)->findOneBy(['id' => 1]);
+//        $session = self::$container->get('session');
+//        $token = new UsernamePasswordToken($user, null, 'main', $user->getRoles());
+//        $session->set('_securtiy_main', serialize($token));
+//        $session->save();
+//        $cookie = new Cookie($session->getName(), $session->getId());
+//        $client ->getCookieJar()->set($cookie);
 //
-//        $trick = [
-//            'add_trick[title]' => "new title",
-//            'add_trick[description]' => "new description",
-//            'add_trick[categories]' => [ 1, 3]
-//        ];
-//        $form = $crawler->selectButton('submit')->form();
-//        $crawler = $client->submitForm('Commenter', ['comment[content]' => 'commentaire test']);
+//        $crawler = $client->request('GET', '/trick/new');
+//
+//        $category = self::$container->get(CategoryRepository::class)->findOneBy(['id' => 1]);
+//        $form = $crawler->selectButton('Ajouter un trick')->form([
+//            'title' => 'New title',
+//            'description' => 'New description',
+//            'categories' =>[$category],
+//        ]);
+//
+//        $client->submit($form);
+//
+//        $this->assertResponseRedirects('/trick/new');
 //    }
 }

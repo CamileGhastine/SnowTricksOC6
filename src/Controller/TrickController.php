@@ -171,6 +171,7 @@ class TrickController extends AbstractController
      * Create new category in add trick form.
      *
      * @Route("/trick/ajax-addCategory", name="ajax_add_category")
+     * @isGranted("ROLE_USER", message="Vous devez être connecté pour créer un trick ! ")
      *
      * @return \Symfony\Component\HttpFoundation\Response
      */
@@ -334,6 +335,7 @@ class TrickController extends AbstractController
      * Delete image in edit trick page.
      *
      * @Route("trick/image/{id<[0-9]+>}/delete", name="image_delete")
+     * @isGranted("ROLE_USER", message="Vous devez être connecté pour supprimer un trick ! ")
      *
      * @return \Symfony\Component\HttpFoundation\RedirectResponse
      */

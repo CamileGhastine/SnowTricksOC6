@@ -30,10 +30,7 @@ class PaginatorService
         $this->page = $page;
         $this->numberPages = ceil(count($this->allComments) / self::MAX_RESULTS);
 
-        $paginatedComments = $this->selectComments();
-        $render = $this->renderPagination();
-
-        return ['comments' => $paginatedComments, 'render' => $render];
+        return ['comments' => $this->selectComments(), 'render' => $this->renderPagination()];
     }
 
     /**

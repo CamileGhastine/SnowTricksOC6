@@ -5,6 +5,7 @@ namespace App\Tests\Entity;
 use App\Entity\Category;
 use App\Entity\Trick;
 use App\Entity\User;
+use App\Repository\TrickRepository;
 use Symfony\Bundle\FrameworkBundle\Test\KernelTestCase;
 
 class TrickTest extends KernelTestCase
@@ -48,6 +49,8 @@ class TrickTest extends KernelTestCase
 
     public function testUniqueTrickTitle()
     {
-        $this->assertHasErrors($this->getTrick()->setTitle('New title'),1);
+        self::bootKernel();
+        self::$container->get(TrickRepository::class)->findAll();
+        $this->assertHasErrors($this->getTrick()->setTitle('Nulla quasi dolor ut sed.'),1);
     }
 }
