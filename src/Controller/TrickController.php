@@ -16,6 +16,7 @@ use App\Service\GetErrorsMessageService;
 use App\Service\HandlerService;
 use App\Service\PaginatorService;
 use Doctrine\ORM\NonUniqueResultException;
+use Sensio\Bundle\FrameworkExtraBundle\Configuration\Entity;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\IsGranted;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\Form\Form;
@@ -67,6 +68,7 @@ class TrickController extends AbstractController
      * Show one trick.
      *
      * @Route("/trick/{id<[0-9]+>}", name="trick_show")
+     * @Entity("trick", expr="repository.findTrickWithCategoriesImagesVideosComments(id)")
      *
      * @param $id
      *
@@ -74,9 +76,8 @@ class TrickController extends AbstractController
      *
      * @throws NonUniqueResultException
      */
-    public function show($id, TrickRepository $repoTrick, PaginatorService $paginator, HandlerService $handler)
+    public function show($id, Trick $trick, TrickRepository $repoTrick, PaginatorService $paginator, HandlerService $handler)
     {
-        $trick = $repoTrick->findTrickWithCategoriesImagesVideosComments($id);
         $paginatorResponse = $paginator->paginate($id, 1);
 
         if ($this->getUser()) {
@@ -87,7 +88,7 @@ class TrickController extends AbstractController
 
             if ($handler->handle($form, $comment)) {
                 return $this->redirect($this->generateUrl('trick_show', [
-                        'id' => $trick->getId(), ]).'#comments');
+                        'id' => $id ]).'#comments');
             }
         }
 
