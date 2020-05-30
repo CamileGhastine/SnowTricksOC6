@@ -8,8 +8,6 @@ class PaginatorService
 {
     const MAX_RESULTS = 5;
     private $repo;
-    private $id;
-    private $page;
 
     public function __construct(CommentRepository $repo)
     {

@@ -8,6 +8,7 @@
 /var/
 /vendor/
 .idea
+/.env.test.local
 ###< symfony/framework-bundle ###
 
 ###> symfony/phpunit-bridge ###
