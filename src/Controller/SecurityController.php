@@ -9,7 +9,7 @@ use App\Form\ResetPasswordType;
 use App\Repository\UserRepository;
 use App\Security\FormAuthenticator;
 use App\Service\EmailerService;
-use App\Service\HandlerService;
+use App\Service\HandlerServiceOld;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\Form\Form;
 use Symfony\Component\HttpFoundation\Request;
@@ -66,7 +66,7 @@ class SecurityController extends AbstractController
      *
      * @throws \Symfony\Component\Mailer\Exception\TransportExceptionInterface
      */
-    public function registration(HandlerService $handler)
+    public function registration(HandlerServiceOld $handler)
     {
         $user = new User();
 
@@ -86,7 +86,7 @@ class SecurityController extends AbstractController
      *
      * @return \Symfony\Component\HttpFoundation\RedirectResponse|Response
      */
-    public function validateRegistration(Request $request, HandlerService $handler)
+    public function validateRegistration(Request $request, HandlerServiceOld $handler)
     {
         $user = $this->repo->findOneBy(['email' => $request->query->get('email')]);
 
@@ -140,7 +140,7 @@ class SecurityController extends AbstractController
      *
      * @return \Symfony\Component\HttpFoundation\RedirectResponse|Response|null
      */
-    public function resetPassword(Request $request, HandlerService $handler)
+    public function resetPassword(Request $request, HandlerServiceOld $handler)
     {
         $user = $this->repo->findOneBy(['email' => $request->query->get('email')]);
 

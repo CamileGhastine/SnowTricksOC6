@@ -4,8 +4,7 @@ namespace App\Controller;
 
 use App\Entity\AvatarProto;
 use App\Form\AvatarType;
-use App\Service\AvatarService;
-use App\Service\HandlerService;
+use App\Service\HandlerService\HandlerImageService;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\Routing\Annotation\Route;
@@ -17,7 +16,7 @@ class UserController extends AbstractController
      *
      * @return \Symfony\Component\HttpFoundation\RedirectResponse|\Symfony\Component\HttpFoundation\Response
      */
-    public function account(Request $request, AvatarService $avatar, HandlerService $handler)
+    public function account(Request $request, HandlerImageService $handler)
     {
         $file = new AvatarProto();
 
@@ -27,7 +26,7 @@ class UserController extends AbstractController
             ->getForm();
 
         foreach ([$formChangeAvatar, $formDeleteAvatar] as $form) {
-            if ($handler->handleAvatar($form, $this->getUser())) {
+            if ($handler->handleAvatar($request, $form, $this->getUser())) {
                 return $this->redirectToRoute('user_account');
             }
         }

@@ -22,7 +22,7 @@ class AvatarService
      * @param User         $user
      * @param UploadedFile $file
      */
-    public function manageAvatar(User $user, UploadedFile $file)
+    public function manageAvatar(User $user, UploadedFile $file = null)
     {
         $fileToDelete = $user->getAvatar();
 

@@ -13,7 +13,11 @@ use App\Form\CommentType;
 use App\Repository\CategoryRepository;
 use App\Repository\TrickRepository;
 use App\Service\GetErrorsMessageService;
-use App\Service\HandlerService;
+use App\Service\HandlerService\HandlerImageService;
+use App\Service\HandlerService\HandlerService;
+use App\Service\HandlerService\HandlerTrickService;
+use App\Service\HandlerService\HandlerVideoService;
+use App\Service\HandlerServiceOld;
 use App\Service\PaginatorService;
 use Doctrine\ORM\NonUniqueResultException;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Entity;
@@ -76,7 +80,7 @@ class TrickController extends AbstractController
      *
      * @throws NonUniqueResultException
      */
-    public function show($id, Trick $trick, TrickRepository $repoTrick, PaginatorService $paginator, HandlerService $handler)
+    public function show($id, Trick $trick, PaginatorService $paginator, Request $request, HandlerService $handler)
     {
         $paginatorResponse = $paginator->paginate($id, 1);
 
@@ -86,7 +90,7 @@ class TrickController extends AbstractController
             /** @var Form $form */
             $form = $this->createForm(CommentType::class, $comment);
 
-            if ($handler->handle($form, $comment)) {
+            if ($handler->handle($request, $form, $comment)) {
                 return $this->redirect($this->generateUrl('trick_show', [
                         'id' => $id ]).'#comments');
             }
@@ -128,7 +132,7 @@ class TrickController extends AbstractController
      *
      * @return RedirectResponse|Response
      */
-    public function create(HandlerService $handler)
+    public function create(Request $request, HandlerTrickService $handler)
     {
         $category = new Category();
         $formCategory = $this->createForm(CategoryType::class, $category);
@@ -138,7 +142,8 @@ class TrickController extends AbstractController
         /** @var Form $form */
         $form = $this->createForm(AddTrickType::class, $trick);
 
-        if ($handler->handleAddTrick($form, $trick)) {
+        if ($handler->handleAddTrick($request, $form, $trick)) {
+
             return $this->redirectToRoute('trick_show', [
                     'id' => $trick->getId(), ]);
         }
@@ -157,14 +162,14 @@ class TrickController extends AbstractController
      *
      * @return Response
      */
-    public function ajaxAddCategory(HandlerService $handler, GetErrorsMessageService $errorsMessage)
+    public function ajaxAddCategory(Request $request, HandlerService $handler, GetErrorsMessageService $errorsMessage)
     {
         $category = new Category();
 
         /** @var Form $formCategory */
         $formCategory = $this->createForm(CategoryType::class, $category);
 
-        if ($handler->handle($formCategory, $category)) {
+        if ($handler->handle($request, $formCategory, $category)) {
             return $this->render('trick/ajax/ajax_add_category.html.twig', [
                 'category' => $category,
             ]);
@@ -183,7 +188,7 @@ class TrickController extends AbstractController
      *
      * @return RedirectResponse|Response
      */
-    public function edit(Trick $trick, HandlerService $handler)
+    public function edit(Trick $trick, HandlerServiceOld $handler)
     {
         // add a trick, a category, an image or a video
         $entities = ['Trick' => 'figure', 'Category' => 'catégorie', 'Image' => 'photo', 'Video' => 'video'];
@@ -219,9 +224,9 @@ class TrickController extends AbstractController
      *
      * @return RedirectResponse
      */
-    public function delete(Trick $trick, HandlerService $handler)
+    public function delete(Trick $trick, Request $request, HandlerTrickService $handler)
     {
-        if ($handler->handleDeleteTrick($trick)) {
+        if ($handler->handleDeleteTrick($request, $trick)) {
             return $this->redirectToRoute('home');
         }
 
@@ -238,11 +243,11 @@ class TrickController extends AbstractController
      *
      * @return RedirectResponse
      */
-    public function deleteImage(Image $image, HandlerService $handler)
+    public function deleteImage(Request $request, Image $image, HandlerImageService $handler)
     {
         $trick = $image->getTrick();
 
-        if ($handler->handlerDeleteImage($image)) {
+        if ($handler->handlerDeleteImage($request, $image)) {
             return $this->redirect($this->generateUrl('trick_edit', ['id' => $trick->getId()]).'#alert');
         }
 
@@ -259,7 +264,7 @@ class TrickController extends AbstractController
      *
      * @return RedirectResponse
      */
-    public function changePoster(HandlerService $handler, Image $newPoster, Image $oldPoster)
+    public function changePoster(HandlerImageService $handler, Image $newPoster, Image $oldPoster)
     {
         $handler->handleChangePoster($newPoster, $oldPoster);
 
@@ -274,9 +279,9 @@ class TrickController extends AbstractController
      *
      * @return RedirectResponse
      */
-    public function deleteVideo(Video $video, HandlerService $handler)
+    public function deleteVideo(Request $request, Video $video, HandlerVideoService $handler)
     {
-        if ($handler->handleDeleteVideo($video)) {
+        if ($handler->handleDeleteVideo($request, $video)) {
             return $this->redirect($this->generateUrl('trick_edit', ['id' => $video->getTrick()->getId()]).'#alert');
         }
         $this->addFlash('danger', 'La vidéo n\'a pas pu être supprimée.');

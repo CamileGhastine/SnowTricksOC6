@@ -73,7 +73,7 @@ class FormAuthenticator extends AbstractFormLoginAuthenticator implements Passwo
         }
 
         if (!$user->getValidate()) {
-            throw new CustomUserMessageAuthenticationException('Vous n\'avez pas encore Validée l\'inscription qui vous a été envoyé par mail.');
+            throw new CustomUserMessageAuthenticationException('Vous n\'avez pas encore validé l\'inscription qui vous a été envoyée par mail.');
         }
 
         return $user;
