@@ -115,7 +115,7 @@ class SecurityController extends AbstractController
         if ($handler->handleValidateRegistration($request, $user)) {
             $this->addFlash('success', 'Votre inscription est validée. Cliquez sur l\'onglet connexion du menu pour vous connecter.');
 
-            return $this->redirectToRoute('home');
+            return $this->redirect($this->generateUrl('home').'#alert');
         }
 
         return $this->render('Security/validateRegistration.html.twig', ['user' => $user]);

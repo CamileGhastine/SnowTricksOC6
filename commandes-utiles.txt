@@ -1,0 +1,2 @@
+php-cs-fixer fix src/
+php bin/phpunit

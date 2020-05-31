@@ -26,7 +26,6 @@ class TrickControllerTest extends WebTestCase
         return [
             ['/'],
             ['/login'],
-//            ['/inscription'],
         ];
     }
 
@@ -47,6 +46,7 @@ class TrickControllerTest extends WebTestCase
 
         $this->assertCount(10, $crawler->filter('article'));
     }
+
     public function testRedirectToLogin()
     {
         $client = static::createClient();
