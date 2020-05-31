@@ -87,8 +87,8 @@ h1
 .avatar
 {
     max-width: none;
-    width:50% ;
-    height: 30px;
+    width:100% ;
+    height: auto;
 }
 
 .badge-comments
