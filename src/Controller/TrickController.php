@@ -10,9 +10,6 @@ use App\Entity\Video;
 use App\Form\AddTrickType;
 use App\Form\CategoryType;
 use App\Form\CommentType;
-use App\Form\EditTrickType;
-use App\Form\ImageType;
-use App\Form\VideoType;
 use App\Repository\CategoryRepository;
 use App\Repository\TrickRepository;
 use App\Service\EditTrickService;
@@ -21,7 +18,6 @@ use App\Service\HandlerService\HandlerImageService;
 use App\Service\HandlerService\HandlerService;
 use App\Service\HandlerService\HandlerTrickService;
 use App\Service\HandlerService\HandlerVideoService;
-use App\Service\HandlerServiceOld;
 use App\Service\PaginatorService;
 use Doctrine\ORM\NonUniqueResultException;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Entity;
@@ -192,7 +188,7 @@ class TrickController extends AbstractController
      *
      * @return RedirectResponse|Response
      */
-    public function edit(Trick $trick, Request $request, EditTrickService $editTrick, HandlerServiceOld $handler)
+    public function edit(Trick $trick, Request $request, EditTrickService $editTrick)
     {
         // Edit Trick
         $formTrick = $editTrick->formTrickCreate($request, $trick);

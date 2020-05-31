@@ -8,8 +8,7 @@ use App\Form\RegistrationType;
 use App\Form\ResetPasswordType;
 use App\Repository\UserRepository;
 use App\Security\FormAuthenticator;
-use App\Service\EmailerService;
-use App\Service\HandlerServiceOld;
+use App\Service\HandlerService\HandlerUserService;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\Form\Form;
 use Symfony\Component\HttpFoundation\Request;
@@ -66,14 +65,14 @@ class SecurityController extends AbstractController
      *
      * @throws \Symfony\Component\Mailer\Exception\TransportExceptionInterface
      */
-    public function registration(HandlerServiceOld $handler)
+    public function registration(Request $request, HandlerUserService $handler)
     {
         $user = new User();
 
         /** @var Form $form */
         $form = $this->createForm(RegistrationType::class, $user);
 
-        if ($handler->handleRegistration($form, $user)) {
+        if ($handler->handleRegistration($request, $form, $user)) {
             return $this->redirectToRoute('security_registration');
         }
 
@@ -87,15 +86,15 @@ class SecurityController extends AbstractController
      *
      * @return \Symfony\Component\HttpFoundation\RedirectResponse|Response
      */
-    public function validateRegistration(Request $request, HandlerServiceOld $handler)
+    public function validateRegistration(Request $request, HandlerUserService $handler)
     {
         $user = $this->repo->findOneBy(['email' => $request->query->get('email')]);
 
-        if ($handler->handleTokenNotValid($user)) {
-            return $this->render('Security/validateRegistration.html.twig');
+        if ($handler->handleTokenNotValid($request, $user)) {
+            return $this->render('Security/validateRegistration.html.twig', ['user' => $user]);
         }
 
-        if ($handler->handleValidateRegistration($user)) {
+        if ($handler->handleValidateRegistration($request, $user)) {
             return $this->redirectToRoute('home');
         }
 
@@ -109,7 +108,7 @@ class SecurityController extends AbstractController
      *
      * @throws \Symfony\Component\Mailer\Exception\TransportExceptionInterface
      */
-    public function forgotenPasword(Request $request, HandlerServiceOld $handler, EmailerService $emailer)
+    public function forgotenPasword(Request $request, HandlerUserService $handler)
     {
         /** @var Form $form */
         $form = $this->createForm(ForgottenPasswordType::class);
@@ -138,21 +137,21 @@ class SecurityController extends AbstractController
      *
      * @return \Symfony\Component\HttpFoundation\RedirectResponse|Response|null
      */
-    public function resetPassword(Request $request, HandlerServiceOld $handler)
+    public function resetPassword(Request $request, HandlerUserService $handler)
     {
         $user = $this->repo->findOneBy(['email' => $request->query->get('email')]);
 
         /** @var Form $form */
         $form = $this->createForm(ResetPasswordType::class);
 
-        if ($handler->handleTokenNotValid($user)) {
+        if ($handler->handleTokenNotValid($request, $user)) {
             return $this->render('/security/reset_pasword.html.twig', [
                 'form' => $form->createView(),
             ]);
         }
 
-        if ($handler->handleResetPassword($form, $user)) {
-            return $this->resetPasswordRedirectToRoute($user, $request);
+        if ($handler->handleResetPassword($request, $form, $user)) {
+            return $this->resetPasswordRedirectToRoute($request, $user);
         }
 
         return $this->render('/security/reset_pasword.html.twig', [
@@ -166,7 +165,7 @@ class SecurityController extends AbstractController
      *
      * @return \Symfony\Component\HttpFoundation\RedirectResponse|Response|null
      */
-    private function resetPasswordRedirectToRoute($user, $request)
+    private function resetPasswordRedirectToRoute($request, $user)
     {
         if ($request->query->get('account')) {
             $this->addFlash('success', 'Votre mot de passe a été modifié avec susccès.');
