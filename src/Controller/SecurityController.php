@@ -70,6 +70,7 @@ class SecurityController extends AbstractController
     {
         $user = new User();
 
+        /** @var Form $form */
         $form = $this->createForm(RegistrationType::class, $user);
 
         if ($handler->handleRegistration($form, $user)) {
@@ -90,7 +91,7 @@ class SecurityController extends AbstractController
     {
         $user = $this->repo->findOneBy(['email' => $request->query->get('email')]);
 
-        if ($handler->handleTokenNotValideInSecurity($user)) {
+        if ($handler->handleTokenNotValid($user)) {
             return $this->render('Security/validateRegistration.html.twig');
         }
 
@@ -108,12 +109,13 @@ class SecurityController extends AbstractController
      *
      * @throws \Symfony\Component\Mailer\Exception\TransportExceptionInterface
      */
-    public function forgotenPasword(Request $request, EmailerService $emailer)
+    public function forgotenPasword(Request $request, HandlerServiceOld $handler, EmailerService $emailer)
     {
+        /** @var Form $form */
         $form = $this->createForm(ForgottenPasswordType::class);
-        $form->handleRequest($request);
 
-        if (!$form->isSubmitted() || !$form->isValid()) {
+        if ($handler->handleForgottenPasswordUnsubmitted($request, $form))
+        {
             return $this->render('/security/forgottenPassword.html.twig', [
                 'form' => $form->createView(),
             ]);
@@ -121,14 +123,10 @@ class SecurityController extends AbstractController
 
         $user = $this->repo->findOneBy(['email' => $form->getData()->getEmail()]);
 
-        if (!$user) {
-            $this->addFlash('danger', 'Cette adresse n\'existe pas.');
-
+        if ($handler ->handleForgottenPasswordUserNotExists($user))
+        {
             return $this->redirectToRoute('security_forgotten');
         }
-
-        $this->addFlash('success', 'Un lien de reconnexion vient de vous être envoyé à votre adresse courriel.');
-        $emailer->sendEmailForgotten($user);
 
         return $this->render('/security/forgottenPassword.html.twig', [
             'form' => $form->createView(),
@@ -147,7 +145,7 @@ class SecurityController extends AbstractController
         /** @var Form $form */
         $form = $this->createForm(ResetPasswordType::class);
 
-        if ($handler->handleTokenNotValideInSecurity($user)) {
+        if ($handler->handleTokenNotValid($user)) {
             return $this->render('/security/reset_pasword.html.twig', [
                 'form' => $form->createView(),
             ]);

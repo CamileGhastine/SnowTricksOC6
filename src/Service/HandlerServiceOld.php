@@ -2,33 +2,27 @@
 
 namespace App\Service;
 
-use App\Entity\Category;
-use App\Entity\Image;
-use App\Entity\Trick;
+
 use App\Entity\User;
-use App\Entity\Video;
-use App\Kernel;
-use DateTime;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Component\Form\Form;
+use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\RequestStack;
 use Symfony\Component\HttpFoundation\Session\Flash\FlashBagInterface;
 use Symfony\Component\Mailer\Exception\TransportExceptionInterface;
 use Symfony\Component\Security\Core\Encoder\UserPasswordEncoderInterface;
-use Symfony\Component\Security\Csrf\CsrfTokenManagerInterface;
 use Symfony\Component\Security\Csrf\TokenGenerator\TokenGeneratorInterface;
 
 class HandlerServiceOld
 {
     private $em;
     private $request;
+    private $flash;
     private $uploader;
     private $avatar;
     private $passwordEncoder;
     private $emailer;
-    private $token;
     private $generateToken;
-    private $flash;
 
     public function __construct(
         EntityManagerInterface $em,
@@ -37,61 +31,19 @@ class HandlerServiceOld
         AvatarService $avatar,
         UserPasswordEncoderInterface $passwordEncoder,
         EmailerService $emailer,
-        CsrfTokenManagerInterface $token,
         TokenGeneratorInterface $generateToken,
         FlashBagInterface $flash
     ) {
         $this->em = $em;
         $this->request = $request->getCurrentRequest();
+        $this->flash = $flash;
         $this->uploader = $uploader;
         $this->avatar = $avatar;
         $this->passwordEncoder = $passwordEncoder;
         $this->emailer = $emailer;
-        $this->token = $token;
         $this->generateToken = $generateToken;
-        $this->flash = $flash;
     }
 
-    /**
-     * @param $object
-     *
-     * @return bool
-     */
-    public function handle(Form $form, $object)
-    {
-        $form->handleRequest($this->request);
-
-        if ($form->isSubmitted() && $form->isValid()) {
-            $this->flush($object);
-
-            return true;
-        }
-
-        return false;
-    }
-
-
-
-    /**
-     * @return bool
-     */
-    public function handleVideo(Form $form, Video $video, Trick $trick)
-    {
-        $form->handleRequest($this->request);
-
-        if ($form->isSubmitted() && $form->isValid()) {
-            $video->setTrick($trick);
-            $video->refactorIframe();
-
-            $this->flush($video);
-
-            $this->flash->add('success', 'La vidéo a été ajoutée avec succès !');
-
-            return true;
-        }
-
-        return false;
-    }
 
     /**
      * @param $object
@@ -103,15 +55,6 @@ class HandlerServiceOld
         $this->em->flush();
     }
 
-    //SecurityController
-
-    /**
-     * @param $user
-     *
-     * @return bool
-     *
-     * @throws TransportExceptionInterface
-     */
     public function handleRegistration(Form $form, $user)
     {
         $form->handleRequest($this->request);
@@ -137,11 +80,17 @@ class HandlerServiceOld
         return true;
     }
 
-    /**
-     * @param $user
-     *
-     * @return bool
-     */
+    public function handleTokenNotValid($user)
+    {
+        if (!$user || $user->getToken() !== $this->request->query->get('token')) {
+            $this->flash->add('danger', 'Votre lien n\'est pas valide. Merci d\'en générer un nouveau.');
+
+            return true;
+        }
+
+        return false;
+    }
+
     public function handleValidateRegistration($user)
     {
         if ($this->request->query->get('validate')) {
@@ -155,18 +104,26 @@ class HandlerServiceOld
         return false;
     }
 
-    /**
-     * @param $user
-     *
-     * @return bool
-     */
-    public function handleTokenNotValideInSecurity($user)
+    public function handleForgottenPasswordUnsubmitted(Request $request, Form $form)
     {
-        if (!$user || $user->getToken() !== $this->request->query->get('token')) {
-            $this->flash->add('danger', 'Votre lien n\'est pas valide. Merci d\'en générer un nouveau.');
+        $form->handleRequest($request);
+
+        if (!$form->isSubmitted() || !$form->isValid()) {
+            return true;
+        }
+        return false;
+    }
+
+    Public function handleForgottenPasswordUserNotExists(User $user = null)
+    {
+        if (!$user) {
+            $this->flash->add('danger', 'Cette adresse n\'existe pas.');
 
             return true;
         }
+
+        $this->flash->add('success', 'Un lien de reconnexion vient de vous être envoyé à votre adresse courriel.');
+        $this->emailer->sendEmailForgotten($user);
 
         return false;
     }
