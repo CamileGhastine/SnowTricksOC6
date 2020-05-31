@@ -19,8 +19,8 @@ class AvatarService
     }
 
     /**
-     * @param User         $user
-     * @param UploadedFile $file
+     * @param User              $user
+     * @param UploadedFile|null $file
      */
     public function manageAvatar(User $user, UploadedFile $file = null)
     {

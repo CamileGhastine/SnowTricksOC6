@@ -35,6 +35,12 @@ class EditTrickService
         $this->handlerVideo = $handlerVideo;
     }
 
+    /**
+     * @param Request $request
+     * @param Trick   $trick
+     *
+     * @return bool|Form
+     */
     public function formTrickCreate(Request $request, Trick $trick)
     {
         /** @var Form $formTrick */
@@ -47,6 +53,11 @@ class EditTrickService
         return $formTrick;
     }
 
+    /**
+     * @param Request $request
+     *
+     * @return bool|Form
+     */
     public function formCategoryCreate(Request $request)
     {
         $category = new Category();
@@ -61,6 +72,12 @@ class EditTrickService
         return $formCategory;
     }
 
+    /**
+     * @param Request $request
+     * @param Trick   $trick
+     *
+     * @return bool|Form
+     */
     public function formImageCreate(Request $request, Trick $trick)
     {
         $image = new Image();
@@ -75,6 +92,12 @@ class EditTrickService
         return $formImage;
     }
 
+    /**
+     * @param Request $request
+     * @param Trick   $trick
+     *
+     * @return bool|Form
+     */
     public function formVideoCreate(Request $request, Trick $trick)
     {
         $video = new Video();

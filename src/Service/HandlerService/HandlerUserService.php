@@ -9,6 +9,7 @@ use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Component\Form\Form;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Session\Flash\FlashBagInterface;
+use Symfony\Component\Mailer\Exception\TransportExceptionInterface;
 use Symfony\Component\Security\Core\Authentication\Token\Storage\TokenStorageInterface;
 use Symfony\Component\Security\Core\Encoder\UserPasswordEncoderInterface;
 use Symfony\Component\Security\Csrf\TokenGenerator\TokenGeneratorInterface;
@@ -33,6 +34,10 @@ class HandlerUserService extends HandlerService
         $this->uploader = $uploader;
     }
 
+    /**
+     * @param TokenStorageInterface $tokenStorage
+     * @param $user
+     */
     public function handleRegistrationAlraedyConnected(TokenStorageInterface $tokenStorage, $user)
     {
         if ($user) {
@@ -41,6 +46,16 @@ class HandlerUserService extends HandlerService
         }
     }
 
+    /**
+     * @param Request                 $request
+     * @param TokenGeneratorInterface $generateToken
+     * @param Form                    $form
+     * @param $user
+     *
+     * @return bool
+     *
+     * @throws TransportExceptionInterface
+     */
     public function handleRegistration(Request $request, TokenGeneratorInterface $generateToken, Form $form, $user)
     {
         $form->handleRequest($request);
@@ -66,6 +81,12 @@ class HandlerUserService extends HandlerService
         return true;
     }
 
+    /**
+     * @param Request $request
+     * @param $user
+     *
+     * @return bool
+     */
     public function handleTokenNotValid(Request $request, $user)
     {
         if (!$user || $user->getToken() !== $request->query->get('token')) {
@@ -101,6 +122,13 @@ class HandlerUserService extends HandlerService
         return false;
     }
 
+    /**
+     * @param User|null $user
+     *
+     * @return bool
+     *
+     * @throws TransportExceptionInterface
+     */
     public function handleForgottenPasswordUserNotExists(User $user = null)
     {
         if (!$user) {
@@ -115,6 +143,13 @@ class HandlerUserService extends HandlerService
         return false;
     }
 
+    /**
+     * @param Request $request
+     * @param Form    $form
+     * @param User    $user
+     *
+     * @return bool
+     */
     public function handleResetPassword(Request $request, Form $form, User $user)
     {
         $form->handleRequest($request);

@@ -15,7 +15,8 @@ class PaginatorService
     }
 
     /**
-     * @param $id
+     * @param int $id
+     * @param int $page
      *
      * @return array
      */
@@ -28,7 +29,8 @@ class PaginatorService
     }
 
     /**
-     * render de HTML pagination links.
+     * @param int $id
+     * @param int $page
      *
      * @return string
      */

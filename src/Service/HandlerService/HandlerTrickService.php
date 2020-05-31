@@ -26,6 +26,13 @@ class HandlerTrickService extends HandlerService
         $this->uploader = $uploader;
     }
 
+    /**
+     * @param Request $request
+     * @param Form    $form
+     * @param Trick   $trick
+     *
+     * @return bool
+     */
     public function handleAddTrick(Request $request, Form $form, Trick $trick)
     {
         $form->handleRequest($request);
@@ -50,6 +57,13 @@ class HandlerTrickService extends HandlerService
         return true;
     }
 
+    /**
+     * @param Request $request
+     * @param Form    $form
+     * @param Trick   $trick
+     *
+     * @return bool
+     */
     public function handleEditTrick(Request $request, Form $form, Trick $trick)
     {
         $trick->setUpdatedAt(new DateTime());
@@ -67,6 +81,9 @@ class HandlerTrickService extends HandlerService
     }
 
     /**
+     * @param Request $request
+     * @param Trick   $trick
+     *
      * @return bool
      */
     public function handleDeleteTrick(Request $request, Trick $trick)

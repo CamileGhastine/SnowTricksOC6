@@ -16,6 +16,9 @@ class UploaderService
         $this->slugger = $slugger;
     }
 
+    /**
+     * @param Image $image
+     */
     public function upload(Image $image)
     {
         $OriginalName = pathinfo($image->getFile()->getClientOriginalName(), PATHINFO_FILENAME);
@@ -29,6 +32,8 @@ class UploaderService
     }
 
     /**
+     * @param UploadedFile $file
+     *
      * @return string
      */
     public function uploadAvatar(UploadedFile $file)

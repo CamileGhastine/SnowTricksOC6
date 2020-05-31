@@ -19,7 +19,10 @@ class HandlerService
     }
 
     /**
+     * @param Request $request
+     * @param Form    $form
      * @param $entity
+     * @param string|null $flash
      *
      * @return bool
      */

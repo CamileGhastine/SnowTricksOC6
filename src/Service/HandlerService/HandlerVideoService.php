@@ -20,6 +20,14 @@ class HandlerVideoService extends HandlerService
         $this->token = $token;
     }
 
+    /**
+     * @param Request $request
+     * @param Form    $form
+     * @param Video   $video
+     * @param Trick   $trick
+     *
+     * @return bool
+     */
     public function handleAddVideo(Request $request, Form $form, Video $video, Trick $trick)
     {
         $form->handleRequest($request);
@@ -38,6 +46,12 @@ class HandlerVideoService extends HandlerService
         return false;
     }
 
+    /**
+     * @param Request $request
+     * @param Video   $video
+     *
+     * @return bool
+     */
     public function handleDeleteVideo(Request $request, Video $video)
     {
         if ($request->query->get('csrf_token') && $this->token->getToken('delete'.$video->getId())->getValue() === $request->query->get('csrf_token')) {

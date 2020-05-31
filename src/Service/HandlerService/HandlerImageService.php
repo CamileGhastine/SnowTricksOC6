@@ -29,6 +29,14 @@ class HandlerImageService extends HandlerService
         $this->uploader = $uploader;
     }
 
+    /**
+     * @param Request $request
+     * @param Form    $form
+     * @param Image   $image
+     * @param Trick   $trick
+     *
+     * @return bool
+     */
     public function handleAddImage(Request $request, Form $form, Image $image, Trick $trick)
     {
         $form->handleRequest($request);
@@ -51,6 +59,12 @@ class HandlerImageService extends HandlerService
         return true;
     }
 
+    /**
+     * @param Request $request
+     * @param Image   $image
+     *
+     * @return bool
+     */
     public function handlerDeleteImage(Request $request, Image $image)
     {
         if (!$request->query->get('csrf_token') || !$this->token->getToken('delete'.$image->getId())->getValue() === $request->query->get('csrf_token')) {
@@ -74,6 +88,10 @@ class HandlerImageService extends HandlerService
         return true;
     }
 
+    /**
+     * @param Image $newPoster
+     * @param Image $oldPoster
+     */
     public function handleChangePoster(Image $newPoster, Image $oldPoster)
     {
         $trick = $oldPoster->getTrick();
@@ -85,6 +103,13 @@ class HandlerImageService extends HandlerService
         $this->em->flush();
     }
 
+    /**
+     * @param Request $request
+     * @param Form    $form
+     * @param User    $user
+     *
+     * @return bool
+     */
     public function handleAvatar(Request $request, Form $form, User $user)
     {
         $form->handleRequest($request);

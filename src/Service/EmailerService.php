@@ -3,6 +3,7 @@
 namespace App\Service;
 
 use App\Entity\User;
+use Symfony\Component\Mailer\Exception\TransportExceptionInterface;
 use Symfony\Component\Mailer\MailerInterface;
 use Symfony\Component\Mime\Email;
 
@@ -16,7 +17,9 @@ class EmailerService
     }
 
     /**
-     * @throws \Symfony\Component\Mailer\Exception\TransportExceptionInterface
+     * @param User $user
+     *
+     * @throws TransportExceptionInterface
      */
     public function sendEmailForgotten(User $user)
     {
@@ -34,7 +37,9 @@ class EmailerService
     }
 
     /**
-     * @throws \Symfony\Component\Mailer\Exception\TransportExceptionInterface
+     * @param User $user
+     *
+     * @throws TransportExceptionInterface
      */
     public function sendEmailRegistration(User $user)
     {
