@@ -19,7 +19,6 @@ use App\Service\HandlerService\HandlerService;
 use App\Service\HandlerService\HandlerTrickService;
 use App\Service\HandlerService\HandlerVideoService;
 use App\Service\PaginatorService;
-use Doctrine\ORM\NonUniqueResultException;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Entity;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\IsGranted;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
@@ -37,7 +36,9 @@ class TrickController extends AbstractController
      * @Route("/", name="home")
      * @Route("/trick/category/{id<[0-9]+>}", name="trick_category")
      *
-     * @param null $id
+     * @param TrickRepository    $repoTrick
+     * @param CategoryRepository $repoCategory
+     * @param null               $id
      *
      * @return Response
      */
@@ -54,6 +55,9 @@ class TrickController extends AbstractController
      * Load More trick button in home page.
      *
      * @Route("/trick/ajax-loadMore", name="ajax_load_more")
+     *
+     * @param TrickRepository $repoTrick
+     * @param Request         $request
      *
      * @return Response
      */
@@ -75,10 +79,12 @@ class TrickController extends AbstractController
      * @Entity("trick", expr="repository.findTrickWithCategoriesImagesVideosComments(id)")
      *
      * @param $id
+     * @param Trick            $trick
+     * @param PaginatorService $paginator
+     * @param Request          $request
+     * @param HandlerService   $handler
      *
      * @return RedirectResponse|Response
-     *
-     * @throws NonUniqueResultException
      */
     public function show($id, Trick $trick, PaginatorService $paginator, Request $request, HandlerService $handler)
     {
@@ -111,6 +117,7 @@ class TrickController extends AbstractController
      *
      * @param $id
      * @param $page
+     * @param PaginatorService $paginator
      *
      * @return Response
      */
@@ -129,6 +136,9 @@ class TrickController extends AbstractController
      *
      * @Route("/trick/new", name="trick_new")
      * @isGranted("ROLE_USER", message="Vous devez être connecté pour créer un trick ! ")
+     *
+     * @param Request             $request
+     * @param HandlerTrickService $handler
      *
      * @return RedirectResponse|Response
      */
@@ -159,6 +169,10 @@ class TrickController extends AbstractController
      * @Route("/trick/ajax-addCategory", name="ajax_add_category")
      * @isGranted("ROLE_USER", message="Vous devez être connecté pour créer un trick ! ")
      *
+     * @param Request                 $request
+     * @param HandlerService          $handler
+     * @param GetErrorsMessageService $errorsMessage
+     *
      * @return Response
      */
     public function ajaxAddCategory(Request $request, HandlerService $handler, GetErrorsMessageService $errorsMessage)
@@ -184,6 +198,10 @@ class TrickController extends AbstractController
      *
      * @Route("/trick/{id<[0-9]+>}/update", name="trick_edit")@param Trick $trick
      * @isGranted("ROLE_USER", message="Vous devez être connecté pour modifier un trick ! ")
+     *
+     * @param Trick            $trick
+     * @param Request          $request
+     * @param EditTrickService $editTrick
      *
      * @return RedirectResponse|Response
      */
@@ -221,6 +239,9 @@ class TrickController extends AbstractController
      * @Route("trick/{id<[0-9]+>}/delete", name="trick_delete")
      *
      * @isGranted("ROLE_USER", message="Vous devez être connecté pour supprimer un trick ! ")@param Trick $trick
+     * @param Trick               $trick
+     * @param Request             $request
+     * @param HandlerTrickService $handler
      *
      * @return RedirectResponse
      */
@@ -240,6 +261,10 @@ class TrickController extends AbstractController
      *
      * @Route("trick/image/{id<[0-9]+>}/delete", name="image_delete")@param Image $image
      * @isGranted("ROLE_USER", message="Vous devez être connecté pour supprimer une image ! ")
+     *
+     * @param Request             $request
+     * @param Image               $image
+     * @param HandlerImageService $handler
      *
      * @return RedirectResponse
      */
@@ -262,6 +287,10 @@ class TrickController extends AbstractController
      * @Route("trick/image/{oldPoster}/poster/{newPoster}", name="image_poster_change")
      * @isGranted("ROLE_USER", message="Vous devez être connecté pour modifier une image ! ")
      *
+     * @param HandlerImageService $handler
+     * @param Image               $newPoster
+     * @param Image               $oldPoster
+     *
      * @return RedirectResponse
      */
     public function changePoster(HandlerImageService $handler, Image $newPoster, Image $oldPoster)
@@ -276,6 +305,10 @@ class TrickController extends AbstractController
      *
      * @Route("trick/video/{id<[0-9]+>}/delete", name="video_delete")
      * @isGranted("ROLE_USER", message="Vous devez être connecté pour supprimer une vidéo ! ")
+     *
+     * @param Request             $request
+     * @param Video               $video
+     * @param HandlerVideoService $handler
      *
      * @return RedirectResponse
      */

@@ -9,8 +9,10 @@ use App\Form\ResetPasswordType;
 use App\Repository\UserRepository;
 use App\Security\FormAuthenticator;
 use App\Service\HandlerService\HandlerUserService;
+use LogicException;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\Form\Form;
+use Symfony\Component\HttpFoundation\RedirectResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
@@ -61,15 +63,18 @@ class SecurityController extends AbstractController
      */
     public function logout()
     {
-        throw new \LogicException('This method can be blank - it will be intercepted by the logout key on your firewall.');
+        throw new LogicException('This method can be blank - it will be intercepted by the logout key on your firewall.');
     }
 
     /**
      * @Route("/inscription", name="security_registration")
      *
-     * @return \Symfony\Component\HttpFoundation\RedirectResponse|Response
+     * @param Request                 $request
+     * @param TokenStorageInterface   $tokenStorage
+     * @param TokenGeneratorInterface $generateToken
+     * @param HandlerUserService      $handler
      *
-     * @throws \Symfony\Component\Mailer\Exception\TransportExceptionInterface
+     * @return RedirectResponse|Response
      */
     public function registration(Request $request, TokenStorageInterface $tokenStorage, TokenGeneratorInterface $generateToken, HandlerUserService $handler)
     {
@@ -92,7 +97,10 @@ class SecurityController extends AbstractController
     /**
      * @Route("/validate_registration", name="validate_registration")
      *
-     * @return \Symfony\Component\HttpFoundation\RedirectResponse|Response
+     * @param Request            $request
+     * @param HandlerUserService $handler
+     *
+     * @return RedirectResponse|Response
      */
     public function validateRegistration(Request $request, HandlerUserService $handler)
     {
@@ -116,9 +124,10 @@ class SecurityController extends AbstractController
     /**
      * @Route("/forgotten_password", name="security_forgotten")
      *
-     * @return \Symfony\Component\HttpFoundation\RedirectResponse|Response
+     * @param Request            $request
+     * @param HandlerUserService $handler
      *
-     * @throws \Symfony\Component\Mailer\Exception\TransportExceptionInterface
+     * @return RedirectResponse|Response
      */
     public function forgotenPasword(Request $request, HandlerUserService $handler)
     {
@@ -147,7 +156,10 @@ class SecurityController extends AbstractController
     /**
      * @Route("/reset_password", name="reset_password")
      *
-     * @return \Symfony\Component\HttpFoundation\RedirectResponse|Response|null
+     * @param Request            $request
+     * @param HandlerUserService $handler
+     *
+     * @return RedirectResponse|Response|null
      */
     public function resetPassword(Request $request, HandlerUserService $handler)
     {
@@ -174,10 +186,10 @@ class SecurityController extends AbstractController
     }
 
     /**
-     * @param $user
      * @param $request
+     * @param $user
      *
-     * @return \Symfony\Component\HttpFoundation\RedirectResponse|Response|null
+     * @return RedirectResponse|Response|null
      */
     private function resetPasswordRedirectToRoute($request, $user)
     {

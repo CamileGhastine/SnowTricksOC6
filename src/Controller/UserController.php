@@ -6,6 +6,7 @@ use App\Entity\AvatarProto;
 use App\Form\AvatarType;
 use App\Service\HandlerService\HandlerImageService;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
+use Symfony\Component\HttpFoundation\RedirectResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\Routing\Annotation\Route;
 
@@ -14,7 +15,10 @@ class UserController extends AbstractController
     /**
      * @Route("/user", name="user_account")
      *
-     * @return \Symfony\Component\HttpFoundation\RedirectResponse|\Symfony\Component\HttpFoundation\Response
+     * @param Request             $request
+     * @param HandlerImageService $handler
+     *
+     * @return RedirectResponse|\Symfony\Component\HttpFoundation\Response
      */
     public function account(Request $request, HandlerImageService $handler)
     {
