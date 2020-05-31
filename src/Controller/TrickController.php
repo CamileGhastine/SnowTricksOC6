@@ -10,8 +10,12 @@ use App\Entity\Video;
 use App\Form\AddTrickType;
 use App\Form\CategoryType;
 use App\Form\CommentType;
+use App\Form\EditTrickType;
+use App\Form\ImageType;
+use App\Form\VideoType;
 use App\Repository\CategoryRepository;
 use App\Repository\TrickRepository;
+use App\Service\EditTrickService;
 use App\Service\GetErrorsMessageService;
 use App\Service\HandlerService\HandlerImageService;
 use App\Service\HandlerService\HandlerService;
@@ -145,7 +149,7 @@ class TrickController extends AbstractController
         if ($handler->handleAddTrick($request, $form, $trick)) {
 
             return $this->redirectToRoute('trick_show', [
-                    'id' => $trick->getId(), ]);
+                'id' => $trick->getId(), ]);
         }
 
         return $this->render('trick/addForm.html.twig', [
@@ -188,31 +192,32 @@ class TrickController extends AbstractController
      *
      * @return RedirectResponse|Response
      */
-    public function edit(Trick $trick, HandlerServiceOld $handler)
+    public function edit(Trick $trick, Request $request, EditTrickService $editTrick, HandlerServiceOld $handler)
     {
-        // add a trick, a category, an image or a video
-        $entities = ['Trick' => 'figure', 'Category' => 'catégorie', 'Image' => 'photo', 'Video' => 'video'];
-        $renderParameters = ['trick' => $trick];
-
-        foreach ($entities as $entity => $flash) {
-            $form = 'form'.$entity;
-            $entityClass = 'App\Entity\\'.$entity;
-            $typeClass = 'Trick' === $entity ? 'App\Form\EditTrickType' : 'App\Form\\'.$entity.'Type';
-            $handle = 'handle'.$entity;
-
-            $object = 'Trick' === $entity ? $trick : new $entityClass();
-
-            $$form = $this->createForm($typeClass, $object);
-
-            if ($handler->$handle($$form, $object, $trick)) {
-                $this->addFlash('success', 'Trick' === $entity ? 'Le trick a été modifiée avec succès !' : 'La '.$flash.' a été ajoutée avec succès !');
-
-                return $this->redirect($this->generateUrl('Trick' === $entity ? 'trick_show' : 'trick_edit', ['id' => $trick->getId()]).'#alert');
-            }
-            $renderParameters[$form] = $$form->createView();
+        // Edit Trick
+        $formTrick = $editTrick->formTrickCreate($request, $trick);
+        if(!$formTrick) {
+            return $this->redirect($this->generateUrl('trick_show', ['id' => $trick->getId()]));
         }
 
-        return $this->render('trick/editForm.html.twig', $renderParameters);
+        // add Category, image or video
+        foreach( ['Category', 'Image', 'Video'] as $entity) {
+            $form = 'form'.$entity;
+            $formCreate = 'form'.$entity.'Create';
+
+            $$form = $editTrick->$formCreate($request, $trick);
+            if(!$$form) {
+                return $this->redirect($this->generateUrl('trick_edit', ['id' => $trick->getId()]).'#alert');
+            }
+        }
+
+        return $this->render('trick/editForm.html.twig', [
+            'trick' => $trick,
+            'formTrick' =>$formTrick->createView(),
+            'formCategory' => $formCategory->createView(),
+            'formImage' => $formImage->createView(),
+            'formVideo' => $formVideo->createView(),
+        ]);
     }
 
     /**

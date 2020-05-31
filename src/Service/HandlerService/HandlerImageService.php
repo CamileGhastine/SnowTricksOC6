@@ -5,9 +5,11 @@ namespace App\Service\HandlerService;
 
 
 use App\Entity\Image;
+use App\Entity\Trick;
 use App\Entity\User;
 use App\Kernel;
 use App\Service\AvatarService;
+use App\Service\UploaderService;
 use DateTime;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Component\Form\Form;
@@ -19,12 +21,36 @@ class HandlerImageService extends HandlerService
 {
     private $token;
     private $avatar;
+    private $uploader;
 
-    public function __construct(EntityManagerInterface $em, FlashBagInterface $flash, CsrfTokenManagerInterface $token, AvatarService $avatar)
+    public function __construct(EntityManagerInterface $em, FlashBagInterface $flash, UploaderService $uploader, CsrfTokenManagerInterface $token, AvatarService $avatar)
     {
         parent::__construct($em, $flash);
         $this->token = $token;
         $this->avatar = $avatar;
+        $this->uploader = $uploader;
+    }
+
+    public function handleAddImage(Request $request, Form $form, Image $image, Trick $trick)
+    {
+        $form->handleRequest($request);
+
+        if (!$form->isSubmitted() || !$form->isValid()) {
+            return false;
+        }
+
+        $this->uploader->upload($image);
+
+        $image->setTrick($trick);
+
+        if (0 === count($trick->getImages())) {
+            $image->setPoster(1);
+        }
+        $this->create($image);
+
+        $this->flash->add('success', 'La photo a été ajoutée avec succès !');
+
+        return true;
     }
 
     public function handlerDeleteImage(Request $request, Image $image)

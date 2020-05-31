@@ -9,6 +9,7 @@ use App\Entity\Trick;
 use App\Entity\Video;
 use App\Kernel;
 use App\Service\UploaderService;
+use DateTime;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Component\Form\Form;
 use Symfony\Component\HttpFoundation\Request;
@@ -51,6 +52,22 @@ class HandlerTrickService extends HandlerService
         return true;
     }
 
+    public function handleEditTrick(Request $request, Form $form, Trick $trick)
+    {
+        $trick->setUpdatedAt(new DateTime());
+
+        $form->handleRequest($request);
+
+        if ($form->isSubmitted() && $form->isValid()) {
+            $this->em->flush();
+            $this->flash->add('success', 'Le trick a été modifiée avec succès !');
+
+            return true;
+        }
+
+        return false;
+
+    }
     /**
      * @return bool
      */

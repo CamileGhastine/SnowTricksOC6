@@ -24,12 +24,14 @@ class HandlerService
      *
      * @return bool
      */
-    public function handle(Request $request, Form $form, $entity)
+    public function handle(Request $request, Form $form, $entity, ?string $flash = null)
     {
         $form->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid()) {
             $this->create($entity);
+
+            if ($flash) $this->flash->add('success', $flash);
 
             return true;
         }

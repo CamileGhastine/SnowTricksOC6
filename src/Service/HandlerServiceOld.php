@@ -70,75 +70,7 @@ class HandlerServiceOld
         return false;
     }
 
-    /**
-     * @param $object
-     *
-     * @return bool
-     */
-    public function handleAddTrick(Form $form, $object)
-    {
-        $form->handleRequest($this->request);
 
-        if (!$form->isSubmitted() || !$form->isValid()) {
-            return false;
-        }
-
-        /** @var Video $video */
-        foreach ($form->getData()->getVideos() as $video) {
-            $video->refactorIframe();
-        }
-
-        /** @var Image $image */
-        foreach ($form->getData()->getImages() as $key => $image) {
-            $this->uploader->upload($image);
-            0 === $key ? $image->setPoster(true) : null;
-        }
-        $this->flush($object);
-        $this->flash->add('success', 'La figure a été ajoutée avec succès !');
-
-        return true;
-    }
-
-    /**
-     * @return bool
-     */
-    public function handleTrick(Form $form, Trick $trick)
-    {
-        $trick->setUpdatedAt(new DateTime());
-
-        return $this->handle($form, $trick);
-    }
-
-    /**
-     * @return bool
-     */
-    public function handleCategory(Form $form, Category $category)
-    {
-        return $this->handle($form, $category);
-    }
-
-    /**
-     * @return bool
-     */
-    public function handleImage(Form $form, Image $image, Trick $trick)
-    {
-        $form->handleRequest($this->request);
-
-        if (!$form->isSubmitted() || !$form->isValid()) {
-            return false;
-        }
-
-        $this->uploader->upload($image);
-
-        $image->setTrick($trick);
-
-        if (0 === count($trick->getImages())) {
-            $image->setPoster(1);
-        }
-        $this->flush($image);
-
-        return true;
-    }
 
     /**
      * @return bool
@@ -153,81 +85,12 @@ class HandlerServiceOld
 
             $this->flush($video);
 
-            return true;
-        }
-
-        return false;
-    }
-
-    /**
-     * @return bool
-     */
-    public function handleDeleteTrick(Trick $trick)
-    {
-        if (!$this->request->request->get('_token') || $this->token->getToken('delete'.$trick->getId())->getValue() !== $this->request->request->get('_token')) {
-            return false;
-        }
-
-        foreach ($trick->getImages() as $image) {
-            unlink(Kernel::getProjectDir().'/public/'.$image->getUrl());
-        }
-
-        $this->flush($trick, 'remove');
-        $this->flash->add('success', 'la figure a été supprimée avec succès !');
-
-        return true;
-    }
-
-    /**
-     * @return bool
-     */
-    public function handlerDeleteImage(Image $image)
-    {
-        if (!$this->request->query->get('csrf_token') || !$this->token->getToken('delete'.$image->getId())->getValue() === $this->request->query->get('csrf_token')) {
-            return false;
-        }
-
-        // New poster before delete old poster
-        $trick = $image->getTrick();
-        $trick->removeImage($image);
-        $images = $trick->getImages();
-
-        if ($image->getPoster() && count($images) > 0) {
-            $images[array_key_first($images->toArray())]->setPoster(true);
-        }
-
-        $this->flush($image, 'remove');
-        $this->flash->add('success', 'La photo a été supprimée avec succès !');
-
-        unlink(Kernel::getProjectDir().'/public/'.$image->getUrl());
-
-        return true;
-    }
-
-    /**
-     * @return bool
-     */
-    public function handleDeleteVideo(Video $video)
-    {
-        if ($this->request->query->get('csrf_token') && $this->token->getToken('delete'.$video->getId())->getValue() === $this->request->query->get('csrf_token')) {
-            $this->flush($video, 'remove');
-            $this->flash->add('success', 'La vidéo a été supprimée avec succès !');
+            $this->flash->add('success', 'La vidéo a été ajoutée avec succès !');
 
             return true;
         }
 
         return false;
-    }
-
-    public function handleChangePoster(Image $newPoster, Image $oldPoster)
-    {
-        $trick = $oldPoster->getTrick();
-        $trick->setUpdatedAt(new DateTime());
-
-        $oldPoster->setPoster(false);
-        $newPoster->setPoster(true);
-
-        $this->flush($trick);
     }
 
     /**
@@ -238,26 +101,6 @@ class HandlerServiceOld
     {
         $this->em->$action($object);
         $this->em->flush();
-    }
-
-    // UserController
-
-    /**
-     * @return bool
-     */
-    public function handleAvatar(Form $form, User $user)
-    {
-        $form->handleRequest($this->request);
-
-        if ($form->isSubmitted() && $form->isValid()) {
-            $file = $form->getData() ? $form->getData()->getFile() : null;
-
-            $this->avatar->manageAvatar($user, $file);
-
-            return true;
-        }
-
-        return false;
     }
 
     //SecurityController
