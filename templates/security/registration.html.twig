@@ -7,10 +7,13 @@
     <div class="container">
         <div class="media-trick my-5">
             <div class="my-5 mx-2 mx-md-5">
-                {% for message in app.flashes('success') %}
-                    <div class="alert alert-success text-center mt-5">
-                        {{ message }}
-                    </div>
+                {% set flash = app.flashes %}
+                {% if  flash %}
+                    {% for message in flash.success %}
+                        <div class="alert alert-success text-center mt-5">
+                            {{ message }}
+                        </div>
+                    {% endfor %}
                 {% else %}
                     <div class="container mt-5">
                         <h1 class="mb-5">Enregistrement</h1>
@@ -26,7 +29,7 @@
                         {{ form_end(form) }}
                         <p class="offset-2 mt-4">Déjà inscrit : <a href="{{ path('security_login') }}">Connectez-vous</a>
                     </div>
-                {% endfor %}
+                {% endif %}
             </div>
         </div>
     </div>

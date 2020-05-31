@@ -6,17 +6,20 @@
     <div class="container">
         <div class="media-trick my-5">
             <div class="mx-5 my-5">
-                {% for message in app.flashes('danger') %}
-                    <div class="alert alert-danger text-center mx-5 my-5">
-                        {{ message }}
-                    </div>
+                {% set flash = app.flashes %}
+                {% if  flash %}
+                    {% for message in flash.danger %}
+                        <div class="alert alert-danger text-center mx-5 my-5">
+                            {{ message }}
+                        </div>
+                    {% endfor %}
                 {% else %}
                     <h3 class="my-5">Valider votre inscription</h3>
                     <form method="post">
                         <p>Cliquez sur ce bouton pour valider votre inscription <a href="{{ path('validate_registration', {'email': user.email,'token':user.token,'validate' : true}) }}" class="btn-sm btn-blue">Valider</a></p>
 
                     </form>
-                {% endfor %}
+                {% endif %}
             </div>
         </div>
     </div>
