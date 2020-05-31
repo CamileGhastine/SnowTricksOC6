@@ -248,7 +248,7 @@ class TrickController extends AbstractController
     public function delete(Trick $trick, Request $request, HandlerTrickService $handler)
     {
         if ($handler->handleDeleteTrick($request, $trick)) {
-            return $this->redirectToRoute('home');
+            return $this->redirect($this->generateUrl('home').'#alert');
         }
 
         $this->addFlash('danger', 'La figure n\'a pas pu être supprimée');
