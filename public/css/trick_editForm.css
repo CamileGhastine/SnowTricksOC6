@@ -9,6 +9,17 @@
     border: none;
 }
 
+.icone-button-download
+{
+    background-color: #185099;
+}
+
+
+.icone-download
+{
+    color: #dceaef !important;
+}
+
 iframe
 {
     border: 1px solid #a8608b;

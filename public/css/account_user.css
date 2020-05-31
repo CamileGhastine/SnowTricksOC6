@@ -4,6 +4,17 @@
     border: none;
 }
 
+.icone-button-download
+{
+    background-color: #185099 !important;
+}
+
+
+.icone-download
+{
+    color: #dceaef !important;
+}
+
 .container
 {
     min-height: 90vh;

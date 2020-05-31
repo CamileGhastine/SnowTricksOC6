@@ -5,6 +5,7 @@ namespace App\Controller;
 use App\Entity\AvatarProto;
 use App\Form\AvatarType;
 use App\Service\HandlerService\HandlerImageService;
+use Sensio\Bundle\FrameworkExtraBundle\Configuration\IsGranted;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\RedirectResponse;
 use Symfony\Component\HttpFoundation\Request;
@@ -14,6 +15,7 @@ class UserController extends AbstractController
 {
     /**
      * @Route("/user", name="user_account")
+     * @isGranted("ROLE_USER", message="Vous devez être connecté pour créer un trick ! ")
      *
      * @param Request             $request
      * @param HandlerImageService $handler
