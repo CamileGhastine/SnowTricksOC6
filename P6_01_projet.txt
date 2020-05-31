@@ -1,0 +1,9 @@
+Développeur d'application PHP/Symphony
+
+Projet 6 : SnowTRocks
+
+Lien GitHub vers le projet :
+https://github.com/CamileGhastine/SnowTricksOC6
+
+Lien vers Codeclimate : note A
+https://codeclimate.com/github/CamileGhastine/SnowTricksOC6
