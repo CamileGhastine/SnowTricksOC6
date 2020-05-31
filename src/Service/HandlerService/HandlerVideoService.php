@@ -1,8 +1,6 @@
 <?php
 
-
 namespace App\Service\HandlerService;
-
 
 use App\Entity\Trick;
 use App\Entity\Video;
@@ -20,7 +18,6 @@ class HandlerVideoService extends HandlerService
     {
         parent::__construct($em, $flash);
         $this->token = $token;
-
     }
 
     public function handleAddVideo(Request $request, Form $form, Video $video, Trick $trick)

@@ -1,8 +1,6 @@
 <?php
 
-
 namespace App\Service\HandlerService;
-
 
 use App\Entity\Image;
 use App\Entity\Trick;

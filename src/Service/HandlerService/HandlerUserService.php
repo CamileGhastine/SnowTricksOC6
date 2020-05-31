@@ -1,8 +1,6 @@
 <?php
 
-
 namespace App\Service\HandlerService;
-
 
 use App\Entity\User;
 use App\Service\EmailerService;
@@ -68,11 +66,10 @@ class HandlerUserService extends HandlerService
         return true;
     }
 
-
     public function handleTokenNotValid(Request $request, $user)
     {
         if (!$user || $user->getToken() !== $request->query->get('token')) {
-            $this->flash->add('danger', 'Votre lien n\'est pas valide. Merci d\'en générer un nouveau.');
+//            $this->flash->add('danger', 'Votre lien n\'est pas valide. Merci d\'en générer un nouveau.');
 
             return true;
         }
@@ -85,7 +82,7 @@ class HandlerUserService extends HandlerService
         if ($request->query->get('validate')) {
             $user->setValidate(true);
             $this->em->flush();
-            $this->flash->add('success', 'Votre inscription est validée. Cliquez sur l\'onglet connexion du menu pour vous connecter.');
+//            $this->flash->add('success', 'Votre inscription est validée. Cliquez sur l\'onglet connexion du menu pour vous connecter.');
 
             return true;
         }
@@ -100,13 +97,14 @@ class HandlerUserService extends HandlerService
         if (!$form->isSubmitted() || !$form->isValid()) {
             return true;
         }
+
         return false;
     }
 
-    Public function handleForgottenPasswordUserNotExists(User $user = null)
+    public function handleForgottenPasswordUserNotExists(User $user = null)
     {
         if (!$user) {
-            $this->flash->add('danger', 'Cette adresse n\'existe pas.');
+//            $this->flash->add('danger', 'Cette adresse n\'existe pas.');
 
             return true;
         }

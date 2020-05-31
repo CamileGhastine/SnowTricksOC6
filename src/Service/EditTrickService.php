@@ -1,8 +1,6 @@
 <?php
 
-
 namespace App\Service;
-
 
 use App\Entity\Category;
 use App\Entity\Image;
@@ -43,7 +41,6 @@ class EditTrickService
         $formTrick = $this->formFactory->create(EditTrickType::class, $trick);
 
         if ($this->handlerTrick->handleEditTrick($request, $formTrick, $trick)) {
-
             return false;
         }
 
@@ -58,7 +55,6 @@ class EditTrickService
         $formCategory = $this->formFactory->create(CategoryType::class, $category);
 
         if ($this->handlerTrick->handle($request, $formCategory, $category, 'La catégorie a été ajoutée avec succès !')) {
-
             return false;
         }
 
@@ -73,7 +69,6 @@ class EditTrickService
         $formImage = $this->formFactory->create(ImageType::class, $image);
 
         if ($this->handlerImage->handleAddImage($request, $formImage, $image, $trick)) {
-
             return false;
         }
 
@@ -88,7 +83,6 @@ class EditTrickService
         $formVideo = $this->formFactory->create(VideoType::class, $video);
 
         if ($this->handlerVideo->handleAddVideo($request, $formVideo, $video, $trick)) {
-
             return false;
         }
 

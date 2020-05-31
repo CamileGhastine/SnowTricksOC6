@@ -37,6 +37,10 @@ class SecurityController extends AbstractController
 
     /**
      * @Route("/login", name="security_login")
+     *
+     * @param AuthenticationUtils $authenticationUtils
+     *
+     * @return Response
      */
     public function login(AuthenticationUtils $authenticationUtils): Response
     {
@@ -95,13 +99,13 @@ class SecurityController extends AbstractController
         $user = $this->repo->findOneBy(['email' => $request->query->get('email')]);
 
         if ($handler->handleTokenNotValid($request, $user)) {
-            $this->addFlash('danger', 'lien invalide');
+            $this->addFlash('danger', 'Votre lien n\'est pas valide. Merci d\'en générer un nouveau.');
 
             return $this->render('Security/validateRegistration.html.twig', ['user' => null]);
         }
 
         if ($handler->handleValidateRegistration($request, $user)) {
-            $this->addFlash('success', 'Inscription validée.');
+            $this->addFlash('success', 'Votre inscription est validée. Cliquez sur l\'onglet connexion du menu pour vous connecter.');
 
             return $this->redirectToRoute('home');
         }
@@ -121,10 +125,7 @@ class SecurityController extends AbstractController
         /** @var Form $form */
         $form = $this->createForm(ForgottenPasswordType::class);
 
-        if ($handler->handleForgottenPasswordUnsubmitted($request, $form))
-        {
-            $this->addFlash('danger', 'Pas adresse');
-
+        if ($handler->handleForgottenPasswordUnsubmitted($request, $form)) {
             return $this->render('/security/forgottenPassword.html.twig', [
                 'form' => $form->createView(),
             ]);
@@ -132,9 +133,8 @@ class SecurityController extends AbstractController
 
         $user = $this->repo->findOneBy(['email' => $form->getData()->getEmail()]);
 
-        if ($handler ->handleForgottenPasswordUserNotExists($user))
-        {
-            $this->addFlash('danger', 'Pas adresse');
+        if ($handler->handleForgottenPasswordUserNotExists($user)) {
+            $this->addFlash('danger', 'Cette adresse n\'existe pas.');
 
             return $this->redirectToRoute('security_forgotten');
         }
@@ -157,7 +157,7 @@ class SecurityController extends AbstractController
         $form = $this->createForm(ResetPasswordType::class);
 
         if ($handler->handleTokenNotValid($request, $user)) {
-            $this->addFlash('danger', 'Lien invalide');
+            $this->addFlash('danger', 'Votre lien n\'est pas valide. Merci d\'en générer un nouveau.');
 
             return $this->render('/security/reset_pasword.html.twig', [
                 'form' => $form->createView(),

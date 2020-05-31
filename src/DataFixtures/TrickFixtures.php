@@ -17,7 +17,7 @@ class TrickFixtures extends Fixture implements DependentFixtureInterface
         $faker = Factory::create('fr_FR');
 
         $categories = $this->randomCategories();
-        $images = $this->random('Image',1 , 5);
+        $images = $this->random('Image', 1, 5);
         $videos = $this->random('Video', 0, 3);
 
         for ($j = 0; $j < self::NB_TRICKS; ++$j) {
@@ -101,13 +101,12 @@ class TrickFixtures extends Fixture implements DependentFixtureInterface
         foreach ($entities as $key => $entity) {
             $add = 'add'.$name;
             $entity = $this->getReference($entity);
-            if ($name === 'Image' && $key === 0) {
+            if ('Image' === $name && 0 === $key) {
                 $entity->setPoster(true);
             }
             $trick->$add($entity);
         }
     }
-
 
     /**
      * @return string[]

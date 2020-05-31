@@ -1,6 +1,5 @@
 <?php
 
-
 namespace App\Service\HandlerService;
 
 use Doctrine\ORM\EntityManagerInterface;
@@ -31,7 +30,9 @@ class HandlerService
         if ($form->isSubmitted() && $form->isValid()) {
             $this->create($entity);
 
-            if ($flash) $this->flash->add('success', $flash);
+            if ($flash) {
+                $this->flash->add('success', $flash);
+            }
 
             return true;
         }
@@ -56,7 +57,4 @@ class HandlerService
         $this->em->remove($entity);
         $this->em->flush();
     }
-
-
-
 }

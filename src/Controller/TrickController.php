@@ -92,7 +92,7 @@ class TrickController extends AbstractController
 
             if ($handler->handle($request, $form, $comment)) {
                 return $this->redirect($this->generateUrl('trick_show', [
-                        'id' => $id ]).'#comments');
+                        'id' => $id, ]).'#comments');
             }
         }
 
@@ -143,7 +143,6 @@ class TrickController extends AbstractController
         $form = $this->createForm(AddTrickType::class, $trick);
 
         if ($handler->handleAddTrick($request, $form, $trick)) {
-
             return $this->redirectToRoute('trick_show', [
                 'id' => $trick->getId(), ]);
         }
@@ -192,24 +191,24 @@ class TrickController extends AbstractController
     {
         // Edit Trick
         $formTrick = $editTrick->formTrickCreate($request, $trick);
-        if(!$formTrick) {
+        if (!$formTrick) {
             return $this->redirect($this->generateUrl('trick_show', ['id' => $trick->getId()]));
         }
 
         // add Category, image or video
-        foreach( ['Category', 'Image', 'Video'] as $entity) {
+        foreach (['Category', 'Image', 'Video'] as $entity) {
             $form = 'form'.$entity;
             $formCreate = 'form'.$entity.'Create';
 
             $$form = $editTrick->$formCreate($request, $trick);
-            if(!$$form) {
+            if (!$$form) {
                 return $this->redirect($this->generateUrl('trick_edit', ['id' => $trick->getId()]).'#alert');
             }
         }
 
         return $this->render('trick/editForm.html.twig', [
             'trick' => $trick,
-            'formTrick' =>$formTrick->createView(),
+            'formTrick' => $formTrick->createView(),
             'formCategory' => $formCategory->createView(),
             'formImage' => $formImage->createView(),
             'formVideo' => $formVideo->createView(),

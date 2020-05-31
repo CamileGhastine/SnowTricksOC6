@@ -1,8 +1,6 @@
 <?php
 
-
 namespace App\Service\HandlerService;
-
 
 use App\Entity\Image;
 use App\Entity\Trick;
@@ -28,7 +26,7 @@ class HandlerTrickService extends HandlerService
         $this->uploader = $uploader;
     }
 
-    public function handleAddTrick(Request $request, Form $form,Trick $trick)
+    public function handleAddTrick(Request $request, Form $form, Trick $trick)
     {
         $form->handleRequest($request);
 
@@ -66,8 +64,8 @@ class HandlerTrickService extends HandlerService
         }
 
         return false;
-
     }
+
     /**
      * @return bool
      */
@@ -86,5 +84,4 @@ class HandlerTrickService extends HandlerService
 
         return true;
     }
-
 }
