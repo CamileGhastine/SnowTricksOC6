@@ -8,6 +8,9 @@ use Doctrine\Persistence\ObjectManager;
 
 class ImageFixtures extends Fixture
 {
+    /**
+     * @param ObjectManager $manager
+     */
     public function load(ObjectManager $manager)
     {
         for ($i = 0; $i <= 29; ++$i) {
@@ -27,6 +30,9 @@ class ImageFixtures extends Fixture
         $manager->flush();
     }
 
+    /**
+     * @return mixed
+     */
     public function getListImages()
     {
         for ($j = 0; $j < 29; ++$j) {

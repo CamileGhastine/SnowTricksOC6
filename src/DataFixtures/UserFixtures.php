@@ -21,6 +21,9 @@ class UserFixtures extends Fixture
         $this->token = $token;
     }
 
+    /**
+     * @param ObjectManager $manager
+     */
     public function load(ObjectManager $manager)
     {
         $faker = Factory::create('fr_FR');

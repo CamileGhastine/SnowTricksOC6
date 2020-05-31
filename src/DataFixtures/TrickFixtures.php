@@ -12,6 +12,9 @@ class TrickFixtures extends Fixture implements DependentFixtureInterface
 {
     const NB_TRICKS = 13;
 
+    /**
+     * @param ObjectManager $manager
+     */
     public function load(ObjectManager $manager)
     {
         $faker = Factory::create('fr_FR');
@@ -43,7 +46,7 @@ class TrickFixtures extends Fixture implements DependentFixtureInterface
     }
 
     /**
-     * @return array
+     * @return mixed
      */
     private function randomUser()
     {
@@ -55,6 +58,9 @@ class TrickFixtures extends Fixture implements DependentFixtureInterface
         return $users;
     }
 
+    /**
+     * @return mixed
+     */
     private function randomCategories()
     {
         for ($k = 0; $k < self::NB_TRICKS; ++$k) {
@@ -96,6 +102,11 @@ class TrickFixtures extends Fixture implements DependentFixtureInterface
         return $entities;
     }
 
+    /**
+     * @param $trick
+     * @param $name
+     * @param $entities
+     */
     private function add($trick, $name, $entities)
     {
         foreach ($entities as $key => $entity) {

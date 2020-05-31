@@ -4,7 +4,7 @@ namespace App\DataFixtures;
 
 use App\Entity\Video;
 use Doctrine\Bundle\FixturesBundle\Fixture;
-use Doctrine\Common\Persistence\ObjectManager;
+use Doctrine\Persistence\ObjectManager;
 
 class VideoFixtures extends Fixture
 {
@@ -40,6 +40,9 @@ class VideoFixtures extends Fixture
         'src="https://www.youtube.com/embed/V9xuy-rVj9w"',
         ];
 
+    /**
+     * @param ObjectManager $manager
+     */
     public function load(ObjectManager $manager)
     {
         for ($i = 0; $i < count($this->videos); ++$i) {
@@ -54,6 +57,9 @@ class VideoFixtures extends Fixture
         $manager->flush();
     }
 
+    /**
+     * @return mixed
+     */
     public function getListVideos()
     {
         for ($j = 0; $j < count($this->videos); ++$j) {

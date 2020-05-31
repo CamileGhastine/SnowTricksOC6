@@ -5,6 +5,7 @@ namespace App\DataFixtures;
 use App\Entity\Comment;
 use App\Entity\Trick;
 use App\Entity\User;
+use DateTime;
 use Doctrine\Bundle\FixturesBundle\Fixture;
 use Doctrine\Common\DataFixtures\DependentFixtureInterface;
 use Doctrine\Persistence\ObjectManager;
@@ -12,6 +13,9 @@ use Faker\Factory;
 
 class CommentFixtures extends Fixture implements dependentFixtureInterface
 {
+    /**
+     * @param ObjectManager $manager
+     */
     public function load(ObjectManager $manager)
     {
         $faker = Factory::create('fr_FR');
@@ -33,7 +37,7 @@ class CommentFixtures extends Fixture implements dependentFixtureInterface
                 $comment = new Comment($trick, $user);
 
                 $comment->setContent(implode("\n", $faker->sentences(4)))
-                    ->setCreatedAt($faker->dateTimeBetween('-'.(new \DateTime())->diff($date)->days.'days'));
+                    ->setCreatedAt($faker->dateTimeBetween('-'.(new DateTime())->diff($date)->days.'days'));
 
                 $manager->persist($comment);
             }
@@ -41,6 +45,9 @@ class CommentFixtures extends Fixture implements dependentFixtureInterface
         $manager->flush();
     }
 
+    /**
+     * @return string[]
+     */
     public function getDependencies()
     {
         return [
