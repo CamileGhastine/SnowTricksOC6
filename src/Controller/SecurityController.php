@@ -14,6 +14,8 @@ use Symfony\Component\Form\Form;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
+use Symfony\Component\Security\Core\Authentication\Token\Storage\TokenStorageInterface;
+use Symfony\Component\Security\Csrf\TokenGenerator\TokenGeneratorInterface;
 use Symfony\Component\Security\Guard\GuardAuthenticatorHandler;
 use Symfony\Component\Security\Http\Authentication\AuthenticationUtils;
 
@@ -65,14 +67,16 @@ class SecurityController extends AbstractController
      *
      * @throws \Symfony\Component\Mailer\Exception\TransportExceptionInterface
      */
-    public function registration(Request $request, HandlerUserService $handler)
+    public function registration(Request $request, TokenStorageInterface $tokenStorage, TokenGeneratorInterface $generateToken, HandlerUserService $handler)
     {
+        $handler->handleRegistrationAlraedyConnected($tokenStorage, $this->getUser());
+
         $user = new User();
 
         /** @var Form $form */
         $form = $this->createForm(RegistrationType::class, $user);
 
-        if ($handler->handleRegistration($request, $form, $user)) {
+        if ($handler->handleRegistration($request, $generateToken, $form, $user)) {
             return $this->redirectToRoute('security_registration');
         }
 
@@ -91,10 +95,14 @@ class SecurityController extends AbstractController
         $user = $this->repo->findOneBy(['email' => $request->query->get('email')]);
 
         if ($handler->handleTokenNotValid($request, $user)) {
-            return $this->render('Security/validateRegistration.html.twig', ['user' => $user]);
+            $this->addFlash('danger', 'lien invalide');
+
+            return $this->render('Security/validateRegistration.html.twig', ['user' => null]);
         }
 
         if ($handler->handleValidateRegistration($request, $user)) {
+            $this->addFlash('success', 'Inscription validée.');
+
             return $this->redirectToRoute('home');
         }
 
@@ -115,6 +123,8 @@ class SecurityController extends AbstractController
 
         if ($handler->handleForgottenPasswordUnsubmitted($request, $form))
         {
+            $this->addFlash('danger', 'Pas adresse');
+
             return $this->render('/security/forgottenPassword.html.twig', [
                 'form' => $form->createView(),
             ]);
@@ -124,6 +134,8 @@ class SecurityController extends AbstractController
 
         if ($handler ->handleForgottenPasswordUserNotExists($user))
         {
+            $this->addFlash('danger', 'Pas adresse');
+
             return $this->redirectToRoute('security_forgotten');
         }
 
@@ -145,6 +157,8 @@ class SecurityController extends AbstractController
         $form = $this->createForm(ResetPasswordType::class);
 
         if ($handler->handleTokenNotValid($request, $user)) {
+            $this->addFlash('danger', 'Lien invalide');
+
             return $this->render('/security/reset_pasword.html.twig', [
                 'form' => $form->createView(),
             ]);

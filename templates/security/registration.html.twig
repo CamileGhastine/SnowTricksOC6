@@ -8,13 +8,21 @@
         <div class="media-trick my-5">
             <div class="my-5 mx-2 mx-md-5">
                 {% set flash = app.flashes %}
-                {% if  flash %}
+                {% if  flash.success is defined %}
                     {% for message in flash.success %}
                         <div class="alert alert-success text-center mt-5">
                             {{ message }}
                         </div>
                     {% endfor %}
+
                 {% else %}
+                    {% if flash.danger is defined %}
+                        {% for message in flash.danger %}
+                            <div class="alert alert-danger text-center mt-5">
+                                {{ message }}
+                            </div>
+                        {% endfor %}
+                    {% endif %}
                     <div class="container mt-5">
                         <h1 class="mb-5">Enregistrement</h1>
                         {{ form_start(form) }}

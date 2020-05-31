@@ -11,6 +11,7 @@ use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Component\Form\Form;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Session\Flash\FlashBagInterface;
+use Symfony\Component\Security\Core\Authentication\Token\Storage\TokenStorageInterface;
 use Symfony\Component\Security\Core\Encoder\UserPasswordEncoderInterface;
 use Symfony\Component\Security\Csrf\TokenGenerator\TokenGeneratorInterface;
 
@@ -34,7 +35,15 @@ class HandlerUserService extends HandlerService
         $this->uploader = $uploader;
     }
 
-    public function handleRegistration(Request $request, Form $form, $user)
+    public function handleRegistrationAlraedyConnected(TokenStorageInterface $tokenStorage, $user)
+    {
+        if ($user) {
+            $this->flash->add('danger', 'Vous avez été déconnecté pour enregistrer un nouvel utilisateur.');
+            $tokenStorage->setToken();
+        }
+    }
+
+    public function handleRegistration(Request $request, TokenGeneratorInterface $generateToken, Form $form, $user)
     {
         $form->handleRequest($request);
 
@@ -44,7 +53,7 @@ class HandlerUserService extends HandlerService
 
         $user->setPassword($this->passwordEncoder->encodePassword($user, $user->getPassword()))
             ->setAvatar('images/users/nobody.jpg')
-            ->setToken($this->generateToken->generateToken());
+            ->setToken($generateToken->generateToken());
 
         if ($form->getData()->getFile()) {
             $url = $this->uploader->uploadAvatar($form->getData()->getFile());
